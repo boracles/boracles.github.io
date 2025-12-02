@@ -117,7 +117,14 @@ document.addEventListener("DOMContentLoaded", () => {
   // ============================
 
   const navLinks = document.querySelectorAll(".nav-right a");
-  const sectionIds = ["intro", "about", "projects", "teaching", "contact"];
+  const sectionIds = [
+    "intro",
+    "about",
+    "projects",
+    "research",
+    "teaching",
+    "contact",
+  ];
 
   function setActiveNav(id) {
     navLinks.forEach((link) => {
