@@ -2,242 +2,430 @@
 <html lang="ko">
   <head>
     <meta charset="UTF-8" />
-    <title>Bora Youn | Creative Technical Director</title>
+    <title>Bora Youn — Creative Technical Director</title>
     <meta
       name="viewport"
       content="width=device-width, initial-scale=1.0, viewport-fit=cover"
     />
     <link rel="stylesheet" href="style.css" />
+
+    <!-- GSAP + ScrollTrigger CDN -->
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"
+      defer
+    ></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"
+      defer
+    ></script>
+    <script defer>
+      document.addEventListener("DOMContentLoaded", () => {
+        gsap.registerPlugin(ScrollTrigger);
+
+        // 모든 패널 스냅(섹션 간 '툭툭' 걸리는 느낌)
+        const panels = gsap.utils.toArray(".panel");
+        ScrollTrigger.create({
+          trigger: ".wrapper",
+          start: "top top",
+          end: () => "+=" + (panels.length - 1) * window.innerHeight,
+          snap: 1 / (panels.length - 1),
+        });
+
+        // Intro 텍스트 페이드 인
+        gsap.from(".intro-title", {
+          opacity: 0,
+          y: 40,
+          duration: 1.3,
+          ease: "power3.out",
+        });
+        gsap.from(".intro-tagline", {
+          opacity: 0,
+          y: 20,
+          duration: 1.3,
+          delay: 0.3,
+          ease: "power3.out",
+        });
+
+        // ABOUT 패널 – 텍스트 위로 슬라이드
+        gsap.from(".about-text", {
+          scrollTrigger: {
+            trigger: ".panel--about",
+            start: "top 80%",
+          },
+          opacity: 0,
+          y: 40,
+          duration: 1.1,
+          ease: "power2.out",
+        });
+
+        // CAPABILITIES – 하나씩 스태거 등장
+        gsap.from(".cap-item", {
+          scrollTrigger: {
+            trigger: ".panel--caps",
+            start: "top 80%",
+          },
+          opacity: 0,
+          y: 30,
+          duration: 0.8,
+          stagger: 0.12,
+          ease: "power2.out",
+        });
+
+        // PROJECT TIMELINE – 세로 라인 따라 위에서 아래로
+        gsap.from(".timeline-item", {
+          scrollTrigger: {
+            trigger: ".panel--timeline",
+            start: "top 75%",
+          },
+          opacity: 0,
+          y: 40,
+          duration: 0.9,
+          stagger: 0.12,
+          ease: "power2.out",
+        });
+
+        // AI Audience 상세 패널 – 왼/오른쪽에서 슬라이드
+        gsap.from(".ai-left", {
+          scrollTrigger: {
+            trigger: ".panel--ai",
+            start: "top 75%",
+          },
+          opacity: 0,
+          x: -40,
+          duration: 1,
+          ease: "power2.out",
+        });
+
+        gsap.from(".ai-right", {
+          scrollTrigger: {
+            trigger: ".panel--ai",
+            start: "top 75%",
+          },
+          opacity: 0,
+          x: 40,
+          duration: 1,
+          delay: 0.1,
+          ease: "power2.out",
+        });
+
+        // TEACHING 패널 – 카드 스태거
+        gsap.from(".teach-card", {
+          scrollTrigger: {
+            trigger: ".panel--teach",
+            start: "top 80%",
+          },
+          opacity: 0,
+          y: 30,
+          duration: 0.8,
+          stagger: 0.1,
+          ease: "power2.out",
+        });
+
+        // CONTACT 패널 – 위에서 살짝 떨어지는 느낌
+        gsap.from(".contact-inner", {
+          scrollTrigger: {
+            trigger: ".panel--contact",
+            start: "top 80%",
+          },
+          opacity: 0,
+          y: 30,
+          duration: 1,
+          ease: "power2.out",
+        });
+      });
+    </script>
   </head>
   <body>
-    <div class="site-wrapper">
-      <header>
-        <div>
-          <div class="site-title">Bora Youn</div>
-          <div class="site-subtitle">
+    <div class="wrapper">
+      <!-- NAV (상단 고정 메뉴) -->
+      <header class="nav">
+        <div class="nav-left">
+          <div class="nav-name">Bora Youn</div>
+          <div class="nav-role">
             Creative Technical Director · XR × AI × Interactive Performance
           </div>
         </div>
-        <nav>
-          <div class="nav-links">
-            <a href="index.html">Home</a>
-            <a href="projects/ai-audience-agent.html">Projects</a>
-            <a href="teaching/ar-player-lab.html">Teaching</a>
-            <a href="about/about.html">About</a>
-            <a href="contact/contact.html">Contact</a>
-          </div>
+        <nav class="nav-right">
+          <a href="#intro">Intro</a>
+          <a href="#about">About</a>
+          <a href="#projects">Works</a>
+          <a href="#teaching">Teaching</a>
+          <a href="#contact">Contact</a>
         </nav>
       </header>
 
-      <!-- Hero -->
-      <section class="hero">
-        <div>
-          <div class="section-label">Portfolio</div>
-          <h1 class="hero-title">
-            Designing real-time systems for<br />
-            VR presentations, immersive theater,<br />
-            and therapeutic XR experiences.
-          </h1>
-          <p class="hero-tagline">
-            저는 VR·XR 환경에서 동작하는 AI 에이전트, 인터랙티브 전시, 치료용 XR
-            경험을 설계하고 구현하는
-            <strong>Creative Technical Director</strong>입니다. 코드와 서사,
-            센서와 몸의 움직임을 하나의 시스템으로 엮는 일을 합니다.
-          </p>
-          <div class="hero-meta">
-            <div>Based in Seoul, working across XR, AI, and performance.</div>
-            <div>Unity · C# · AI Pipeline · Arduino · Motion Tracking.</div>
-          </div>
-        </div>
-        <div class="hero-right">
-          <div class="section-label">Focus</div>
-          <p>
-            • VR 발표 환경에서의 실시간 AI 청중 백채널 시스템<br />
-            • 몰입형 VR 연극 & 인터랙티브 공연 시스템<br />
-            • 치매 및 인지 지원을 위한 XR 치료 경험<br />
-            • 센서·오디오·조명을 아우르는 전시 기술 디렉션
-          </p>
-          <p>
-            식스도파민과 같은 아트테크 스튜디오에서<br />
-            작가, 퍼포머, 개발자와 함께<br />
-            공간 전체를 하나의 인터랙티브 시스템으로 엮는 역할을 지향합니다.
+      <!-- PANEL 1: INTRO -->
+      <section class="panel panel--intro" id="intro">
+        <div class="intro-inner">
+          <h1 class="intro-title">I design<br />interactive systems.</h1>
+          <p class="intro-tagline">
+            VR 발표 환경, 몰입형 연극, 치매·정서 지원 XR까지.<br />
+            저는 사람과 공간, AI와 센서를 하나의
+            <strong>살아있는 시스템</strong>으로 엮는<br />
+            <strong>Creative Technical Director</strong>입니다.
           </p>
         </div>
       </section>
 
-      <!-- 대표 프로젝트 -->
-      <section>
-        <div class="section-label">Selected Works</div>
-        <h2 class="section-title">XR · AI · Performance Systems</h2>
+      <!-- PANEL 2: ABOUT -->
+      <section class="panel panel--about" id="about">
+        <div class="panel-inner">
+          <div class="panel-label">About</div>
+          <div class="about-layout">
+            <div class="about-text">
+              저는 VR·XR 환경에서 동작하는 <strong>AI 에이전트</strong>,
+              <strong>인터랙티브 전시</strong>,
+              <strong>치료용 XR 경험</strong>을 설계하고 구현합니다.<br /><br />
+              발표 불안 완화를 위한 VR 발표 훈련, 몰입형 VR 연극, 장내 자산과
+              삶의 맛을 연결하는 설치 작업, 치매·인지 지원 XR 프로젝트 등,
+              기술과 서사가 얽힌 환경에서 시스템 전반을 디자인해왔습니다.
+              <br /><br />
+              Unity, C#, 센서·아두이노, 모션 트래킹, ASR–LLM–TTS 파이프라인을
+              다루며, 작가·퍼포머·연구자와 협업해
+              <em>“기술이 아니라 경험”</em>을 완성하는 역할을 맡습니다.
+            </div>
+          </div>
+        </div>
+      </section>
 
-        <div class="card-grid">
-          <a class="card" href="projects/ai-audience-agent.html">
-            <div class="card-title-row">
-              <div class="card-title">AI Audience Agent</div>
-              <div class="card-role">VR · AI Pipeline</div>
-            </div>
-            <div class="card-meta">
-              VR Presentation · ASR–LLM–TTS · Real-Time Backchannel
-            </div>
-            <div class="card-desc">
-              VR 발표 환경에서 음성 인식–LLM–TTS 파이프라인을 통해 실시간 질문과
-              반응을 생성하는 AI 청중 시스템을 설계했습니다. 반응적
-              중립성(Responsive Neutrality)에 기반하여 시선·표정·제스처를
-              설계하고, 지연 시간과 신뢰감 사이의 균형을 다뤘습니다.
-            </div>
-          </a>
-
-          <a class="card" href="projects/immersive-theater.html">
-            <div class="card-title-row">
-              <div class="card-title">
-                &lt;잃어버린 방&gt; VR Immersive Theater
+      <!-- PANEL 3: CAPABILITIES -->
+      <section class="panel panel--caps">
+        <div class="panel-inner">
+          <div class="panel-label">Capabilities</div>
+          <h2 class="panel-title">
+            What I build as a Creative Technical Director
+          </h2>
+          <div class="caps-grid">
+            <div class="cap-item">
+              <div class="cap-title">VR / XR Development</div>
+              <div class="cap-body">
+                Unity 기반 VR 발표 환경, 몰입형 연극, XR 프로토타입. HMD
+                인터랙션과 공간 디자인을 함께 설계합니다.
               </div>
-              <div class="card-role">Immersive Theater</div>
             </div>
-            <div class="card-meta">Unity · HMD · Live Performance System</div>
-            <div class="card-desc">
-              관객이 헤드셋을 쓰고 참여하는 VR 몰입형 연극을 위해 Unity 기반
-              실시간 연출 시스템을 구축했습니다. 배우의 동선, 관객 시점,
-              사운드·조명 변화가 동기화되도록 기술 구조를 설계했습니다.
+            <div class="cap-item">
+              <div class="cap-title">AI Pipeline (ASR–LLM–TTS)</div>
+              <div class="cap-body">
+                실시간 음성 인식–언어 모델–음성 합성 파이프라인을 구성하고, VR
+                에이전트와 연동해 대화형 시스템을 만듭니다.
+              </div>
             </div>
-          </a>
-
-          <a class="card" href="projects/wplanet-bodychestra.html">
-            <div class="card-title-row">
-              <div class="card-title">W-Planet Bodychestra</div>
-              <div class="card-role">Interactive Installation</div>
+            <div class="cap-item">
+              <div class="cap-title">Interactive Installations</div>
+              <div class="cap-body">
+                센서, NFC, LED, 사운드, 오브제를 결합해 관객의 몸짓과 데이터가
+                연결되는 공간 경험을 설계합니다.
+              </div>
             </div>
-            <div class="card-meta">
-              Sensors · Sound · Visual · Live Interaction
+            <div class="cap-item">
+              <div class="cap-title">Motion & Sensor Systems</div>
+              <div class="cap-body">
+                모션캡처(Xsens/ARKit)와 센서 입력을 Unity와 연동하여 퍼포먼스와
+                오디오·비주얼을 실시간으로 제어합니다.
+              </div>
             </div>
-            <div class="card-desc">
-              관객의 움직임을 센서로 감지해 실시간으로 사운드와 이미지를
-              생성하는 인터랙티브 설치 작업입니다. 센서 입력, 맵핑 로직,
-              시각·청각 출력까지 전체 시스템을 프로그래밍했습니다.
+            <div class="cap-item">
+              <div class="cap-title">Therapeutic XR</div>
+              <div class="cap-body">
+                발표 불안, 치매·인지 저하, 정서 지원을 위한 XR 환경을 설계하고,
+                자극과 난이도를 조절하는 인터랙션 구조를 만듭니다.
+              </div>
             </div>
-          </a>
-
-          <a class="card" href="projects/dementia-xr.html">
-            <div class="card-title-row">
-              <div class="card-title">Dementia XR Experience</div>
-              <div class="card-role">Therapeutic XR</div>
-            </div>
-            <div class="card-meta">
-              XR · Cognitive Support · Interaction Design
-            </div>
-            <div class="card-desc">
-              치매 및 인지 저하 환자를 위한 XR 환경을 설계하고, 익숙한
-              오브젝트와 사운드를 활용한 저자극 인터랙션을 구현했습니다. 조작
-              난이도보다 정서적 안정, 기억 회상 경험에 초점을 두었습니다.
-            </div>
-          </a>
-        </div>
-      </section>
-
-      <!-- XR Experience Design (디자인 중심 작업) -->
-      <section>
-        <div class="section-label">XR Experience Design</div>
-        <h2 class="section-title">Therapeutic & Experimental XR</h2>
-
-        <div class="mini-grid">
-          <div class="mini-card">
-            <div class="mini-title">AttnKare-D</div>
-            <div class="mini-meta">
-              VR · Presentation Anxiety · UX & Interaction
-            </div>
-            <div class="mini-desc">
-              발표 불안 완화를 위한 VR 시뮬레이션 환경의 UX·인터랙션을
-              설계했습니다. 발표 상황의 난이도, 청중 반응, 시선·거리 감각을
-              조절할 수 있는 구조를 디자인했습니다.
-            </div>
-          </div>
-
-          <div class="mini-card">
-            <div class="mini-title">BlueKare</div>
-            <div class="mini-meta">XR · Cognitive / Emotional Support</div>
-            <div class="mini-desc">
-              인지·정서 지원을 위한 XR 프로토타입 프로젝트에서 환경 구성을
-              디자인하고, 사용자 여정과 피드백 구조를 설계했습니다.
-            </div>
-          </div>
-
-          <div class="mini-card">
-            <div class="mini-title">NoNormal in Wonderland</div>
-            <div class="mini-meta">Game · Creative Coding</div>
-            <div class="mini-desc">
-              정상성과 일탈을 주제로 한 실험적 게임 프로젝트로, 직접
-              프로그래밍을 통해 캐릭터 이동, 상호작용, 레벨 구조를 구현했습니다.
-            </div>
-          </div>
-
-          <div class="mini-card">
-            <div class="mini-title">SOUND WALK</div>
-            <div class="mini-meta">Sound-based Spatial Interaction</div>
-            <div class="mini-desc">
-              사운드를 중심으로 공간을 탐색하는 인터랙티브 경험을 설계하고,
-              이용자의 움직임에 반응하는 간단한 시스템을 프로토타이핑했습니다.
+            <div class="cap-item">
+              <div class="cap-title">Creative Coding & Teaching</div>
+              <div class="cap-body">
+                제너러티브 디자인, AR, 셰이더·아두이노 등을 가르치며, 학생들이
+                자신만의 시스템을 설계하도록 돕습니다.
+              </div>
             </div>
           </div>
         </div>
       </section>
 
-      <!-- Teaching -->
-      <section>
-        <div class="section-label">Teaching</div>
-        <h2 class="section-title">Creative Coding & XR Studio</h2>
+      <!-- PANEL 4: PROJECT TIMELINE -->
+      <section class="panel panel--timeline" id="projects">
+        <div class="panel-inner panel-inner--narrow">
+          <div class="panel-label">Selected Works</div>
+          <h2 class="panel-title">
+            From VR presentations to immersive theatre
+          </h2>
 
-        <div class="mini-grid">
-          <a class="mini-card" href="teaching/ar-player-lab.html">
-            <div class="mini-title">AR Player Lab</div>
-            <div class="mini-meta">AR · Shader · Arduino</div>
-            <div class="mini-desc">
-              AR 환경에서 셰이더와 아두이노를 연결하여, 학생들이 몸과 디지털
-              오브젝트의 관계를 인터랙티브하게 실험하는 랩 수업을 운영했습니다.
-            </div>
-          </a>
+          <div class="timeline">
+            <div class="timeline-line"></div>
 
-          <a class="mini-card" href="teaching/art-boundary-coding.html">
-            <div class="mini-title">Art Boundary Collision</div>
-            <div class="mini-meta">Intro to Creative Coding</div>
-            <div class="mini-desc">
-              예술과 프로그래밍의 경계를 다루는 수업으로, 학생들이 p5.js 또는
-              Unity를 활용해 자신의 서사를 코드로 구현하도록 지도했습니다.
+            <div class="timeline-item">
+              <div class="timeline-dot"></div>
+              <div class="timeline-content">
+                <div class="timeline-title">AI Audience Agent</div>
+                <div class="timeline-meta">VR · AI · Real-Time Backchannel</div>
+                <div class="timeline-body">
+                  발표자의 발화를 인식해 ASR–LLM–TTS 파이프라인으로 질문과
+                  반응을 생성하는 VR 청중 시스템. 지연 시간을 사회적 신호로
+                  전환하여, “멈춤”이 오류가 아니라 <em>생각의 순간</em>처럼
+                  느껴지도록 설계했습니다.
+                </div>
+              </div>
             </div>
-          </a>
 
-          <a class="mini-card" href="teaching/generative-design.html">
-            <div class="mini-title">Generative Design Studio</div>
-            <div class="mini-meta">Algorithmic Thinking · Creative Systems</div>
-            <div class="mini-desc">
-              제너러티브 디자인 수업에서 알고리즘 기반 사고를 훈련시키고,
-              규칙·시스템을 설계해 형태와 움직임을 생성하는 방법을 가르쳤습니다.
+            <div class="timeline-item">
+              <div class="timeline-dot"></div>
+              <div class="timeline-content">
+                <div class="timeline-title">
+                  &lt;잃어버린 방&gt; VR Immersive Theater
+                </div>
+                <div class="timeline-meta">Unity · HMD · Live Performance</div>
+                <div class="timeline-body">
+                  관객이 HMD를 쓴 채 배우의 움직임과 함께 서사를 따라가는 VR
+                  몰입형 연극. Unity 기반 실시간 연출 시스템을 구축해 배우 동선,
+                  관객 시점, 사운드·조명 변화가 하나의 리듬으로 이어지도록
+                  만들었습니다.
+                </div>
+              </div>
             </div>
-          </a>
+
+            <div class="timeline-item">
+              <div class="timeline-dot"></div>
+              <div class="timeline-content">
+                <div class="timeline-title">Dementia XR Experience</div>
+                <div class="timeline-meta">
+                  XR · Cognitive / Emotional Support
+                </div>
+                <div class="timeline-body">
+                  치매 및 인지 저하 환자를 위한 XR 환경을 설계하고, 익숙한
+                  오브젝트·사운드에 반응하는 저자극 인터랙션을 구현했습니다.
+                  조작 난이도보다 정서적 안정과 기억 회상 경험을 우선시했습니다.
+                </div>
+              </div>
+            </div>
+
+            <div class="timeline-item">
+              <div class="timeline-dot"></div>
+              <div class="timeline-content">
+                <div class="timeline-title">W-Planet Bodychestra</div>
+                <div class="timeline-meta">
+                  Interactive Installation · Sensors · Sound
+                </div>
+                <div class="timeline-body">
+                  관객의 몸 움직임을 센서로 감지해 사운드와 이미지를 실시간으로
+                  생성하는 설치 작업. 센서 입력, 맵핑 로직, 아웃풋 구조를
+                  프로그래밍해, 몸이 하나의 오케스트라가 되도록 구성했습니다.
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
-      <!-- Contact -->
-      <section>
-        <div class="section-label">Contact</div>
-        <h2 class="section-title">Let’s build systems together</h2>
-        <p style="font-size: 0.95rem; color: #444444; margin-bottom: 8px">
-          협업 제안, 프로젝트 문의, 강의·워크숍 초청 모두 환영합니다.
-        </p>
-        <p style="font-size: 0.95rem; color: #444444">
-          Email: <a href="mailto:atelier@borades.art">atelier@borades.art</a
-          ><br />
-          GitHub:
-          <a href="https://github.com/boracles" target="_blank"
-            >github.com/boracles</a
-          ><br />
-          Location: Seoul, South Korea
-        </p>
+      <!-- PANEL 5: AI AUDIENCE HIGHLIGHT -->
+      <section class="panel panel--ai">
+        <div class="panel-inner">
+          <div class="panel-label">Highlight</div>
+          <h2 class="panel-title">AI Audience Agent · System View</h2>
+          <div class="ai-layout">
+            <div class="ai-left">
+              <h3 class="ai-subtitle">System Architecture</h3>
+              <p class="ai-text">
+                AI Audience Agent는 다음과 같은 파이프라인으로 동작합니다.
+              </p>
+              <ul class="ai-list">
+                <li>
+                  <strong>ASR</strong> — 발표자의 음성을 실시간 스트리밍으로
+                  인식
+                </li>
+                <li>
+                  <strong>LLM</strong> — 발표 내용과 흐름에 맞는 질문·백채널
+                  생성
+                </li>
+                <li>
+                  <strong>TTS</strong> — 생성된 텍스트를 에이전트 음성으로 변환
+                </li>
+                <li>
+                  <strong>VR Agent Control</strong> — 음성과 함께 시선·고개
+                  끄덕임·표정·상체 제스처 제어
+                </li>
+              </ul>
+              <p class="ai-text">
+                기술적 지연을 숨기기보다, 기다리는 동안의 몸짓을 디자인함으로써
+                시스템의 한계를 하나의 <em>사회적 신호</em>로 전환했습니다.
+              </p>
+            </div>
+            <div class="ai-right">
+              <div class="ai-box">
+                <div class="ai-diagram-title">Pipeline Sketch</div>
+                <div class="ai-diagram">
+                  <div class="ai-node">User Voice</div>
+                  <div class="ai-arrow">ASR</div>
+                  <div class="ai-node">Text</div>
+                  <div class="ai-arrow">LLM</div>
+                  <div class="ai-node">Response</div>
+                  <div class="ai-arrow">TTS</div>
+                  <div class="ai-node">VR Agent</div>
+                </div>
+                <div class="ai-diagram-caption">
+                  실제 구현에서는 각 단계가 비동기적으로 연결되며, VR 에이전트의
+                  상태와 연동됩니다.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </section>
 
-      <footer>
-        <div>© <span id="year"></span> Bora Youn. All rights reserved.</div>
-        <div>Portfolio built on GitHub Pages.</div>
-      </footer>
+      <!-- PANEL 6: TEACHING -->
+      <section class="panel panel--teach" id="teaching">
+        <div class="panel-inner">
+          <div class="panel-label">Teaching</div>
+          <h2 class="panel-title">Creative Coding & XR Studio</h2>
+          <div class="teach-grid">
+            <div class="teach-card">
+              <div class="teach-title">AR Player Lab</div>
+              <div class="teach-meta">AR · Shader · Arduino</div>
+              <div class="teach-body">
+                AR 환경에서 셰이더와 아두이노를 연결해, 학생들이 자신의 몸과
+                디지털 오브젝트의 관계를 실험하는 랩 수업을 운영했습니다.
+              </div>
+            </div>
+            <div class="teach-card">
+              <div class="teach-title">Art Boundary Collision</div>
+              <div class="teach-meta">Intro to Creative Coding</div>
+              <div class="teach-body">
+                예술과 코드의 경계를 주제로, p5.js와 Unity를 활용해 개인의
+                서사를 인터랙티브하게 구현하는 수업을 진행했습니다.
+              </div>
+            </div>
+            <div class="teach-card">
+              <div class="teach-title">Generative Design Studio</div>
+              <div class="teach-meta">Algorithmic Thinking</div>
+              <div class="teach-body">
+                규칙·시스템을 설계해 형태와 움직임을 생성하는 제너러티브 디자인
+                스튜디오를 운영하며, 알고리즘적 사고를 훈련시켰습니다.
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- PANEL 7: CONTACT -->
+      <section class="panel panel--contact" id="contact">
+        <div class="panel-inner contact-inner">
+          <div class="panel-label">Contact</div>
+          <h2 class="panel-title">Let’s build the next system together</h2>
+          <p class="contact-text">
+            협업 제안, 프로젝트 문의, 강의·워크숍 초청 모두 환영합니다.<br /><br />
+            Email:
+            <a href="mailto:atelier@borades.art">atelier@borades.art</a><br />
+            GitHub:
+            <a href="https://github.com/boracles" target="_blank"
+              >github.com/boracles</a
+            ><br />
+            Location: Seoul, South Korea
+          </p>
+          <div class="contact-foot">
+            © <span id="year"></span> Bora Youn. Portfolio built on GitHub
+            Pages.
+          </div>
+        </div>
+      </section>
     </div>
 
     <script>
