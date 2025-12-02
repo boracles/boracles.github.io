@@ -578,17 +578,27 @@ body {
   .nav {
     flex-direction: column;
     align-items: flex-start;
-    gap: 6px;
-    padding: 12px 20px 6px;
-  }
-
-  /* 그라데이션 높이도 줄이기 */
-  .nav::before {
-    height: 70px;
+    gap: 4px;
+    padding: 12px 16px 6px;
   }
 
   .nav-right {
-    flex-wrap: wrap;
+    margin-top: 4px;
+    gap: 24px;
+    font-size: 0.9rem;
+
+    display: flex;
+    flex-wrap: nowrap; /* ★ 줄바꿈 금지 */
+    overflow-x: auto; /* ★ 가로 스크롤 허용 */
+    white-space: nowrap; /* ★ 텍스트 줄바꿈 금지 */
+  }
+
+  .nav-right a {
+    flex-shrink: 0; /* 아이템이 눌려서 줄바꿈되는 것 방지 */
+  }
+
+  .nav-right::-webkit-scrollbar {
+    display: none; /* 모바일 크롬/사파리에서 스크롤바 안 보이게 (선택사항) */
   }
 
   .panel {
