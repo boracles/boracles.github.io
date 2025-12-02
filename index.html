@@ -68,58 +68,79 @@
           <p class="intro-tagline">
             VR 발표 환경, 몰입형 연극, 치매·정서 지원 XR까지.<br />
             저는 사람과 공간, AI와 센서가 실시간으로 반응하는
-            <strong>인터랙티브 환경</strong>을 설계하는<br />
+            <strong>인터랙티브 시스템</strong>을 설계하는<br />
             <strong>Creative Technical Director</strong>입니다.
           </p>
         </div>
       </section>
 
       <!-- PANEL 2: ABOUT -->
+      <video
+        id="faceVideo"
+        autoplay
+        muted
+        playsinline
+        style="display: none"
+      ></video>
+
       <section class="panel panel--about" id="about">
         <div class="panel-inner">
-          <div class="about-layout">
-            <div class="about-main">
+          <div class="about-shell">
+            <div class="about-left">
               <h2 class="bodoni-title">
-                Systems for user-generated experience.
+                Systems shaped by action and interaction.
               </h2>
 
               <div class="about-text">
-                저는 XR과 AI를 기반으로,
+                저는 XR과 AI를 기반으로,<br />
                 <strong
                   >사용자의 행위와 선택에 의해 경험이 생성되는 시스템</strong
-                >을 설계하는 Creative Technical Director입니다. <br />
+                >
+                을 설계하는 Creative Technical Director입니다. <br />
+                <br />
 
-                Unity, 센서, 모션캡처, AI 파이프라인을 다루지만, 제가 만드는
-                것은 기술 그 자체가 아니라 그 기술들이 만들어내는 관계와 경험의
-                구조입니다.<br />
-                VR 발표 환경의 AI 청중, XR 퍼포먼스, 데이터 기반 인터랙티브
-                설치, 인지·치료 지원 XR 프로젝트까지 — 다양한 기술 요소를 하나의
-                흐름으로 통합하고, 그 흐름 속에서 관객이 직접 체감하는 경험을
-                완성하는 역할을 합니다.
+                Unity, 센서 및 액추에이터, AI기반 인터랙션 파이프라인, 모션캡처
+                등 다양한 기술적 구성 요소를 통합하여, <br />
+                사람·공간·기술의 상호작용이 만들어내는 관계와 경험의 구조를
+                설계합니다.<br /><br />
+
+                VR 발표 환경의 AI 청중, XR 퍼포먼스, 자율적으로 변화하는
+                인터랙션 환경 등 서로 다른 맥락의 작업을 하나의 흐름으로
+                조율하여,
+                <strong>사용자의 행위가 서사를 이끌어가는 경험</strong>을
+                구축합니다.<br /><br /><br /><br />
+              </div>
+
+              <!-- ⬇⬇ Focus / Background는 왼쪽 박스 안에 -->
+              <div class="about-meta">
+                <div class="about-meta-block">
+                  <div class="about-meta-label">Focus</div>
+                  <div class="about-meta-text">
+                    VR Presentation &amp; AI Audience<br />
+                    Immersive Theater / XR Performance<br />
+                    Interactive Installations &amp; Sensors<br />
+                    Therapeutic &amp; Cognitive XR
+                  </div>
+                </div>
+                <div class="about-meta-block">
+                  <div class="about-meta-label">Background</div>
+                  <div class="about-meta-text">
+                    XR UX Research (PhD)<br />
+                    Performance &amp; Media Art (MFA)<br />
+                    Creative Coding &amp; Teaching<br />
+                    Unity, AI Pipeline, Motion Capture
+                  </div>
+                </div>
               </div>
             </div>
+            <!-- 🔚 about-left 여기서 닫힘 -->
 
-            <div class="about-meta">
-              <div class="about-meta-block">
-                <div class="about-meta-label">Focus</div>
-                <div class="about-meta-text">
-                  VR Presentation &amp; AI Audience<br />
-                  Immersive Theater / XR Performance<br />
-                  Interactive Installations &amp; Sensors<br />
-                  Therapeutic &amp; Cognitive XR
-                </div>
-              </div>
-              <div class="about-meta-block">
-                <div class="about-meta-label">Background</div>
-                <div class="about-meta-text">
-                  XR UX Research (PhD)<br />
-                  Performance &amp; Media Art (MFA)<br />
-                  Creative Coding &amp; Teaching<br />
-                  Unity, AI Pipeline, Motion Capture
-                </div>
-              </div>
+            <!-- RIGHT: 인터랙티브 비주얼 -->
+            <div class="about-right">
+              <canvas id="aboutCanvas"></canvas>
             </div>
           </div>
+          <!-- 🔚 about-shell -->
         </div>
       </section>
 
