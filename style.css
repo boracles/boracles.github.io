@@ -1,0 +1,282 @@
+/* -------- 기본 설정 -------- */
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    "Noto Sans KR", sans-serif;
+  background: #f4f4f2;
+  color: #111111;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+/* -------- 레이아웃 -------- */
+.site-wrapper {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 32px 16px 64px;
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 48px;
+  border-bottom: 1px solid #dddddd;
+  padding-bottom: 16px;
+}
+
+.site-title {
+  font-size: 1.4rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.site-subtitle {
+  font-size: 0.8rem;
+  color: #666666;
+  margin-top: 4px;
+}
+
+nav .nav-links {
+  display: flex;
+  gap: 20px;
+  font-size: 0.85rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+nav .nav-links a {
+  opacity: 0.6;
+}
+
+nav .nav-links a:hover {
+  opacity: 1;
+}
+
+/* -------- 섹션 공통 -------- */
+section {
+  margin-bottom: 64px;
+}
+
+.section-label {
+  font-size: 0.8rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #888888;
+  margin-bottom: 8px;
+}
+
+.section-title {
+  font-size: 1.4rem;
+  font-weight: 500;
+  margin-bottom: 16px;
+}
+
+/* -------- Hero -------- */
+.hero {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 1.2fr);
+  gap: 40px;
+  margin-bottom: 48px;
+}
+
+.hero-title {
+  font-size: 2.1rem;
+  line-height: 1.2;
+  margin-bottom: 12px;
+}
+
+.hero-tagline {
+  font-size: 1rem;
+  color: #444444;
+  margin-bottom: 16px;
+}
+
+.hero-meta {
+  font-size: 0.9rem;
+  color: #777777;
+}
+
+.hero-meta div {
+  margin-bottom: 4px;
+}
+
+.hero-right {
+  border-left: 1px solid #dddddd;
+  padding-left: 24px;
+  font-size: 0.9rem;
+  color: #555555;
+}
+
+/* -------- 카드 리스트 -------- */
+.card-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 24px;
+}
+
+@media (min-width: 860px) {
+  .card-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.card {
+  border-top: 1px solid #dddddd;
+  padding-top: 14px;
+}
+
+.card-title-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 6px;
+}
+
+.card-title {
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.card-role {
+  font-size: 0.8rem;
+  color: #777777;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+
+.card-meta {
+  font-size: 0.8rem;
+  color: #999999;
+  margin-bottom: 6px;
+}
+
+.card-desc {
+  font-size: 0.9rem;
+  color: #555555;
+}
+
+/* -------- 작은 캡션 카드 -------- */
+.mini-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 16px;
+}
+
+@media (min-width: 680px) {
+  .mini-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.mini-card {
+  border-top: 1px solid #e0e0e0;
+  padding-top: 10px;
+}
+
+.mini-title {
+  font-size: 0.95rem;
+  margin-bottom: 4px;
+}
+
+.mini-meta {
+  font-size: 0.8rem;
+  color: #999999;
+  margin-bottom: 4px;
+}
+
+.mini-desc {
+  font-size: 0.85rem;
+  color: #666666;
+}
+
+/* -------- 푸터 -------- */
+footer {
+  margin-top: 48px;
+  border-top: 1px solid #dddddd;
+  padding-top: 16px;
+  font-size: 0.75rem;
+  color: #999999;
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+/* -------- 서브페이지 -------- */
+.page-header {
+  margin-bottom: 32px;
+}
+
+.page-title {
+  font-size: 1.6rem;
+  margin-bottom: 4px;
+}
+
+.page-meta {
+  font-size: 0.8rem;
+  color: #777777;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.page-two-col {
+  display: grid;
+  grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
+  gap: 32px;
+}
+
+.page-section-title {
+  font-size: 0.95rem;
+  font-weight: 500;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: #888888;
+}
+
+.page-body {
+  font-size: 0.95rem;
+  color: #444444;
+  line-height: 1.6;
+}
+
+.caption {
+  font-size: 0.8rem;
+  color: #999999;
+  margin-top: 4px;
+}
+
+/* 모바일 대응 */
+@media (max-width: 720px) {
+  header {
+    flex-direction: column;
+    gap: 12px;
+  }
+  .hero {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .hero-right {
+    border-left: none;
+    border-top: 1px solid #dddddd;
+    padding-left: 0;
+    padding-top: 16px;
+  }
+  .page-two-col {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

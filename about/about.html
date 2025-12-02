@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <title>About | Bora Youn</title>
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+    />
+    <link rel="stylesheet" href="../style.css" />
+  </head>
+  <body>
+    <div class="site-wrapper">
+      <header>
+        <div>
+          <div class="site-title">Bora Youn</div>
+          <div class="site-subtitle">
+            Creative Technical Director · XR × AI × Interactive Performance
+          </div>
+        </div>
+        <nav>
+          <div class="nav-links">
+            <a href="../index.html">Home</a>
+            <a href="../projects/ai-audience-agent.html">Projects</a>
+            <a href="../teaching/ar-player-lab.html">Teaching</a>
+            <a href="about.html">About</a>
+            <a href="../contact/contact.html">Contact</a>
+          </div>
+        </nav>
+      </header>
+
+      <div class="page-header">
+        <div class="page-meta">About</div>
+        <h1 class="page-title">Creative Technical Director</h1>
+      </div>
+
+      <div class="page-two-col">
+        <div>
+          <div class="page-section-title">Profile</div>
+          <div class="page-body">
+            <p>
+              저는 VR·XR 환경에서 동작하는 AI 에이전트, 인터랙티브 전시, 치료용
+              XR 경험을 설계하고 구현하는 Creative Technical Director 입니다.
+              발표 불안 완화를 위한 VR 발표 환경, 몰입형 연극, 인지·정서 지원 XR
+              프로젝트 등에서 시스템 설계와 프로토타입 개발을 수행해왔습니다.
+            </p>
+            <p>
+              기술적으로는 Unity, C#, 센서·아두이노, 모션 트래킹, ASR–LLM–TTS
+              파이프라인에 익숙하며, 동시에 공간 연출과 관객 경험을 함께
+              디자인합니다.
+            </p>
+          </div>
+        </div>
+        <div>
+          <div class="page-section-title">Focus</div>
+          <div class="page-body">
+            <ul>
+              <li>VR 발표 환경에서의 AI 청중 백채널 설계</li>
+              <li>몰입형 공연·전시를 위한 실시간 시스템 구축</li>
+              <li>치매·정서 지원을 위한 XR 경험 디자인</li>
+              <li>Creative Coding 및 제너러티브 디자인 교육</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div>© <span id="year"></span> Bora Youn.</div>
+      </footer>
+    </div>
+
+    <script>
+      document.getElementById("year").textContent = new Date()
+        .getFullYear()
+        .toString();
+    </script>
+  </body>
+</html>

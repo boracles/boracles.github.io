@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <title>AI Audience Agent | Bora Youn</title>
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+    />
+    <link rel="stylesheet" href="../style.css" />
+  </head>
+  <body>
+    <div class="site-wrapper">
+      <header>
+        <div>
+          <div class="site-title">Bora Youn</div>
+          <div class="site-subtitle">
+            Creative Technical Director · XR × AI × Interactive Performance
+          </div>
+        </div>
+        <nav>
+          <div class="nav-links">
+            <a href="../index.html">Home</a>
+            <a href="ai-audience-agent.html">Projects</a>
+            <a href="../teaching/ar-player-lab.html">Teaching</a>
+            <a href="../about/about.html">About</a>
+            <a href="../contact/contact.html">Contact</a>
+          </div>
+        </nav>
+      </header>
+
+      <div class="page-header">
+        <div class="page-meta">Project · VR · AI · Real-Time System</div>
+        <h1 class="page-title">AI Audience Agent</h1>
+      </div>
+
+      <div class="page-two-col">
+        <!-- 왼쪽: 본문 -->
+        <div>
+          <div class="page-section-title">Overview</div>
+          <div class="page-body">
+            <p>
+              AI Audience Agent는 VR 발표 환경에서 발표자의 발화를 인식하고,
+              ASR–LLM–TTS 파이프라인을 통해 실시간으로 질문과 반응을 생성하는
+              가상 청중 시스템입니다. 사용자는 VR 헤드셋을 착용한 상태에서
+              발표를 진행하며, 에이전트는 적절한 타이밍에 시선·표정·제스처와
+              함께 질문을 던집니다.
+            </p>
+            <p>
+              본 프로젝트에서 저는 전체 상호작용 흐름과 기술 구조를 설계하고,
+              음성 인식, 언어 모델, 음성 합성 모듈을 Unity 기반 VR 환경과
+              연동하는 역할을 담당했습니다.
+            </p>
+          </div>
+
+          <div style="height: 24px"></div>
+
+          <div class="page-section-title">System Architecture</div>
+          <div class="page-body">
+            <p>시스템은 다음과 같은 실시간 파이프라인으로 구성됩니다.</p>
+            <ul>
+              <li>
+                <strong>1. ASR (Speech-to-Text)</strong> — 발표자의 음성을
+                스트리밍으로 인식하여 텍스트로 변환
+              </li>
+              <li>
+                <strong>2. LLM (Question Generation)</strong> — 인식된 텍스트와
+                발표 흐름을 바탕으로 후속 질문 및 백채널 문장 생성
+              </li>
+              <li>
+                <strong>3. TTS (Text-to-Speech)</strong> — 생성된 문장을
+                에이전트의 음성으로 합성
+              </li>
+              <li>
+                <strong>4. VR Agent Control</strong> — 음성 타이밍에 맞춰 시선,
+                고개 끄덕임, 표정 변화, 상체 제스처를 제어
+              </li>
+            </ul>
+            <p>
+              특히, ASR–LLM–TTS 과정에서 발생하는 지연(latency)을 고려하여 대기
+              시간 동안 에이전트가 ‘생각하고 있는 듯한’ 몸짓을 취하도록
+              설계함으로써, 시스템 지연을 사회적 신호로 전환하는 데
+              집중했습니다.
+            </p>
+          </div>
+
+          <div style="height: 24px"></div>
+
+          <div class="page-section-title">My Role</div>
+          <div class="page-body">
+            <ul>
+              <li>전체 상호작용 구조 및 사용자 여정(발표→Q&A) 설계</li>
+              <li>ASR–LLM–TTS 파이프라인 기술 검토 및 프로토타이핑</li>
+              <li>
+                Unity 기반 VR 환경과 외부 AI 모듈 간 통신 구조 설계 (요청/응답,
+                상태 관리)
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- 오른쪽: 이미지/캡션 -->
+        <div>
+          <div class="page-section-title">Documentation</div>
+          <div class="page-body">
+            <p class="caption">
+              아래 영역에 스크린샷, 다이어그램 이미지를 넣으면 좋아.
+              <br />예:
+              <code>../assets/images/ai-audience-agent/scene.png</code>
+            </p>
+            <div
+              style="border: 1px solid #dddddd; padding: 8px; margin-top: 8px"
+            >
+              <img
+                src="../assets/images/ai-audience-agent/scene-placeholder.png"
+                alt="AI Audience Agent Scene"
+              />
+              <div class="caption">
+                VR 발표 장면에서 AI 에이전트가 질문을 던지는 시퀀스 개념도
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div>© <span id="year"></span> Bora Youn.</div>
+        <div><a href="../index.html">Back to portfolio</a></div>
+      </footer>
+    </div>
+
+    <script>
+      document.getElementById("year").textContent = new Date()
+        .getFullYear()
+        .toString();
+    </script>
+  </body>
+</html>
