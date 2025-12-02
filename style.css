@@ -49,12 +49,12 @@
 }
 
 :root {
-  --bg: #ffffff; /* ← 여기만 #ffffff 로 바꾸기 */
-  --panel-bg: #ffffff; /* 패널도 완전한 흰색으로 통일하고 싶으면 이것도 */
-  --text-main: #171513;
-  --text-soft: #8b8880;
-  --accent: #e0624f;
-  --line: #d8d4cb;
+  --bg: #000000;
+  --panel-bg: #000000;
+  --text-main: #ffffff;
+  --text-soft: #cccccc; /* 부드러운 흰색 */
+  --accent: #ffffff;
+  --line: #333333;
 }
 
 /* 기본 */
@@ -69,25 +69,9 @@ html,
 body {
   margin: 0;
   padding: 0;
-  background: var(--bg);
-  color: var(--text-main);
+  background: #000000;
+  color: #ffffff;
   font-family: "Inter", "Noto Sans KR", system-ui, sans-serif;
-}
-
-/* 배경 그리드 느낌 */
-
-body::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  background-image: linear-gradient(
-    to right,
-    rgba(0, 0, 0, 0.03) 1px,
-    transparent 1px
-  );
-  background-size: 80px 100%;
-  pointer-events: none;
-  z-index: -2;
 }
 
 .wrapper {
@@ -126,6 +110,7 @@ body::before {
   text-transform: none; /* 전부 대문자 싫으면 none, 좋으면 uppercase */
   font-family: "futura-pt", "Noto Sans KR", system-ui, -apple-system, sans-serif;
   font-weight: 500;
+  color: #ffffff;
 }
 
 .nav-role {
@@ -133,6 +118,7 @@ body::before {
   color: var(--text-main);
   font-family: "futura-pt", "Noto Sans KR", sans-serif;
   font-weight: 100; /* Futura PT Light 또는 Book면 300~400 */
+  color: #ffffff;
 }
 
 .nav-right {
@@ -148,7 +134,7 @@ body::before {
 .nav-right a {
   position: relative;
   padding-bottom: 3px;
-  color: var(--text-main); /* ← 검정색으로 변경 */
+  color: #ffffff;
   text-decoration: none;
   text-transform: capitalize; /* ← 첫 글자만 대문자 */
 }
@@ -160,12 +146,12 @@ body::before {
   bottom: 0;
   width: 0;
   height: 1px;
-  background: var(--text-main); /* ← 여기 색을 accent → text-main 으로 변경 */
+  background: #ffffff; /* ← 밑줄도 흰색 */
   transition: width 0.18s ease;
 }
 
 .nav-right a:hover {
-  color: var(--text-main);
+  color: #ffffff; /* ← 그대로 흰색 */
 }
 
 .nav-right a:hover::after {
@@ -185,9 +171,9 @@ body::before {
 .panel-inner {
   width: min(1200px, 100% - 64px);
   margin: 0 auto;
-  background: rgba(248, 247, 244, 0.96);
+  background: #000000;
   border-radius: 24px;
-  border: 1px solid var(--line);
+  border: 1px solid #333333;
   padding: 32px 28px 40px;
   box-shadow: 0 22px 50px rgba(0, 0, 0, 0.04);
 }
@@ -214,34 +200,81 @@ body::before {
 
 .panel--intro {
   padding-top: 60px;
+  position: relative; /* 영상 기준 */
+  overflow: hidden;
 }
 
 .intro-inner {
   text-align: center;
   width: min(1000px, 100% - 64px);
+  position: relative; /* 텍스트 레이어 */
+  z-index: 2; /* 영상보다 위 */
 }
 
 .intro-title {
   font-size: 5.2rem;
   line-height: 1.18;
   margin-bottom: 48px;
-
   font-family: "itc-bodoni-seventytwo-pro", serif;
   font-weight: 300;
   letter-spacing: 0.01em;
+  color: #ffffff;
 }
 
 .intro-tagline {
   font-size: 1.1rem;
-  color: #4f4b44;
+  color: #ffffff;
   line-height: 1.8;
-
   font-family: "Sweet", "Noto Sans KR", sans-serif;
-  font-weight: 400; /* Regular */
+  font-weight: 400;
 }
 
 .intro-tagline strong {
   font-weight: 600;
+}
+
+/* 배경 영상 */
+.intro-bg-video {
+  position: absolute;
+  inset: 0; /* top/right/bottom/left: 0 */
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* 화면 가로에 맞게, 세로는 잘라서 채움 */
+  z-index: 0; /* 맨 뒤 */
+  opacity: 1; /* 일단 1로 선명하게 */
+  pointer-events: none;
+}
+/* 상단/하단 흰색 그라데이션 오버레이 */
+.panel--intro::before,
+.panel--intro::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  z-index: 0; /* ❗ 영상 위, 텍스트 아래 */
+  pointer-events: none;
+}
+
+/* 위쪽 페이드 (top) */
+.panel--intro::before {
+  top: 0;
+  height: 10vh;
+  background: linear-gradient(
+    to bottom,
+    rgb(0, 0, 0) 0%,
+    rgba(255, 255, 255, 0) 100%
+  );
+}
+
+/* 아래쪽 페이드 (bottom) */
+.panel--intro::after {
+  bottom: 0;
+  height: 10vh; /* 아래쪽 길이 – 더 길게 하고 싶으면 조절 */
+  background: linear-gradient(
+    to top,
+    rgb(0, 0, 0) 0%,
+    rgba(255, 255, 255, 0) 100%
+  );
 }
 
 /* ABOUT */
