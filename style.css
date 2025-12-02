@@ -579,10 +579,18 @@ body {
     flex-direction: column;
     align-items: flex-start;
     gap: 6px;
+    padding: 12px 20px 6px;
   }
+
+  /* 그라데이션 높이도 줄이기 */
+  .nav::before {
+    height: 70px;
+  }
+
   .nav-right {
     flex-wrap: wrap;
   }
+
   .panel {
     padding: 120px 12px 72px;
   }
@@ -600,12 +608,19 @@ body {
 
 @media (max-width: 560px) {
   .nav {
-    top: 12px;
-    padding: 8px 14px;
+    top: 0; /* 위에 딱 붙이기 */
+    padding: 10px 14px 6px; /* 위 여백만 조금 */
   }
+
+  /* 모바일에서는 더 얇게 */
+  .nav::before {
+    height: 56px;
+  }
+
   .panel {
     padding: 110px 10px 60px;
   }
+
   .intro-title {
     font-size: 3.6rem;
     line-height: 1.15;
