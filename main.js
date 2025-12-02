@@ -160,16 +160,26 @@ window.addEventListener("load", () => {
   const video = document.querySelector(".intro-bg-video");
   if (!video) return;
 
-  // 한 번만 실행되도록
+  const tryPlay = () => {
+    video.muted = true; // iOS에서 확실히 muted 상태로
+    const p = video.play();
+    if (p && p.catch) {
+      p.catch(() => {
+        // 자동 재생 실패해도 에러는 무시
+      });
+    }
+  };
+
+  // 1) 페이지 로드 직후 한 번 시도
+  tryPlay();
+
+  // 2) 그래도 실패했을 경우를 대비해, 첫 터치/클릭에서 다시 시도
   const enablePlay = () => {
-    video.play().catch(() => {
-      // 실패해도 조용히 무시
-    });
+    tryPlay();
     window.removeEventListener("touchstart", enablePlay);
     window.removeEventListener("click", enablePlay);
   };
 
-  // 모바일에서 첫 터치/클릭을 사용자 제스처로 인정
   window.addEventListener("touchstart", enablePlay, { once: true });
   window.addEventListener("click", enablePlay, { once: true });
 });
