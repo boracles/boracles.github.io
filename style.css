@@ -584,18 +584,20 @@ body {
   }
 
   .nav-right {
-    margin-top: 4px;
-    gap: 24px;
-    font-size: 0.9rem;
-
     display: flex;
-    flex-wrap: nowrap; /* ★ 줄바꿈 금지 */
-    overflow-x: auto; /* ★ 가로 스크롤 허용 */
-    white-space: nowrap; /* ★ 텍스트 줄바꿈 금지 */
+    flex-direction: row;
+    flex-wrap: nowrap !important; /* ★ 강제: 절대 줄바꿈 금지 */
+    white-space: nowrap !important; /* ★ 텍스트 줄바꿈 금지 */
+    overflow-x: auto; /* ★ 넘치면 가로 스크롤 */
+    gap: 24px;
+    width: 100%; /* ★ 메뉴를 전체 폭만큼 확보 */
+
+    /* 모바일에서 스크롤바 안 보이게 */
+    -webkit-overflow-scrolling: touch;
   }
 
   .nav-right a {
-    flex-shrink: 0; /* 아이템이 눌려서 줄바꿈되는 것 방지 */
+    flex-shrink: 0 !important; /* ★ 링크 절대 줄바꿈 금지 */
   }
 
   .nav-right::-webkit-scrollbar {
