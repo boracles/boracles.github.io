@@ -159,80 +159,24 @@ document.addEventListener("DOMContentLoaded", () => {
   setActiveNav("intro");
 
   // ============================
-  // ABOUT VISUAL (노드 + 라인 필드 + 카메라 반응)
+  // ABOUT VISUAL (노드 + 라인 필드 + 마우스 기반 시스템)
   // ============================
   const aboutCanvas = document.getElementById("aboutCanvas");
   if (aboutCanvas) {
     const ctx = aboutCanvas.getContext("2d");
     let width, height, dpr;
     let nodes = [];
-    let mouse = { x: null, y: null };
 
-    // 카메라 관련
-    const video = document.getElementById("faceVideo");
-    let camCanvas, camCtx;
-    let brightness = 0.5; // 0 ~ 1 사이 값으로 유지
-
-    function initCamera() {
-      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-        console.warn("카메라를 지원하지 않는 브라우저입니다.");
-        return;
-      }
-      navigator.mediaDevices
-        .getUserMedia({ video: { facingMode: "user" }, audio: false })
-        .then((stream) => {
-          video.srcObject = stream;
-          video.play();
-        })
-        .catch((err) => {
-          console.warn("카메라 접근 거부 또는 오류:", err);
-        });
-    }
-
-    function sampleCamera() {
-      // 비디오 준비 안 됐으면 패스
-      if (!video || video.readyState < 2) return;
-
-      const w = 64;
-      const h = 48;
-      if (!camCanvas) {
-        camCanvas = document.createElement("canvas");
-        camCanvas.width = w;
-        camCanvas.height = h;
-        camCtx = camCanvas.getContext("2d");
-      }
-
-      camCtx.drawImage(video, 0, 0, w, h);
-      const img = camCtx.getImageData(0, 0, w, h).data;
-
-      // 중앙 영역만 샘플링 (얼굴이 있을 법한 영역)
-      let sum = 0;
-      let count = 0;
-      const xStart = Math.floor(w * 0.25);
-      const xEnd = Math.floor(w * 0.75);
-      const yStart = Math.floor(h * 0.25);
-      const yEnd = Math.floor(h * 0.75);
-
-      for (let y = yStart; y < yEnd; y++) {
-        for (let x = xStart; x < xEnd; x++) {
-          const idx = (y * w + x) * 4;
-          const r = img[idx];
-          const g = img[idx + 1];
-          const b = img[idx + 2];
-          // 간단한 밝기값
-          const lum = 0.299 * r + 0.587 * g + 0.114 * b;
-          sum += lum;
-          count++;
-        }
-      }
-
-      if (count > 0) {
-        const avg = sum / count; // 0 ~ 255
-        let norm = avg / 255; // 0 ~ 1
-        // 약간 부드럽게 보정
-        brightness = brightness * 0.8 + norm * 0.2;
-      }
-    }
+    // 마우스 상태: 위치 + 속도 + "에너지"
+    let mouse = {
+      x: null,
+      y: null,
+      prevX: null,
+      prevY: null,
+      vx: 0,
+      vy: 0,
+      energy: 0, // 0 ~ 1 근처
+    };
 
     function resize() {
       const rect = aboutCanvas.getBoundingClientRect();
@@ -246,60 +190,93 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function initNodes() {
       nodes = [];
-      const count = 18;
+      const count = 24; // 노드 수 살짝 늘려서 시스템 느낌
       for (let i = 0; i < count; i++) {
         nodes.push({
           x: Math.random() * width,
           y: Math.random() * height,
-          vx: (Math.random() - 0.5) * 0.2,
-          vy: (Math.random() - 0.5) * 0.2,
+          vx: (Math.random() - 0.5) * 0.3,
+          vy: (Math.random() - 0.5) * 0.3,
         });
       }
     }
 
-    function drawLineField() {
+    function drawLineField(activity) {
       const cols = 12;
       const step = width / cols;
       ctx.save();
-      // 얼굴 밝기(brightness)에 따라 선 강도 변화
-      const alpha = 0.03 + brightness * 0.08; // 0.03 ~ 0.11
+
+      // 마우스 에너지에 따라 선 강도/진동 변화
+      const alpha = 0.04 + activity * 0.2; // 0.04 ~ 0.24
       ctx.strokeStyle = `rgba(255,255,255,${alpha})`;
       ctx.lineWidth = 1 * dpr;
+
+      const now = Date.now() * 0.0004;
 
       for (let i = 0; i <= cols; i++) {
         const x = i * step;
         ctx.beginPath();
         ctx.moveTo(x, 0);
-        const baseAmp = 12 * dpr;
-        const amp = baseAmp * (0.5 + brightness); // 얼굴 밝을수록 더 많이 흔들림
-        const offset = Math.sin(Date.now() * 0.0004 + i) * amp;
+
+        const baseAmp = 10 * dpr;
+        const amp = baseAmp * (0.5 + activity * 1.8); // 움직일수록 크게 요동
+        let offsetPhase = now + i;
+
+        // 마우스 근처일수록 더 요동치게
+        if (mouse.x !== null) {
+          const colCenter = x;
+          const distX = Math.abs(colCenter - mouse.x);
+          const colInfluence = Math.max(0, 1 - distX / (width * 0.6)); // 가운데/마우스 근처 영향
+          offsetPhase += colInfluence * 1.5;
+        }
+
+        const offset = Math.sin(offsetPhase) * amp;
         ctx.lineTo(x + offset, height);
         ctx.stroke();
       }
       ctx.restore();
     }
 
-    function drawNodesAndLinks() {
-      // 얼굴 밝기에 따라 링크 거리 변화
-      const linkDist = (120 + brightness * 150) * dpr; // 어두우면 촘촘, 밝으면 더 멀리 연결
-      const nodeRadius = (2 + brightness * 2) * dpr; // 얼굴 밝으면 노드가 조금 커짐
+    function drawNodesAndLinks(activity) {
+      // 활동도에 따라 네트워크 재구성 범위 변화
+      const linkDist = (120 + activity * 260) * dpr; // 120 ~ 380
+      const nodeRadius = (2 + activity * 4) * dpr; // 2 ~ 6
 
       // 노드 업데이트
       nodes.forEach((n) => {
+        // 기본 드리프트
         n.x += n.vx;
         n.y += n.vy;
 
+        // 경계 반사
         if (n.x < 0 || n.x > width) n.vx *= -1;
         if (n.y < 0 || n.y > height) n.vy *= -1;
 
-        // 마우스 근처에서 약간 끌림
+        // 약간의 노이즈를 계속 추가 (죽은 시스템처럼 안 보이게)
+        n.vx += (Math.random() - 0.5) * 0.02;
+        n.vy += (Math.random() - 0.5) * 0.02;
+
+        // 마우스 행위가 만드는 "흐름"에 휘말리기
         if (mouse.x !== null) {
           const dx = n.x - mouse.x;
           const dy = n.y - mouse.y;
-          const dist = Math.sqrt(dx * dx + dy * dy);
-          if (dist < 220 * dpr) {
-            n.x += dx * -0.003;
-            n.y += dy * -0.003;
+          const dist = Math.sqrt(dx * dx + dy * dy) || 1;
+
+          const influenceRadius = (220 + activity * 260) * dpr;
+
+          if (dist < influenceRadius) {
+            const normDx = dx / dist;
+            const normDy = dy / dist;
+
+            // 1) 마우스 속도 방향으로 끌려가는 성분
+            const flowStrength = 0.0025 * activity;
+            n.vx += mouse.vx * flowStrength;
+            n.vy += mouse.vy * flowStrength;
+
+            // 2) 중심에서 살짝 밀려나는(또는 빨려드는) 성분
+            const radialStrength = 0.003 * activity;
+            n.x += normDx * radialStrength * dist * 0.1;
+            n.y += normDy * radialStrength * dist * 0.1;
           }
         }
       });
@@ -315,8 +292,8 @@ document.addEventListener("DOMContentLoaded", () => {
           const dy = n.y - m.y;
           const dist = Math.sqrt(dx * dx + dy * dy);
           if (dist < linkDist) {
-            const alpha = 1 - dist / linkDist;
-            ctx.strokeStyle = `rgba(255,255,255,${0.2 * alpha})`;
+            const alpha = (1 - dist / linkDist) * (0.3 + activity * 0.4);
+            ctx.strokeStyle = `rgba(255,255,255,${alpha})`;
             ctx.beginPath();
             ctx.moveTo(n.x, n.y);
             ctx.lineTo(m.x, m.y);
@@ -325,31 +302,69 @@ document.addEventListener("DOMContentLoaded", () => {
         }
       });
 
-      // 노드
+      // 노드 (중심이 되는 "관계 포인트")
       nodes.forEach((n) => {
         ctx.beginPath();
-        ctx.fillStyle = "rgba(255,255,255,0.8)";
+        ctx.fillStyle = "rgba(255,255,255,0.9)";
         ctx.arc(n.x, n.y, nodeRadius, 0, Math.PI * 2);
         ctx.fill();
       });
 
       ctx.restore();
+
+      // 마우스 주변에 필드 포인트 시각화 (살짝만)
+      if (mouse.x !== null) {
+        ctx.save();
+        const r = (40 + activity * 80) * dpr;
+        ctx.beginPath();
+        ctx.strokeStyle = `rgba(255,255,255,${0.15 + activity * 0.25})`;
+        ctx.lineWidth = 1 * dpr;
+        ctx.arc(mouse.x, mouse.y, r, 0, Math.PI * 2);
+        ctx.stroke();
+        ctx.restore();
+      }
     }
 
     function animate() {
-      sampleCamera(); // ★ 매 프레임 카메라 정보 업데이트
+      // 마우스 속도 기반으로 "행위 에너지" 계산
+      if (mouse.prevX !== null && mouse.prevY !== null && mouse.x !== null) {
+        const dx = mouse.x - mouse.prevX;
+        const dy = mouse.y - mouse.prevY;
+        const speed = Math.sqrt(dx * dx + dy * dy);
+
+        // 속도 → 0~1 정도로 정규화
+        const targetEnergy = Math.max(0, Math.min(1, speed / (20 * dpr)));
+
+        mouse.energy = mouse.energy * 0.85 + targetEnergy * 0.15;
+        mouse.vx = dx;
+        mouse.vy = dy;
+      } else {
+        // 움직이지 않을 때는 서서히 식음
+        mouse.energy *= 0.9;
+      }
+
       ctx.clearRect(0, 0, width, height);
-      drawLineField();
-      drawNodesAndLinks();
+
+      const activity = mouse.energy; // 0~1
+
+      drawLineField(activity);
+      drawNodesAndLinks(activity);
+
+      // 다음 프레임을 위해 현재 위치 저장
+      mouse.prevX = mouse.x;
+      mouse.prevY = mouse.y;
+
       requestAnimationFrame(animate);
     }
 
     // 마우스 트래킹
     aboutCanvas.addEventListener("mousemove", (e) => {
       const rect = aboutCanvas.getBoundingClientRect();
-      mouse.x = (e.clientX - rect.left) * (window.devicePixelRatio || 1);
-      mouse.y = (e.clientY - rect.top) * (window.devicePixelRatio || 1);
+      const scale = window.devicePixelRatio || 1;
+      mouse.x = (e.clientX - rect.left) * scale;
+      mouse.y = (e.clientY - rect.top) * scale;
     });
+
     aboutCanvas.addEventListener("mouseleave", () => {
       mouse.x = null;
       mouse.y = null;
@@ -358,7 +373,6 @@ document.addEventListener("DOMContentLoaded", () => {
     window.addEventListener("resize", resize);
 
     resize();
-    initCamera();
     animate();
   }
 });
