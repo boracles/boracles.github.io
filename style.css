@@ -52,6 +52,14 @@
   font-display: swap;
 }
 
+.bodoni-title {
+  font-family: "itc-bodoni-seventytwo-pro", serif;
+  font-size: 3.2rem;
+  line-height: 1.25;
+  font-weight: 300;
+  color: #ffffff;
+  margin-bottom: 24px;
+}
 /* ==========================
    ROOT
 ========================== */
@@ -94,35 +102,38 @@ body {
 
 .nav {
   position: fixed;
-  top: 24px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: calc(100% - 96px);
-  padding: 0;
+  top: 0; /* 맨 위에 딱 붙이자 */
+  left: 0;
+  right: 0;
+  transform: none; /* 가운데 정렬용 translateX 제거 */
+  width: 100%; /* 전체 폭 사용 */
+
+  padding: 16px 48px 8px; /* 위·양옆 여백만 조금 */
   background: transparent;
   border: none;
-  border-radius: 0;
-  backdrop-filter: none;
 
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
-  z-index: 20; /* 조금 올려줌 */
+  z-index: 20;
 }
 
+/* 화면 전체 가로를 덮는, 얇은 상단 그라데이션 */
 .nav::before {
   content: "";
-  position: absolute; /* fixed 말고 absolute! */
-  top: -24px; /* 네비보다 위로 조금 올라가게 */
-  left: -48px; /* 좌우로 살짝 여유 */
-  right: -48px;
-  height: 100px; /* 그라데이션 높이, 보기 봐가면서 조절해도 됨 */
+  position: fixed; /* 화면 기준 */
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 90px; /* 너무 두껍지 않게 – 필요하면 60/80으로 조절 */
+
   background: linear-gradient(
     to bottom,
-    rgba(0, 0, 0, 0.9) 0%,
+    rgba(0, 0, 0, 1) 0%,
     rgba(0, 0, 0, 0) 100%
   );
-  z-index: -1; /* 텍스트 뒤, 영상 위 */
+
+  z-index: -1; /* 네비 텍스트 뒤, 영상 위 */
   pointer-events: none;
 }
 
@@ -183,6 +194,10 @@ body {
   width: 100%;
 }
 
+.nav-right a:hover {
+  color: #ffffff;
+}
+
 /* ==========================
    PANEL COMMON
 ========================== */
@@ -195,13 +210,20 @@ body {
   justify-content: center;
 }
 
+/* ★ ABOUT 패널만 위쪽 정렬 + 패딩 줄이기 */
+#about.panel {
+  align-items: flex-start; /* 세로 위쪽 정렬 */
+  padding-top: 120px; /* 필요하면 60, 50으로 조금 더 줄여도 됨 */
+}
 .panel-inner {
   width: min(1200px, 100% - 64px);
-  background: #000000;
   margin: 0 auto;
-  border-radius: 24px;
-  border: 1px solid #333333;
   padding: 32px 28px 40px;
+
+  background: transparent; /* 박스 배경 제거 */
+  border-radius: 0; /* 둥글기 제거 */
+  border: none; /* 테두리 제거 */
+  box-shadow: none; /* 그림자 제거 */
 }
 
 .panel-inner--narrow {
@@ -211,9 +233,10 @@ body {
 .panel-label {
   font-size: 0.8rem;
   letter-spacing: 0.28em;
-  color: var(--text-soft);
   text-transform: uppercase;
+  color: var(--text-soft);
   margin-bottom: 10px;
+  font-weight: 600; /* ★ 추가: 두껍게 */
 }
 
 .panel-title {
@@ -256,6 +279,10 @@ body {
   font-family: "Sweet", "Noto Sans KR", sans-serif;
 }
 
+.intro-tagline strong {
+  font-weight: 600;
+}
+
 /* 배경 영상 */
 .intro-bg-video {
   position: absolute;
@@ -274,7 +301,6 @@ body {
   left: 0;
   right: 0;
   z-index: 1;
-  pointer-events: none;
 }
 
 .panel--intro::before {
@@ -284,11 +310,7 @@ body {
 .panel--intro::after {
   bottom: 0;
   height: 12vh;
-  background: linear-gradient(
-    to top,
-    rgb(0, 0, 0) 0%,
-    rgba(255, 255, 255, 0) 100%
-  );
+  background: linear-gradient(to top, #000, transparent);
 }
 
 /* ==========================
@@ -302,10 +324,10 @@ body {
 }
 
 .about-text {
-  font-size: 0.98rem;
+  font-size: 1rem;
   line-height: 1.9;
   color: #ffffff;
-  font-family: "Sweet", "Noto Sans KR", sans-serif;
+  font-weight: 600;
 }
 
 /* ==========================
@@ -319,28 +341,29 @@ body {
 }
 
 .cap-item {
-  background: #fcfbf8;
+  background: #050505;
   border-radius: 18px;
-  border: 1px solid #ded9cf;
+  border: 1px solid #333333;
   padding: 16px;
   transition: all 0.16s ease;
 }
 
 .cap-item:hover {
   transform: translateY(-3px);
-  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.06);
-  border-color: rgba(224, 98, 79, 0.7);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.45);
+  border-color: #ffffff;
 }
 
 .cap-title {
   font-size: 0.95rem;
   font-weight: 500;
   margin-bottom: 6px;
+  color: #ffffff;
 }
 
 .cap-body {
   font-size: 0.88rem;
-  color: #4a463f;
+  color: #dddddd;
   line-height: 1.7;
 }
 
@@ -360,7 +383,7 @@ body {
   top: 0;
   bottom: 0;
   width: 1px;
-  background: #d7d3cb;
+  background: #444444;
 }
 
 .timeline-item {
@@ -387,6 +410,7 @@ body {
   font-size: 1.05rem;
   font-weight: 500;
   margin-bottom: 4px;
+  color: #ffffff;
 }
 
 .timeline-meta {
@@ -397,7 +421,7 @@ body {
 
 .timeline-body {
   font-size: 0.9rem;
-  color: #403c36;
+  color: #dddddd;
   line-height: 1.7;
 }
 
@@ -415,18 +439,19 @@ body {
   font-size: 1rem;
   margin-bottom: 8px;
   font-weight: 500;
+  color: #ffffff;
 }
 
 .ai-text {
   font-size: 0.9rem;
-  color: #403c36;
+  color: #dddddd;
   line-height: 1.8;
   margin-bottom: 8px;
 }
 
 .ai-list {
   font-size: 0.9rem;
-  color: #403c36;
+  color: #dddddd;
   padding-left: 18px;
 }
 
@@ -435,9 +460,9 @@ body {
 }
 
 .ai-box {
-  background: #fcfbf8;
+  background: #050505;
   border-radius: 18px;
-  border: 1px solid #ded9cf;
+  border: 1px solid #333333;
   padding: 16px;
 }
 
@@ -459,8 +484,9 @@ body {
 .ai-node {
   padding: 6px 10px;
   border-radius: 999px;
-  border: 1px solid #d0cbc3;
-  background: #ffffff;
+  border: 1px solid #555555;
+  background: transparent;
+  color: #ffffff;
 }
 
 .ai-arrow {
@@ -470,7 +496,7 @@ body {
 
 .ai-diagram-caption {
   font-size: 0.78rem;
-  color: var(--text-soft);
+  color: #aaaaaa;
   margin-top: 10px;
 }
 
@@ -485,14 +511,14 @@ body {
 }
 
 .teach-card {
-  border-top: 1px solid #d9d4cc;
+  border-top: 1px solid #333333;
   padding-top: 10px;
   padding-right: 4px;
   transition: background 0.16s ease, border-color 0.16s ease;
 }
 
 .teach-card:hover {
-  background: rgba(252, 251, 248, 0.9);
+  background: #111111;
   border-color: var(--accent);
 }
 
@@ -500,6 +526,7 @@ body {
   font-size: 0.96rem;
   font-weight: 500;
   margin-bottom: 4px;
+  color: #ffffff;
 }
 
 .teach-meta {
@@ -510,7 +537,7 @@ body {
 
 .teach-body {
   font-size: 0.86rem;
-  color: #49443d;
+  color: #dddddd;
   line-height: 1.7;
 }
 
@@ -524,7 +551,7 @@ body {
 
 .contact-text {
   font-size: 0.96rem;
-  color: #3c3730;
+  color: #ffffff;
   line-height: 1.8;
   margin-bottom: 12px;
 }

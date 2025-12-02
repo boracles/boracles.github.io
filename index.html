@@ -47,7 +47,15 @@
       <!-- PANEL 1: INTRO -->
       <section class="panel panel--intro" id="intro">
         <!-- 배경 영상 -->
-        <video class="intro-bg-video" autoplay muted loop playsinline>
+        <video
+          class="intro-bg-video"
+          autoplay
+          muted
+          loop
+          playsinline
+          webkit-playsinline
+          preload="auto"
+        >
           <source
             src="https://dmyxpywrqjiqvkaioduf.supabase.co/storage/v1/object/public/videos/Main.mp4"
             type="video/mp4"
@@ -68,19 +76,45 @@
       <!-- PANEL 2: ABOUT -->
       <section class="panel panel--about" id="about">
         <div class="panel-inner">
-          <div class="panel-label">About</div>
           <div class="about-layout">
-            <div class="about-text">
-              저는 XR과 AI를 기반으로 사람과 환경, 그리고 그 사이에서 반응하는
-              시스템을 설계하는
-              <strong>Creative Technical Director</strong>입니다.<br /><br />
-              Unity, 센서, 모션캡처, AI 파이프라인을 다루지만, 제가 만드는 것은
-              기술 그 자체가 아니라 그 기술들이 만들어내는 관계와 경험의
-              구조입니다.<br /><br />
-              VR 발표 환경의 AI 청중, XR 퍼포먼스, 데이터 기반 인터랙티브 설치,
-              인지·치료 지원 XR 프로젝트까지 — 저는 다양한 기술 요소를 하나의
-              흐름으로 통합하고, 그 흐름 속에서 관객이 직접 체감하는 경험을
-              완성하는 역할을 합니다.
+            <div class="about-main">
+              <h2 class="bodoni-title">
+                Systems for emotion, memory,<br />
+                and embodied performance.
+              </h2>
+              <div class="about-text">
+                저는 XR과 AI를 기반으로 사람과 환경, 그리고 그 사이에서 반응하는
+                시스템을 설계하는
+                <strong>Creative Technical Director</strong>입니다.<br /><br />
+                Unity, 센서, 모션캡처, AI 파이프라인을 다루지만, 제가 만드는
+                것은 기술 그 자체가 아니라 그 기술들이 만들어내는 관계와 경험의
+                구조입니다.<br /><br />
+                VR 발표 환경의 AI 청중, XR 퍼포먼스, 데이터 기반 인터랙티브
+                설치, 인지·치료 지원 XR 프로젝트까지 — 다양한 기술 요소를 하나의
+                흐름으로 통합하고, 그 흐름 속에서 관객이 직접 체감하는 경험을
+                완성하는 역할을 합니다.
+              </div>
+            </div>
+
+            <div class="about-meta">
+              <div class="about-meta-block">
+                <div class="about-meta-label">Focus</div>
+                <div class="about-meta-text">
+                  VR Presentation &amp; AI Audience<br />
+                  Immersive Theater / XR Performance<br />
+                  Interactive Installations &amp; Sensors<br />
+                  Therapeutic &amp; Cognitive XR
+                </div>
+              </div>
+              <div class="about-meta-block">
+                <div class="about-meta-label">Background</div>
+                <div class="about-meta-text">
+                  XR UX Research (PhD)<br />
+                  Performance &amp; Media Art (MFA)<br />
+                  Creative Coding &amp; Teaching<br />
+                  Unity, AI Pipeline, Motion Capture
+                </div>
+              </div>
             </div>
           </div>
         </div>

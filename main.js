@@ -155,3 +155,21 @@ document.addEventListener("DOMContentLoaded", () => {
   // 처음 로드시 intro 활성화
   setActiveNav("intro");
 });
+
+window.addEventListener("load", () => {
+  const video = document.querySelector(".intro-bg-video");
+  if (!video) return;
+
+  // 한 번만 실행되도록
+  const enablePlay = () => {
+    video.play().catch(() => {
+      // 실패해도 조용히 무시
+    });
+    window.removeEventListener("touchstart", enablePlay);
+    window.removeEventListener("click", enablePlay);
+  };
+
+  // 모바일에서 첫 터치/클릭을 사용자 제스처로 인정
+  window.addEventListener("touchstart", enablePlay, { once: true });
+  window.addEventListener("click", enablePlay, { once: true });
+});
