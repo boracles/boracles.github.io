@@ -1,6 +1,56 @@
+@font-face {
+  font-family: "Sweet";
+  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2304-2@1.0/SUITE-Light.woff2")
+    format("woff2");
+  font-weight: 300;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Sweet";
+  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2304-2@1.0/SUITE-Regular.woff2")
+    format("woff2");
+  font-weight: 400;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Sweet";
+  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2304-2@1.0/SUITE-Medium.woff2")
+    format("woff2");
+  font-weight: 500;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Sweet";
+  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2304-2@1.0/SUITE-SemiBold.woff2")
+    format("woff2");
+  font-weight: 600;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Sweet";
+  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2304-2@1.0/SUITE-Bold.woff2")
+    format("woff2");
+  font-weight: 700;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Sweet";
+  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2304-2@1.0/SUITE-ExtraBold.woff2")
+    format("woff2");
+  font-weight: 800;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Sweet";
+  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2304-2@1.0/SUITE-Heavy.woff2")
+    format("woff2");
+  font-weight: 900;
+  font-display: swap;
+}
+
 :root {
-  --bg: #f2f1ee;
-  --panel-bg: #f8f7f4;
+  --bg: #ffffff; /* ← 여기만 #ffffff 로 바꾸기 */
+  --panel-bg: #ffffff; /* 패널도 완전한 흰색으로 통일하고 싶으면 이것도 */
   --text-main: #171513;
   --text-soft: #8b8880;
   --accent: #e0624f;
@@ -21,8 +71,7 @@ body {
   padding: 0;
   background: var(--bg);
   color: var(--text-main);
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
-    "Noto Sans KR", sans-serif;
+  font-family: "Inter", "Noto Sans KR", system-ui, sans-serif;
 }
 
 /* 배경 그리드 느낌 */
@@ -49,15 +98,16 @@ body::before {
 
 .nav {
   position: fixed;
-  top: 18px;
+  top: 24px;
   left: 50%;
   transform: translateX(-50%);
-  width: min(1100px, 100% - 32px);
-  padding: 10px 18px;
-  background: rgba(242, 241, 238, 0.9);
-  backdrop-filter: blur(10px);
-  border-radius: 999px;
-  border: 1px solid rgba(216, 212, 203, 0.9);
+  width: calc(100% - 96px);
+  padding: 0; /* 패딩 제거 */
+  background: transparent; /* 배경 없음 */
+  border: none; /* 테두리 없음 */
+  border-radius: 0; /* 둥근 모서리 없음 */
+  backdrop-filter: none; /* 블러 없음 */
+
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -71,29 +121,36 @@ body::before {
 }
 
 .nav-name {
-  font-size: 0.9rem;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
+  font-size: 1.1rem; /* 원래 0.9였으면 살짝 키우기 */
+  letter-spacing: 0.05em;
+  text-transform: none; /* 전부 대문자 싫으면 none, 좋으면 uppercase */
+  font-family: "futura-pt", "Noto Sans KR", system-ui, -apple-system, sans-serif;
+  font-weight: 500;
 }
 
 .nav-role {
   font-size: 0.7rem;
-  color: var(--text-soft);
+  color: var(--text-main);
+  font-family: "futura-pt", "Noto Sans KR", sans-serif;
+  font-weight: 100; /* Futura PT Light 또는 Book면 300~400 */
 }
 
 .nav-right {
   display: flex;
-  gap: 18px;
-  font-size: 0.72rem;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
+  gap: 56px;
+  font-size: 1rem;
+  letter-spacing: 0.03em;
+  text-transform: none;
+  font-family: "futura-pt", "Noto Sans KR", sans-serif; /* ← 여기에 추가 */
+  font-weight: 200; /* 메뉴는 약간 더 묵직하게 */
 }
 
 .nav-right a {
   position: relative;
   padding-bottom: 3px;
-  color: var(--text-soft);
+  color: var(--text-main); /* ← 검정색으로 변경 */
   text-decoration: none;
+  text-transform: capitalize; /* ← 첫 글자만 대문자 */
 }
 
 .nav-right a::after {
@@ -103,7 +160,7 @@ body::before {
   bottom: 0;
   width: 0;
   height: 1px;
-  background: var(--accent);
+  background: var(--text-main); /* ← 여기 색을 accent → text-main 으로 변경 */
   transition: width 0.18s ease;
 }
 
@@ -112,7 +169,7 @@ body::before {
 }
 
 .nav-right a:hover::after {
-  width: 100%;
+  width: 100%; /* hover 시 밑줄 표시 */
 }
 
 /* PANEL 공통 */
@@ -126,7 +183,7 @@ body::before {
 }
 
 .panel-inner {
-  width: min(1020px, 100%);
+  width: min(1200px, 100% - 64px);
   margin: 0 auto;
   background: rgba(248, 247, 244, 0.96);
   border-radius: 24px;
@@ -156,24 +213,31 @@ body::before {
 /* INTRO */
 
 .panel--intro {
-  padding-top: 140px;
+  padding-top: 60px;
 }
 
 .intro-inner {
   text-align: center;
-  width: min(820px, 100%);
+  width: min(1000px, 100% - 64px);
 }
 
 .intro-title {
-  font-size: 3.6rem;
-  line-height: 1.15;
-  margin-bottom: 16px;
+  font-size: 5.2rem;
+  line-height: 1.18;
+  margin-bottom: 48px;
+
+  font-family: "itc-bodoni-seventytwo-pro", serif;
+  font-weight: 300;
+  letter-spacing: 0.01em;
 }
 
 .intro-tagline {
   font-size: 1.1rem;
   color: #4f4b44;
   line-height: 1.8;
+
+  font-family: "Sweet", "Noto Sans KR", sans-serif;
+  font-weight: 400; /* Regular */
 }
 
 .intro-tagline strong {
@@ -465,6 +529,13 @@ body::before {
   }
 
   .intro-title {
-    font-size: 2.2rem;
+    font-size: 3.6rem;
+    line-height: 1.15;
+    margin-bottom: 16px;
+
+    /* ↓ 여기만 바꾸면 됨 */
+    font-family: "itc-bodoni-seventytwo-pro", serif;
+    font-weight: 400; /* Bodoni Regular */
+    letter-spacing: 0.01em;
   }
 }
