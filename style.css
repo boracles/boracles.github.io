@@ -56,9 +56,9 @@
   font-family: "itc-bodoni-seventytwo-pro", serif;
   font-size: 3.2rem;
   line-height: 1.25;
-  font-weight: 300;
+  font-weight: 200;
   color: #ffffff;
-  margin-bottom: 24px;
+  margin-bottom: 48px;
 }
 /* ==========================
    ROOT
@@ -324,10 +324,11 @@ body {
 }
 
 .about-text {
+  font-family: "Sweet", "Noto Sans KR", sans-serif;
   font-size: 1rem;
   line-height: 1.9;
   color: #ffffff;
-  font-weight: 600;
+  font-weight: 300;
 }
 
 /* ==========================
