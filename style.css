@@ -627,7 +627,7 @@ body {
 
   /* 모바일에서는 더 얇게 */
   .nav::before {
-    height: 80px;
+    height: 88px;
   }
 
   .panel {
