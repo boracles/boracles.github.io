@@ -642,7 +642,7 @@ body {
   font-size: 0.96rem;
   color: #ffffff;
   line-height: 1.8;
-  margin-bottom: 12px;
+  margin-bottom: 3px;
   font-family: "Sweet", "Noto Sans KR", sans-serif;
   font-weight: 100; /* ★ 얇게 */
 }
@@ -658,14 +658,14 @@ body {
 .contact-foot {
   font-size: 0.76rem;
   color: var(--text-soft);
-  margin-top: 10px;
+  margin-top: 24px;
 }
 
 .icon-row {
   display: flex;
   align-items: center;
   gap: 8px;
-  margin-bottom: 10px;
+  margin-bottom: 2px;
 }
 
 .icon {
@@ -674,7 +674,7 @@ body {
   opacity: 0.75;
   color: #ffffff;
   flex-shrink: 0;
-  margin-top: 2px; /* baseline 맞추기 */
+  margin-top: 0px; /* baseline 맞추기 */
 }
 
 .contact-text a {
