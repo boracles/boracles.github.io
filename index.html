@@ -76,69 +76,84 @@
       </section>
 
       <!-- PANEL 2: ABOUT -->
-
       <section class="panel panel--about" id="about">
         <div class="panel-inner">
+          <!-- 위: 텍스트 + 비주얼 2단 -->
           <div class="about-shell">
+            <!-- LEFT -->
             <div class="about-left">
               <h2 class="bodoni-title">
                 Systems shaped by action and interaction.
               </h2>
 
               <div class="about-text">
-                저는 XR과 AI를 기반으로,<br />
+                저는 XR과 AI를 기반으로,
                 <strong
                   >사용자의 행위와 선택에 의해 경험이 생성되는 시스템</strong
                 >
-                을 설계하는 Creative Technical Director입니다. <br />
-                <br />
+                을 설계하는 Creative Technical Director입니다. <br /><br />
 
                 Unity, 센서 및 액추에이터, AI기반 인터랙션 파이프라인, 모션캡처
-                등 다양한 기술적 구성 요소를 통합하여, <br />
-                사람·공간·기술의 상호작용이 만들어내는 관계와 경험의 구조를
-                설계합니다.<br /><br />
+                등 다양한 기술적 구성 요소를 통합하여, 사람·공간·기술의
+                상호작용이 만들어내는 관계와 경험의 구조를 설계합니다.<br /><br />
 
                 VR 발표 환경의 AI 청중, XR 퍼포먼스, 자율적으로 변화하는
                 인터랙션 환경 등 서로 다른 맥락의 작업을 하나의 흐름으로
                 조율하여,
                 <strong>사용자의 행위가 서사를 이끌어가는 경험</strong>을
-                구축합니다.<br /><br /><br /><br />
-              </div>
-
-              <!-- ⬇⬇ Focus / Background는 왼쪽 박스 안에 -->
-              <div class="about-meta">
-                <div class="about-meta-block">
-                  <div class="about-meta-label">Focus</div>
-                  <div class="about-meta-text">
-                    VR Presentation &amp; AI Audience<br />
-                    Immersive Theater / XR Performance<br />
-                    Interactive Installations &amp; Sensors<br />
-                    Therapeutic &amp; Cognitive XR
-                  </div>
-                </div>
-                <div class="about-meta-block">
-                  <div class="about-meta-label">Background</div>
-                  <div class="about-meta-text">
-                    PhD in Design, Seoul National University<br />
-                    <span class="advisor-line"
-                      >Advisor: Prof. Eui-Chul Jung</span
-                    ><br />
-                    MFA in Scenography, Korea National University of Arts<br />
-                    <span class="advisor-line">Advisor: Prof. Sijoong Yoon</span
-                    ><br />
-                    BFA in Scenography, Korea National University of Arts<br />
-                  </div>
-                </div>
+                구축합니다.
               </div>
             </div>
-            <!-- 🔚 about-left 여기서 닫힘 -->
+            <!-- 🔚 about-left -->
 
             <!-- RIGHT: 인터랙티브 비주얼 -->
             <div class="about-right">
               <canvas id="aboutCanvas"></canvas>
             </div>
           </div>
-          <!-- 🔚 about-shell -->
+          <!-- 🔚 about-shell (2단) -->
+
+          <!-- ⬇⬇ 여기부터 전체 폭 3단 -->
+          <div class="about-meta">
+            <!-- 1. Education -->
+            <div class="about-meta-block">
+              <div class="about-meta-label">Education</div>
+              <div class="about-meta-text">
+                PhD Candidate in Design, Seoul National University<br />
+                <span class="advisor-line">— Advisor: Prof. Eui-Chul Jung</span>
+
+                MFA in Scenography, Korea National University of Arts<br />
+                <span class="advisor-line">— Advisor: Prof. Sijoong Yoon</span>
+
+                BFA in Scenography, Korea National University of Arts
+              </div>
+            </div>
+
+            <!-- 2. Certifications -->
+            <div class="about-meta-block">
+              <div class="about-meta-label">Certifications</div>
+              <div class="about-meta-text">
+                2021.10.19<br />
+                <strong>Certified Associate Game Developer</strong><br />
+                Unity Technologies<br /><br />
+
+                2021.03.23<br />
+                <strong>문화예술교육사 2급 (디자인)</strong><br />
+                문화체육관광부
+              </div>
+            </div>
+
+            <!-- 3. Residencies -->
+            <div class="about-meta-block">
+              <div class="about-meta-label">Residencies</div>
+              <div class="about-meta-text">
+                2022.08.10 – 2022.09.30<br />
+                <strong>미로 예술인 레지던시</strong><br />
+                미로 센터
+              </div>
+            </div>
+          </div>
+          <!-- 🔚 about-meta (3단) -->
         </div>
       </section>
 
@@ -408,19 +423,56 @@
         <div class="panel-inner contact-inner">
           <div class="panel-label">Contact</div>
           <h2 class="panel-title">Let’s build the next system together</h2>
+
           <p class="contact-text">
-            협업 제안, 프로젝트 문의, 강의·워크숍 초청 모두 환영합니다.<br /><br />
-            Email:
-            <a href="mailto:atelier@borades.art">atelier@borades.art</a><br />
-            GitHub:
-            <a href="https://github.com/boracles" target="_blank"
-              >github.com/boracles</a
-            ><br />
-            Location: Seoul, South Korea
+            <span class="icon-row">
+              <!-- Email icon -->
+              <svg class="icon" viewBox="0 0 24 24">
+                <path
+                  fill="currentColor"
+                  d="M12 13.065L1.8 6h20.4L12 13.065zM12 15l10-6v9H2v-9l10 6z"
+                />
+              </svg>
+              <a href="mailto:atelier@borades.art">atelier@borades.art</a>
+            </span>
+
+            <span class="icon-row">
+              <!-- Github icon -->
+              <svg class="icon" viewBox="0 0 24 24">
+                <path
+                  fill="currentColor"
+                  d="M12 .5C5.65.5.5 5.65.5 12c0 5.1 3.3 9.45 7.9 11
+               .6.1.8-.25.8-.55v-2c-3.2.7-3.9-1.4-3.9-1.4-.55-1.35-1.3-1.7-1.3-1.7
+               -1.05-.7.05-.7.05-.7 1.15.1 1.75 1.2 1.75 1.2 1.05 1.75 2.8 1.25 3.45.95
+               .1-.75.4-1.25.7-1.55-2.55-.3-5.25-1.3-5.25-5.85
+               0-1.25.45-2.3 1.2-3.1-.1-.3-.55-1.55.1-3.15
+               0 0 1-.3 3.2 1.2.95-.25 2-.4 3.05-.4s2.1.15 3.05.4
+               c2.2-1.5 3.2-1.2 3.2-1.2.65 1.6.2 2.85.1 3.15
+               .75.8 1.2 1.85 1.2 3.1 0 4.55-2.7 5.55-5.25 5.85
+               .4.35.75 1 .75 2v2.95c0 .3.2.7.8.55 4.6-1.55 7.9-5.9 7.9-11
+               C23.5 5.65 18.35.5 12 .5z"
+                />
+              </svg>
+              <a href="https://github.com/boracles" target="_blank"
+                >github.com/boracles</a
+              >
+            </span>
+
+            <span class="icon-row">
+              <!-- Location icon -->
+              <svg class="icon" viewBox="0 0 24 24">
+                <path
+                  fill="currentColor"
+                  d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5
+               c-1.38 0-2.5-1.12-2.5-2.5S10.62 6.5 12 6.5s2.5 1.12 2.5 2.5S13.38 11.5 12 11.5z"
+                />
+              </svg>
+              Seoul, South Korea
+            </span>
           </p>
+
           <div class="contact-foot">
-            © <span id="year"></span> Bora Youn. Portfolio built on GitHub
-            Pages.
+            © <span id="year"></span> Bora Youn. All rights reserved.
           </div>
         </div>
       </section>

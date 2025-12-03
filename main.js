@@ -410,4 +410,27 @@ window.addEventListener("load", () => {
 
   window.addEventListener("touchstart", enablePlay, { once: true });
   window.addEventListener("click", enablePlay, { once: true });
+
+  // ============================
+  // ABOUT: 오른쪽 비주얼 높이를 왼쪽 텍스트와 맞추기
+  // ============================
+  function syncAboutHeight() {
+    const left = document.querySelector(".about-left");
+    const right = document.querySelector(".about-right");
+    if (!left || !right) return;
+
+    // 모바일(한 컬럼)일 때는 고정값만 쓰고 높이 동기화 안 함
+    if (window.innerWidth <= 880) {
+      right.style.height = ""; // JS로 준 값 제거
+      return;
+    }
+
+    const h = left.getBoundingClientRect().height;
+    right.style.height = `${h}px`;
+  }
+
+  // 처음 로드시 1번
+  syncAboutHeight();
+  // 리사이즈할 때마다 다시 맞추기
+  window.addEventListener("resize", syncAboutHeight);
 });
