@@ -213,7 +213,7 @@ body {
 /* ★ ABOUT 패널만 위쪽 정렬 + 패딩 줄이기 */
 #about.panel {
   align-items: flex-start; /* 세로 위쪽 정렬 */
-  padding-top: 120px; /* 필요하면 60, 50으로 조금 더 줄여도 됨 */
+  padding-top: 100px; /* 필요하면 60, 50으로 조금 더 줄여도 됨 */
 }
 .panel-inner {
   width: min(1200px, 100% - 64px);
@@ -323,7 +323,7 @@ body {
   display: grid;
   grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
   gap: 32px;
-  align-items: stretch;
+  align-items: stretch; /* ← 양쪽 칼럼 높이 맞추기 */
 }
 
 .about-left {
@@ -362,16 +362,14 @@ body {
 
 .about-right {
   position: relative;
-  /* 데스크톱에서는 JS가 height를 꽂아줄 거라 min-height 제거 */
-  border: none;
-  border-radius: 0;
+  height: 100%; /* ← JS로 높이 넣어줄 때 필요 */
   overflow: hidden;
   background: #000000;
 }
 
 #aboutCanvas {
   width: 100%;
-  height: 100%;
+  height: 100%; /* 부모(.about-right)의 높이를 그대로 */
   display: block;
 }
 
@@ -383,7 +381,7 @@ body {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 16px 32px;
-  margin-top: 80px; /* 위 텍스트/비주얼과 간격 */
+  margin-top: 60px; /* 위 텍스트/비주얼과 간격 */
 }
 
 .about-meta-block {
@@ -417,6 +415,14 @@ body {
 
 .about-meta-text br {
   line-height: 1.2;
+}
+
+.about-meta-text .meta-entry {
+  margin-bottom: 8px; /* advisor-line이 주던 여백과 맞추기 */
+}
+
+.about-meta-text .meta-entry:last-child {
+  margin-bottom: 0; /* 마지막 덩어리는 여백 제거 */
 }
 
 /* ==========================

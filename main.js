@@ -185,7 +185,28 @@ document.addEventListener("DOMContentLoaded", () => {
       energy: 0, // 0 ~ 1 근처
     };
 
+    // ★ 왼쪽 텍스트 높이에 맞춰서 오른쪽 + 캔버스 높이 맞추기
+    function syncAboutHeightOnly() {
+      const left = document.querySelector(".about-left");
+      const right = document.querySelector(".about-right");
+      if (!left || !right) return;
+
+      // 모바일(1열)에서는 강제 높이 제거
+      if (window.innerWidth <= 880) {
+        right.style.height = "";
+        aboutCanvas.style.height = "";
+        return;
+      }
+
+      const h = left.getBoundingClientRect().height;
+      right.style.height = `${h}px`; // 오른쪽 박스 높이
+      aboutCanvas.style.height = `${h}px`; // 캔버스 CSS 높이
+    }
+
     function resize() {
+      // ★ 먼저 높이 동기화
+      syncAboutHeightOnly();
+
       const rect = aboutCanvas.getBoundingClientRect();
       dpr = window.devicePixelRatio || 1;
       width = rect.width * dpr;
@@ -208,13 +229,15 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     }
 
+    // ↓↓↓ 아래부터는 네가 쓰던 drawLineField, drawNodesAndLinks, animate 그대로 두면 됨
+    // (기존 코드 복붙)
+
     function drawLineField(activity) {
       const cols = 12;
       const step = width / cols;
       ctx.save();
 
-      // 마우스 에너지에 따라 선 강도/진동 변화
-      const alpha = 0.04 + activity * 0.2; // 0.04 ~ 0.24
+      const alpha = 0.04 + activity * 0.2;
       ctx.strokeStyle = `rgba(255,255,255,${alpha})`;
       ctx.lineWidth = 1 * dpr;
 
@@ -226,14 +249,13 @@ document.addEventListener("DOMContentLoaded", () => {
         ctx.moveTo(x, 0);
 
         const baseAmp = 10 * dpr;
-        const amp = baseAmp * (0.5 + activity * 1.8); // 움직일수록 크게 요동
+        const amp = baseAmp * (0.5 + activity * 1.8);
         let offsetPhase = now + i;
 
-        // 마우스 근처일수록 더 요동치게
         if (mouse.x !== null) {
           const colCenter = x;
           const distX = Math.abs(colCenter - mouse.x);
-          const colInfluence = Math.max(0, 1 - distX / (width * 0.6)); // 가운데/마우스 근처 영향
+          const colInfluence = Math.max(0, 1 - distX / (width * 0.6));
           offsetPhase += colInfluence * 1.5;
         }
 
@@ -245,25 +267,19 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function drawNodesAndLinks(activity) {
-      // 활동도에 따라 네트워크 재구성 범위 변화
-      const linkDist = (120 + activity * 260) * dpr; // 120 ~ 380
-      const nodeRadius = (2 + activity * 4) * dpr; // 2 ~ 6
+      const linkDist = (120 + activity * 260) * dpr;
+      const nodeRadius = (2 + activity * 4) * dpr;
 
-      // 노드 업데이트
       nodes.forEach((n) => {
-        // 기본 드리프트
         n.x += n.vx;
         n.y += n.vy;
 
-        // 경계 반사
         if (n.x < 0 || n.x > width) n.vx *= -1;
         if (n.y < 0 || n.y > height) n.vy *= -1;
 
-        // 약간의 노이즈를 계속 추가 (죽은 시스템처럼 안 보이게)
         n.vx += (Math.random() - 0.5) * 0.02;
         n.vy += (Math.random() - 0.5) * 0.02;
 
-        // 마우스 행위가 만드는 "흐름"에 휘말리기
         if (mouse.x !== null) {
           const dx = n.x - mouse.x;
           const dy = n.y - mouse.y;
@@ -275,12 +291,10 @@ document.addEventListener("DOMContentLoaded", () => {
             const normDx = dx / dist;
             const normDy = dy / dist;
 
-            // 1) 마우스 속도 방향으로 끌려가는 성분
             const flowStrength = 0.0025 * activity;
             n.vx += mouse.vx * flowStrength;
             n.vy += mouse.vy * flowStrength;
 
-            // 2) 중심에서 살짝 밀려나는(또는 빨려드는) 성분
             const radialStrength = 0.003 * activity;
             n.x += normDx * radialStrength * dist * 0.1;
             n.y += normDy * radialStrength * dist * 0.1;
@@ -289,8 +303,6 @@ document.addEventListener("DOMContentLoaded", () => {
       });
 
       ctx.save();
-
-      // 링크
       ctx.lineWidth = 1 * dpr;
       nodes.forEach((n, i) => {
         for (let j = i + 1; j < nodes.length; j++) {
@@ -309,17 +321,14 @@ document.addEventListener("DOMContentLoaded", () => {
         }
       });
 
-      // 노드 (중심이 되는 "관계 포인트")
       nodes.forEach((n) => {
         ctx.beginPath();
         ctx.fillStyle = "rgba(255,255,255,0.9)";
         ctx.arc(n.x, n.y, nodeRadius, 0, Math.PI * 2);
         ctx.fill();
       });
-
       ctx.restore();
 
-      // 마우스 주변에 필드 포인트 시각화 (살짝만)
       if (mouse.x !== null) {
         ctx.save();
         const r = (40 + activity * 80) * dpr;
@@ -333,38 +342,32 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function animate() {
-      // 마우스 속도 기반으로 "행위 에너지" 계산
       if (mouse.prevX !== null && mouse.prevY !== null && mouse.x !== null) {
         const dx = mouse.x - mouse.prevX;
         const dy = mouse.y - mouse.prevY;
         const speed = Math.sqrt(dx * dx + dy * dy);
-
-        // 속도 → 0~1 정도로 정규화
         const targetEnergy = Math.max(0, Math.min(1, speed / (20 * dpr)));
 
         mouse.energy = mouse.energy * 0.85 + targetEnergy * 0.15;
         mouse.vx = dx;
         mouse.vy = dy;
       } else {
-        // 움직이지 않을 때는 서서히 식음
         mouse.energy *= 0.9;
       }
 
       ctx.clearRect(0, 0, width, height);
 
-      const activity = mouse.energy; // 0~1
+      const activity = mouse.energy;
 
       drawLineField(activity);
       drawNodesAndLinks(activity);
 
-      // 다음 프레임을 위해 현재 위치 저장
       mouse.prevX = mouse.x;
       mouse.prevY = mouse.y;
 
       requestAnimationFrame(animate);
     }
 
-    // 마우스 트래킹
     aboutCanvas.addEventListener("mousemove", (e) => {
       const rect = aboutCanvas.getBoundingClientRect();
       const scale = window.devicePixelRatio || 1;
@@ -379,6 +382,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     window.addEventListener("resize", resize);
 
+    // ★ 첫 로드시도 한 번 맞추고 시작
     resize();
     animate();
   }
@@ -428,9 +432,6 @@ window.addEventListener("load", () => {
     const h = left.getBoundingClientRect().height;
     right.style.height = `${h}px`;
   }
-
-  // 처음 로드시 1번
-  syncAboutHeight();
   // 리사이즈할 때마다 다시 맞추기
   window.addEventListener("resize", syncAboutHeight);
 });
