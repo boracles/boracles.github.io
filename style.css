@@ -928,14 +928,43 @@ body {
   .about-meta {
     grid-template-columns: 1fr; /* 모바일에서는 1단 */
   }
+
+  /* 🔽 Works (Timeline) 모바일 정리용 🔽 */
+
+  /* 타임라인 왼쪽 세로선/점 없애기 */
+  .timeline {
+    padding-left: 0;
+  }
+
+  .timeline-line,
+  .timeline-dot {
+    display: none;
+  }
+
+  .timeline-content {
+    padding-left: 0;
+  }
+
+  /* 헤더: 텍스트 위, 이미지 아래로 1열 정렬 */
   .timeline-header {
+    display: flex;
     flex-direction: column;
     align-items: flex-start;
+    gap: 8px;
+    margin-bottom: 6px;
   }
+
   .timeline-thumbs {
     width: 100%;
-    margin-top: 6px;
+    margin-top: 4px;
   }
+
+  /* 모바일에서는 호버용 위/아래 선도 제거 (겹침 방지) */
+  .timeline-link::before {
+    display: none;
+  }
+
+  /* 🔼 Works (Timeline) 모바일 정리용 끝 🔼 */
 }
 
 @media (max-width: 560px) {
