@@ -497,10 +497,10 @@ body {
 .timeline-line {
   position: absolute;
   left: 8px;
-  top: 0;
-  bottom: 6px; /* 위에서 ::before bottom: 6px과 맞춤 */
+  top: -4px; /* 🔥 0이나 9 말고, 프레임과 똑같이 -4로 */
+  bottom: -4px; /* 프레임 bottom과 동일 */
   width: 1px;
-  background: #444444;
+  background: #ffffff;
 }
 
 .timeline-item {
@@ -512,12 +512,13 @@ body {
 .timeline-dot {
   position: absolute;
   left: -1px;
-  top: 4px;
+  top: 9px; /* 4px → 9px: 점을 조금 아래로 */
   width: 10px;
   height: 10px;
   background: var(--accent);
   border-radius: 50%;
 }
+
 .timeline-content {
   padding-left: 16px;
 }
@@ -539,11 +540,12 @@ body {
   font-size: 0.9rem;
   color: #dddddd;
   line-height: 1.7;
+  margin-top: 16px;
 }
 
 .timeline-header {
-  display: flex;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto; /* 왼쪽 텍스트 / 오른쪽 썸네일 */
   gap: 16px;
   align-items: flex-start;
   margin-bottom: 6px;
@@ -554,20 +556,23 @@ body {
   color: var(--text-soft);
   letter-spacing: 0.16em;
   text-transform: uppercase;
+  margin-top: -2px; /* 살짝 위로 끌어올리기 */
   margin-bottom: 2px;
 }
 
 .timeline-thumbs {
+  width: 140px; /* 썸네일 가로 크기 (원하면 120~160 사이 조절) */
+  aspect-ratio: 1 / 1; /* 🔥 정사각형 비율 */
   flex-shrink: 0;
-  width: 120px; /* 필요하면 100~140 사이로 조절 */
 }
 
 .timeline-thumbs img {
   display: block;
   width: 100%;
-  height: auto;
-  border-radius: 10px;
-  border: 1px solid #333333;
+  height: 100%;
+  object-fit: cover; /* 비율 잘라서 꽉 채우기 */
+  border: none;
+  border-radius: 0;
 }
 
 .timeline-link {
@@ -575,9 +580,29 @@ body {
   display: block;
   cursor: pointer;
 
-  margin-top: 20px;
-  padding: 16px 24px 20px; /* 내용 여백만 관리 */
+  /* 레이아웃 깨뜨리던 거 제거 */
+  margin-top: 0;
+  padding: 0;
   border: none;
+}
+
+.timeline-link::before {
+  content: "";
+  position: absolute;
+
+  left: -1px; /* 🔥 동그라미 가장 왼쪽과 정렬 */
+  right: 0;
+  top: -4px;
+  bottom: -4px;
+
+  border-top: 1px solid transparent;
+  border-bottom: 1px solid transparent;
+  pointer-events: none;
+}
+
+.timeline-link:hover::before {
+  border-top-color: #555;
+  border-bottom-color: #555;
 }
 
 /* 공통 스타일 유지 */
@@ -595,35 +620,10 @@ body {
   text-decoration: none !important;
 }
 
-/* 호버 네모 | 여기서 위치를 정교하게 잡음 */
-.timeline-link::before {
-  content: "";
-  position: absolute;
-
-  left: -18px; /* 동그라미까지 감싸도록 왼쪽으로 확장 */
-  right: 0;
-
-  top: -6px; /* 윗선 살짝 위로 올리기 */
-  bottom: 6px; /* 아랫선 조금 위로 올려서 너무 길지 않게 */
-
-  border: 1px solid transparent;
-  pointer-events: none;
-}
-
-.timeline-link:hover::before {
-  border-color: #555555;
-}
-
-/* hover 시: 배경은 그대로, 얇은 라인만 */
-.timeline-link:hover {
-  border-color: #555555;
-  background: transparent;
-}
-
-/* 점은 너무 튀지 않게 살짝만 (원하면 삭제해도 됨) */
 .timeline-link:hover .timeline-dot {
   transform: scale(1.02);
 }
+
 /* ==========================
    AI HIGHLIGHT
 ========================== */
