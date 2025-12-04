@@ -520,7 +520,7 @@ body {
 .timeline-dot {
   position: absolute;
   left: -1px;
-  top: 3px; /* 🔥 9px → 4px 정도로 올려주기 */
+  top: 3px;
   width: 10px;
   height: 10px;
   background: var(--accent);
@@ -606,9 +606,9 @@ body {
   content: "";
   position: absolute;
 
-  left: -1px; /* 🔥 동그라미 가장 왼쪽과 정렬 */
+  left: -4px; /* 🔥 동그라미 가장 왼쪽과 정렬 */
   right: 0;
-  top: -11px;
+  top: -5px;
   bottom: -4px;
 
   border-top: 1px solid transparent;
