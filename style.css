@@ -428,32 +428,40 @@ body {
 /* ==========================
    CAPABILITIES
 ========================== */
+/* Capabilities 섹션에서만 제목 아래 여백 키우기 */
+.panel--caps .panel-title {
+  margin-bottom: 80px; /* 기본 24px → 36~40px 정도 */
+}
 
 .caps-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 28px; /* 행 사이 간격 */
+  width: 100%;
+  margin-top: 20px;
+}
+
+.cap-row {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: 20px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: 48px; /* 96px → 56px 정도로 적당히 줄이기 */
+  row-gap: 0;
+  border-top: none;
+  padding-top: 0;
 }
 
 .cap-item {
-  background: #050505;
-  border-radius: 18px;
-  border: 1px solid #333333;
-  padding: 16px;
-  transition: all 0.16s ease;
-}
-
-.cap-item:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.45);
-  border-color: #ffffff;
+  background: transparent;
+  border: none;
+  padding-top: 12px;
+  border-top: 0.1px solid #ffffff; /* ★ 여기! 흰색으로 변경 */
 }
 
 .cap-title {
-  font-size: 0.95rem;
-  font-weight: 500;
-  margin-bottom: 6px;
+  font-size: 0.96rem;
   color: #ffffff;
+  font-weight: 500;
+  margin-bottom: 4px;
 }
 
 .cap-body {
@@ -461,7 +469,6 @@ body {
   color: #dddddd;
   line-height: 1.7;
 }
-
 /* ==========================
    TIMELINE
 ========================== */
@@ -518,6 +525,47 @@ body {
   font-size: 0.9rem;
   color: #dddddd;
   line-height: 1.7;
+}
+
+.timeline-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: flex-start;
+  margin-bottom: 6px;
+}
+
+.timeline-year {
+  font-size: 0.78rem;
+  color: var(--text-soft);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  margin-bottom: 2px;
+}
+
+.timeline-thumbs {
+  flex-shrink: 0;
+  width: 120px; /* 필요하면 100~140 사이로 조절 */
+}
+
+.timeline-thumbs img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 10px;
+  border: 1px solid #333333;
+}
+
+/* 모바일에서 썸네일이 너무 크지 않게 */
+@media (max-width: 720px) {
+  .timeline-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .timeline-thumbs {
+    width: 100%;
+    margin-top: 6px;
+  }
 }
 
 /* ==========================
@@ -693,6 +741,14 @@ body {
 ========================== */
 
 @media (max-width: 880px) {
+  .cap-row {
+    grid-template-columns: 1fr;
+    column-gap: 0;
+    row-gap: 10px;
+  }
+  .caps-grid {
+    grid-template-columns: 1fr;
+  }
   .about-meta {
     grid-template-columns: 1fr 1fr; /* 태블릿에서는 2단 */
   }
