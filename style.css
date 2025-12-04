@@ -855,16 +855,33 @@ body {
 ========================== */
 
 @media (max-width: 880px) {
-  .cap-row {
-    grid-template-columns: 1fr;
-    column-gap: 0;
-    row-gap: 10px;
-  }
+  /* Capabilities: 모바일에서는 6개가 모두 같은 간격으로 세로 나열되게 */
+
   .caps-grid {
-    grid-template-columns: 1fr;
+    display: block; /* flex → block처럼, cap-row의 영향 줄이기 */
+    margin-top: 20px;
   }
+
+  .cap-row {
+    display: block; /* 행 개념 없애기 */
+    margin: 0; /* 사이 간격 없음 */
+    padding: 0;
+  }
+
+  .cap-item {
+    border-top: 0.1px solid #ffffff;
+    padding-top: 10px;
+    padding-bottom: 8px;
+    margin-top: 20px; /* ★ 모든 항목 사이 동일 간격 */
+  }
+
+  .cap-item:first-child {
+    margin-top: 0; /* 맨 첫 번째만 위 여백 제거 */
+  }
+
+  /* 기존 내용 유지 */
   .about-meta {
-    grid-template-columns: 1fr 1fr; /* 태블릿에서는 2단 */
+    grid-template-columns: 1fr 1fr;
   }
   .about-shell {
     grid-template-columns: minmax(0, 1fr);
@@ -879,28 +896,22 @@ body {
     gap: 4px;
     padding: 12px 16px 6px;
   }
-
   .nav-right {
     display: flex;
     flex-direction: row;
-    flex-wrap: nowrap !important; /* ★ 강제: 절대 줄바꿈 금지 */
-    white-space: nowrap !important; /* ★ 텍스트 줄바꿈 금지 */
-    overflow-x: auto; /* ★ 넘치면 가로 스크롤 */
+    flex-wrap: nowrap !important;
+    white-space: nowrap !important;
+    overflow-x: auto;
     gap: 24px;
-    width: 100%; /* ★ 메뉴를 전체 폭만큼 확보 */
-
-    /* 모바일에서 스크롤바 안 보이게 */
+    width: 100%;
     -webkit-overflow-scrolling: touch;
   }
-
   .nav-right a {
-    flex-shrink: 0 !important; /* ★ 링크 절대 줄바꿈 금지 */
+    flex-shrink: 0 !important;
   }
-
   .nav-right::-webkit-scrollbar {
-    display: none; /* 모바일 크롬/사파리에서 스크롤바 안 보이게 (선택사항) */
+    display: none;
   }
-
   .panel {
     padding: 120px 12px 72px;
   }
@@ -918,7 +929,6 @@ body {
     flex-direction: column;
     gap: 24px;
   }
-
   .about-meta {
     width: 100%;
   }
