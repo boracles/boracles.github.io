@@ -548,7 +548,7 @@ body {
 
 /* Works 메타 타입 (VR Game, Art Game 등) 강조 */
 .timeline-meta strong {
-  font-weight: 600;
+  font-weight: 500;
   font-family: "futura-pt", "Noto Sans KR", sans-serif;
 }
 
