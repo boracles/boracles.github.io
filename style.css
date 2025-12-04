@@ -428,50 +428,65 @@ body {
 /* ==========================
    CAPABILITIES
 ========================== */
-/* Capabilities 섹션에서만 제목 아래 여백 키우기 */
+
+/* 제목 아래 여백 조금 더 넓게 */
 .panel--caps .panel-title {
-  margin-bottom: 80px; /* 기본 24px → 36~40px 정도 */
+  margin-bottom: 96px; /* 80 → 96 */
 }
 
+/* 전체 그리드 행 간격 넉넉하게 */
 .caps-grid {
   display: flex;
   flex-direction: column;
-  gap: 28px; /* 행 사이 간격 */
+  gap: 40px; /* 28 → 40: 각 cap-row 사이 간격 */
   width: 100%;
   margin-top: 20px;
 }
 
+/* 한 행(왼·오 2개) 배치 */
 .cap-row {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  column-gap: 48px; /* 96px → 56px 정도로 적당히 줄이기 */
-  row-gap: 0;
+  column-gap: 64px; /* 48 → 64: 좌우 아이템 간 간격 */
+  row-gap: 24px; /* 0 → 24: 같은 행 안에서도 위아래 여유 */
   border-top: none;
   padding-top: 0;
 }
 
+/* 각 아이템 안쪽 여백 & 위 라인 */
 .cap-item {
   background: transparent;
   border: none;
-  padding-top: 12px;
-  border-top: 0.1px solid #ffffff; /* ★ 여기! 흰색으로 변경 */
+  border-top: 0.1px solid #ffffff;
+  padding-top: 9px; /* 12 → 16: 제목 위쪽 여백 */
+  padding-bottom: 8px; /* 아래도 살짝 여유 */
 }
 
 .cap-title {
   font-size: 0.96rem;
   color: #ffffff;
   font-weight: 500;
-  margin-bottom: 4px;
+  margin-bottom: 6px; /* 4 → 6: 제목과 본문 사이 살짝 더 */
 }
 
 .cap-body {
   font-size: 0.88rem;
   color: #dddddd;
-  line-height: 1.7;
+  line-height: 1.6; /* 1.7 → 1.8: 줄간격도 약간 넓게 */
 }
+
 /* ==========================
    TIMELINE
 ========================== */
+
+.timeline-link,
+.timeline-link:visited,
+.timeline-link:hover,
+.timeline-link:active {
+  display: block;
+  color: inherit;
+  text-decoration: none;
+}
 
 .timeline {
   position: relative;
@@ -483,14 +498,14 @@ body {
   position: absolute;
   left: 8px;
   top: 0;
-  bottom: 0;
+  bottom: 6px; /* 위에서 ::before bottom: 6px과 맞춤 */
   width: 1px;
   background: #444444;
 }
 
 .timeline-item {
   position: relative;
-  padding-bottom: 26px;
+  padding-bottom: 14px; /* 26 → 14 */
   margin-bottom: 14px;
 }
 
@@ -503,7 +518,6 @@ body {
   background: var(--accent);
   border-radius: 50%;
 }
-
 .timeline-content {
   padding-left: 16px;
 }
@@ -556,18 +570,60 @@ body {
   border: 1px solid #333333;
 }
 
-/* 모바일에서 썸네일이 너무 크지 않게 */
-@media (max-width: 720px) {
-  .timeline-header {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-  .timeline-thumbs {
-    width: 100%;
-    margin-top: 6px;
-  }
+.timeline-link {
+  position: relative;
+  display: block;
+  cursor: pointer;
+
+  margin-top: 20px;
+  padding: 16px 24px 20px; /* 내용 여백만 관리 */
+  border: none;
 }
 
+/* 공통 스타일 유지 */
+.timeline-link,
+.timeline-link:visited,
+.timeline-link:hover,
+.timeline-link:active,
+.timeline-link:focus {
+  text-decoration: none !important;
+  outline: none !important;
+  color: inherit;
+}
+
+.timeline-link * {
+  text-decoration: none !important;
+}
+
+/* 호버 네모 | 여기서 위치를 정교하게 잡음 */
+.timeline-link::before {
+  content: "";
+  position: absolute;
+
+  left: -18px; /* 동그라미까지 감싸도록 왼쪽으로 확장 */
+  right: 0;
+
+  top: -6px; /* 윗선 살짝 위로 올리기 */
+  bottom: 6px; /* 아랫선 조금 위로 올려서 너무 길지 않게 */
+
+  border: 1px solid transparent;
+  pointer-events: none;
+}
+
+.timeline-link:hover::before {
+  border-color: #555555;
+}
+
+/* hover 시: 배경은 그대로, 얇은 라인만 */
+.timeline-link:hover {
+  border-color: #555555;
+  background: transparent;
+}
+
+/* 점은 너무 튀지 않게 살짝만 (원하면 삭제해도 됨) */
+.timeline-link:hover .timeline-dot {
+  transform: scale(1.02);
+}
 /* ==========================
    AI HIGHLIGHT
 ========================== */
@@ -813,6 +869,14 @@ body {
 @media (max-width: 720px) {
   .about-meta {
     grid-template-columns: 1fr; /* 모바일에서는 1단 */
+  }
+  .timeline-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .timeline-thumbs {
+    width: 100%;
+    margin-top: 6px;
   }
 }
 
