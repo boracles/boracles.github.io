@@ -476,6 +476,15 @@ body {
 }
 
 /* ==========================
+   SECTION TITLE FONT OVERRIDES
+========================== */
+
+.panel--caps .cap-title,
+.panel--teach .teach-title {
+  font-family: "futura-pt", "Noto Sans KR", sans-serif;
+}
+
+/* ==========================
    TIMELINE
 ========================== */
 
@@ -504,9 +513,9 @@ body {
 }
 
 .timeline-item {
-  position: relative;
-  padding-bottom: 14px; /* 26 → 14 */
-  margin-bottom: 14px;
+  padding-top: 24px; /* 기존보다 위로 여유 */
+  padding-bottom: 32px; /* 아래 여유 */
+  margin-bottom: 24px; /* 항목 간 간격 확장 */
 }
 .timeline-dot {
   position: absolute;
@@ -527,6 +536,8 @@ body {
   font-weight: 500;
   margin-bottom: 4px;
   color: #ffffff;
+  font-family: "futura-pt", "Noto Sans KR", sans-serif; /* ★ 이 줄 추가 */
+  letter-spacing: 0.03em; /* 선택: 살짝 자간 주고 싶으면 */
 }
 
 .timeline-meta {
@@ -621,6 +632,48 @@ body {
 
 .timeline-link:hover .timeline-dot {
   transform: scale(1.02);
+}
+
+/* ==========================
+   PROJECT DETAIL PAGE
+========================== */
+
+.project-page {
+  background: #000000;
+  color: #ffffff;
+  font-family: "Sweet", "Noto Sans KR", system-ui, sans-serif;
+}
+
+/* 제목 블록 위/아래 여백 */
+.project-header {
+  max-width: 960px;
+  margin: 140px auto 56px; /* 상단에서 떨어뜨리고, 아래도 여유 */
+  padding: 0 28px;
+}
+
+/* 각 섹션 사이 간격 넉넉하게 */
+.project-section {
+  max-width: 960px;
+  margin: 56px auto 0; /* 위 섹션과 56px 정도 띄우기 */
+  padding: 0 28px;
+}
+
+/* 섹션끼리 시각적으로도 구분하고 싶으면 */
+.project-section + .project-section {
+  margin-top: 64px; /* 이후 섹션은 더 여유 */
+  border-top: 1px solid #333333;
+  padding-top: 28px;
+}
+
+/* 히어로 이미지도 조금 여유 있게 */
+.project-hero {
+  max-width: 960px;
+  margin: 0 auto 40px;
+  padding: 0 28px;
+}
+.project-hero-img {
+  width: 100%;
+  display: block;
 }
 
 /* ==========================
