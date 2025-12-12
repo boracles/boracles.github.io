@@ -254,6 +254,7 @@ body {
   padding-top: 60px;
   position: relative;
   overflow: hidden;
+  background: #000;
 }
 
 .intro-inner {
@@ -292,6 +293,7 @@ body {
   height: 100%;
   object-fit: cover;
   z-index: 0;
+  pointer-events: none;
 }
 
 /* 상단/하단 fade overlay */
