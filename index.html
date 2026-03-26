@@ -1,428 +1,367 @@
 <!DOCTYPE html>
 <html lang="ko">
-  <head>
-    <meta charset="UTF-8" />
-    <title>Atelier BORACLES — XR Experience & Interaction R&D Studio</title>
 
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1.0, viewport-fit=cover"
-    />
+<head>
+  <meta charset="UTF-8" />
+  <title>Atelier BORACLES — XR Experience & Interaction R&D Studio</title>
 
-    <!-- 폰트 & 스타일 -->
-    <link rel="stylesheet" href="https://use.typekit.net/epz5qwi.css" />
-    <link rel="stylesheet" href="style.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 
-    <!-- GSAP + ScrollTrigger CDN -->
-    <script
-      src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"
-      defer
-    ></script>
-    <script
-      src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"
-      defer
-    ></script>
+  <!-- 폰트 & 스타일 -->
+  <link rel="stylesheet" href="https://use.typekit.net/epz5qwi.css" />
+  <link rel="stylesheet" href="style.css" />
 
-    <!-- 메인 스크립트 -->
-    <script src="main.js" defer></script>
-  </head>
-  <body>
-    <div class="wrapper">
-      <!-- NAV (상단 고정 메뉴) -->
-      <header class="nav">
-        <div class="nav-left">
-          <div class="nav-name">Atelier BORACLES</div>
-          <div class="nav-role">
-            Research-driven XR Experience Studio
-          </div>
+  <!-- GSAP + ScrollTrigger CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js" defer></script>
+
+  <!-- 메인 스크립트 -->
+  <script src="main.js" defer></script>
+</head>
+
+<body>
+  <div class="wrapper">
+    <!-- NAV (상단 고정 메뉴) -->
+    <header class="nav">
+      <div class="nav-left">
+        <div class="nav-name">Atelier BORACLES</div>
+        <div class="nav-role">
+          Research-driven XR Experience Studio
         </div>
-        
-        <nav class="nav-right">
-          <a href="#intro">Studio</a>
-          <a href="#about">About</a>
-          <a href="#projects">Work</a>
-          <a href="#research">Research</a>
-          <a href="#teaching">Teaching</a>
-          <a href="#contact">Contact</a>
-        </nav>
-        
-      </header>
+      </div>
 
-      <section class="panel panel--intro" id="intro">
-        <div class="intro-bg-yt" aria-hidden="true">
-          <iframe
-            src="https://www.youtube.com/embed/i78_unij34Q?autoplay=1&mute=1&loop=1&playlist=i78_unij34Q&controls=0&rel=0&modestbranding=1&playsinline=1"
-            title="Intro background video"
-            frameborder="0"
-            allow="autoplay; encrypted-media; picture-in-picture"
-            allowfullscreen
-          ></iframe>
-        </div>
+      <nav class="nav-right">
+        <a href="#intro">Studio</a>
+        <a href="#about">About</a>
+        <a href="#projects">Work</a>
+        <a href="#research">Research</a>
+        <a href="#teaching">Teaching</a>
+        <a href="#contact">Contact</a>
+      </nav>
 
-        <div class="intro-inner">
-          <h1 class="intro-title">
-            XR experiences,<br />
-            designed by Atelier BORACLES.
-          </h1>
-          
-          <p class="intro-tagline">
-            A research-driven studio creating immersive experiences<br />
-            through XR, spatial interaction, and responsive agents.
-          </p>
-        </div>
-      </section>
+    </header>
 
-      <!-- PANEL 2: ABOUT -->
-      <section class="panel panel--about" id="about">
-        <div class="panel-inner">
-          <!-- 위: 텍스트 + 비주얼 2단 -->
-          <div class="about-shell">
-            <!-- LEFT -->
-            <div class="about-left">
-              <h2 class="bodoni-title">
-                Systems shaped by action and interaction.
-              </h2>
+    <section class="panel panel--intro" id="intro">
+      <div class="intro-bg-yt" aria-hidden="true">
+        <iframe
+          src="https://www.youtube.com/embed/i78_unij34Q?autoplay=1&mute=1&loop=1&playlist=i78_unij34Q&controls=0&rel=0&modestbranding=1&playsinline=1"
+          title="Intro background video" frameborder="0" allow="autoplay; encrypted-media; picture-in-picture"
+          allowfullscreen></iframe>
+      </div>
 
-              <div class="about-text">
-                저는 XR과 AI를 기반으로,
-                <strong
-                  >사용자의 행위와 선택에 의해 경험이 생성되는 시스템</strong
-                >
-                을 설계하는 Creative Technical Director입니다. <br /><br />
+      <div class="intro-inner">
+        <h1 class="intro-title">
+          XR experiences,<br />
+          designed by Atelier BORACLES.
+        </h1>
 
-                Unity, 센서 및 액추에이터, AI기반 인터랙션 파이프라인, 모션캡처
-                등 다양한 기술적 구성 요소를 통합하여, 사람·공간·기술의
-                상호작용이 만들어내는 관계와 경험의 구조를 설계합니다.<br /><br />
+        <p class="intro-tagline">
+          A research-driven studio creating immersive experiences<br />
+          through XR, spatial interaction, and responsive agents.
+        </p>
+      </div>
+    </section>
 
-                VR 발표 환경의 AI 청중, XR 퍼포먼스, 자율적으로 변화하는
-                인터랙션 환경과 같이, 기술·공간·서사를 하나의 장치로 통합하여
-                <strong>사용자의 행위가 서사를 이끌어가는 경험</strong>을
-                구축합니다.
-              </div>
-            </div>
-            <!-- 🔚 about-left -->
+    <section class="panel panel--about" id="about">
+      <div class="panel-inner">
+        <div class="about-shell">
+          <div class="about-left">
+            <h2 class="bodoni-title">
+              XR experiences shaped by interaction and intelligent response.
+            </h2>
 
-            <!-- RIGHT: 인터랙티브 비주얼 -->
-            <div class="about-right">
-              <canvas id="aboutCanvas"></canvas>
+            <div class="about-text">
+              Atelier BORACLES is a research-driven studio designing
+              <strong>interactive XR experiences and agent-based environments</strong>
+              that respond to human action, speech, and choice.<br /><br />
+
+              The studio integrates Unity, sensors and actuators, AI interaction pipelines,
+              motion capture, and real-time control to build
+              <strong>XR experiences that actively respond to users</strong>.<br /><br />
+
+              From AI audiences in VR presentation environments to XR performances,
+              interactive installations, and therapeutic XR, Atelier BORACLES develops
+              experience structures in which technology and narrative operate together,
+              and <strong>user interaction drives the flow of the experience</strong>.
             </div>
           </div>
-          <!-- 🔚 about-shell (2단) -->
 
-          <!-- ⬇⬇ 여기부터 전체 폭 3단 -->
-          <div class="about-meta">
-            <!-- 1. Education -->
-            <div class="about-meta-block">
-              <div class="about-meta-label">Education</div>
-              <div class="about-meta-text">
-                2024.03 – <br />
-                <strong>PhD Candidate in Design</strong><br />
-                Seoul National University<br />
-                <span class="advisor-line">— Advisor: Prof. Eui-Chul Jung</span>
+          <div class="about-right">
+            <canvas id="aboutCanvas"></canvas>
+          </div>
+        </div>
 
-                2021.02.19<br />
-                <strong>MFA in Scenography</strong><br />
-                Korea National University of Arts<br />
-                <span class="advisor-line">— Advisor: Prof. Sijoong Yoon</span>
+        <div class="about-meta">
+          <div class="about-meta-block">
+            <div class="about-meta-label">Focus</div>
+            <div class="about-meta-text">
+              AI audience and agent interaction in XR<br />
+              Interactive installations and XR performances<br />
+              Therapeutic and emotionally responsive XR<br />
+              Real-time systems for immersive experience
+            </div>
+          </div>
 
-                2011.02.18<br />
-                <strong>BFA in Scenography</strong><br />
-                Korea National University of Arts
+          <div class="about-meta-block">
+            <div class="about-meta-label">Tools & Platforms</div>
+            <div class="about-meta-text">
+              Unity / C#<br />
+              Sensors & Actuators<br />
+              Motion Capture<br />
+              ASR–LLM–TTS Pipelines<br />
+              Interactive Media Prototyping
+            </div>
+          </div>
+
+          <div class="about-meta-block">
+            <div class="about-meta-label">Founder & Creative Director</div>
+            <div class="about-meta-text">
+              Bora Youn<br />
+              PhD Researcher in Design, Seoul National University<br />
+              MFA / BFA in Scenography, Korea National University of Arts<br />
+              Certified Associate Game Developer, Unity Technologies<br />
+              Certified Arts & Culture Educator
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PANEL 3: CAPABILITIES -->
+    <section class="panel panel--caps">
+      <div class="panel-inner">
+        <div class="panel-label">Capabilities</div>
+        <h2 class="panel-title">
+          What I build as a Creative Technical Director
+        </h2>
+
+        <div class="caps-grid">
+          <!-- 1행 -->
+          <div class="cap-row">
+            <div class="cap-item">
+              <div class="cap-title">XR ・ Spatial Interaction Design</div>
+              <div class="cap-body">
+                VR 발표 환경, XR 퍼포먼스, 공간 기반 인터랙션을 설계하여
+                사용자 행동이 전개되는 방식과 그 흐름을 규정하는 시스템을 만듭니다.
               </div>
             </div>
 
-            <!-- 2. Certifications -->
-            <div class="about-meta-block">
-              <div class="about-meta-label">Certifications</div>
-              <div class="about-meta-text">
-                <div class="meta-entry">
-                  2021.10.19<br />
-                  <strong>Certified Associate Game Developer</strong><br />
-                  Unity Technologies
-                </div>
-
-                <div class="meta-entry">
-                  2021.03.23<br />
-                  <strong>문화예술교육사 2급 (디자인)</strong><br />
-                  문화체육관광부
-                </div>
-              </div>
-            </div>
-
-            <!-- 3. Residencies -->
-            <div class="about-meta-block">
-              <div class="about-meta-label">Residencies</div>
-              <div class="about-meta-text">
-                2022.08.10 – 2022.09.30<br />
-                <strong>미로 예술인 레지던시</strong><br />
-                미로 센터
+            <div class="cap-item">
+              <div class="cap-title">AI Interaction Pipeline</div>
+              <div class="cap-body">
+                사용자의 발화와 행동을 해석하는 AI 입력 구조와,
+                맥락에 맞는 에이전트의 언어·비언어적 반응을 설계해
+                대화형 상호작용 시스템을 구성합니다.
               </div>
             </div>
           </div>
-          <!-- 🔚 about-meta (3단) -->
-        </div>
-      </section>
 
-      <!-- PANEL 3: CAPABILITIES -->
-      <section class="panel panel--caps">
-        <div class="panel-inner">
-          <div class="panel-label">Capabilities</div>
-          <h2 class="panel-title">
-            What I build as a Creative Technical Director
-          </h2>
-
-          <div class="caps-grid">
-            <!-- 1행 -->
-            <div class="cap-row">
-              <div class="cap-item">
-                <div class="cap-title">XR ・ Spatial Interaction Design</div>
-                <div class="cap-body">
-                  VR 발표 환경, XR 퍼포먼스, 공간 기반 인터랙션을 설계하여
-사용자 행동이 전개되는 방식과 그 흐름을 규정하는 시스템을 만듭니다.
-                </div>
-              </div>
-
-              <div class="cap-item">
-                <div class="cap-title">AI Interaction Pipeline</div>
-                <div class="cap-body">
-                  사용자의 발화와 행동을 해석하는 AI 입력 구조와,
-맥락에 맞는 에이전트의 언어·비언어적 반응을 설계해
-대화형 상호작용 시스템을 구성합니다.
-                </div>
+          <!-- 2행 -->
+          <div class="cap-row">
+            <div class="cap-item">
+              <div class="cap-title">Interactive Systems & Installations</div>
+              <div class="cap-body">
+                놀이적 행위를 이끌어내는 인터랙티브 오브제와 퍼포머티브 설치 작업을 설계합니다.
               </div>
             </div>
 
-            <!-- 2행 -->
-            <div class="cap-row">
-              <div class="cap-item">
-                <div class="cap-title">Interactive Systems & Installations</div>
-                <div class="cap-body">
-                  놀이적 행위를 이끌어내는 인터랙티브 오브제와 퍼포머티브 설치 작업을 설계합니다.
-                </div>
+            <div class="cap-item">
+              <div class="cap-title">Motion Capture & Real-Time Control</div>
+              <div class="cap-body">
+                motion capture·센서 데이터를 Unity와 연동해
+                퍼포먼스·오디오·비주얼을 실시간으로 제어하는 시스템을
+                구현합니다.
               </div>
+            </div>
+          </div>
 
-              <div class="cap-item">
-                <div class="cap-title">Motion Capture & Real-Time Control</div>
-                <div class="cap-body">
-                  motion capture·센서 데이터를 Unity와 연동해
-                  퍼포먼스·오디오·비주얼을 실시간으로 제어하는 시스템을
-                  구현합니다.
-                </div>
+          <!-- 3행 -->
+          <div class="cap-row">
+            <div class="cap-item">
+              <div class="cap-title">Therapeutic & Cognitive XR</div>
+              <div class="cap-body">
+                발표 불안, 치매·인지 저하, 정서 지원을 위한 XR 환경을 설계하고
+                사용자 상태에 따라 자극·난이도·반응성을 조절하는 인터랙션
+                시스템을 개발합니다.
               </div>
             </div>
 
-            <!-- 3행 -->
-            <div class="cap-row">
-              <div class="cap-item">
-                <div class="cap-title">Therapeutic & Cognitive XR</div>
-                <div class="cap-body">
-                  발표 불안, 치매·인지 저하, 정서 지원을 위한 XR 환경을 설계하고
-                  사용자 상태에 따라 자극·난이도·반응성을 조절하는 인터랙션
-                  시스템을 개발합니다.
-                </div>
-              </div>
-
-              <div class="cap-item">
-                <div class="cap-title">Creative Coding Education</div>
-                <div class="cap-body">
-                  디지털 센싱, 실시간 그래픽스, 인터랙티브 미디어 기술을 활용해
-                  학생들이 자신만의 인터랙션 시스템을 설계하고 구현하도록
-                  지도합니다.
-                </div>
+            <div class="cap-item">
+              <div class="cap-title">Creative Coding Education</div>
+              <div class="cap-body">
+                디지털 센싱, 실시간 그래픽스, 인터랙티브 미디어 기술을 활용해
+                학생들이 자신만의 인터랙션 시스템을 설계하고 구현하도록
+                지도합니다.
               </div>
             </div>
           </div>
         </div>
-      </section>
+      </div>
+    </section>
 
-      <!-- PANEL 4: PROJECT TIMELINE -->
-      <section class="panel panel--timeline" id="projects">
-        <div class="panel-inner panel-inner--narrow">
-          <div class="panel-label">Works</div>
-          <h2 class="panel-title">Interactive Works Across XR, AI, and Performance</h2>
+    <!-- PANEL 4: PROJECT TIMELINE -->
+    <section class="panel panel--timeline" id="projects">
+      <div class="panel-inner panel-inner--narrow">
+        <div class="panel-label">Works</div>
+        <h2 class="panel-title">Interactive Works Across XR, AI, and Performance</h2>
 
-          <div class="timeline">
-            <div class="timeline-line"></div>
+        <div class="timeline">
+          <div class="timeline-line"></div>
 
-            <!-- 2021 · Honeybooth VR -->
-            <a
-              class="timeline-item timeline-link"
-              href="projects/honeybooth-vr.html"
-            >
-              <div class="timeline-dot"></div>
-              <div class="timeline-content">
-                <div class="timeline-header">
-                  <div>
-                    <div class="timeline-year">2021</div>
-                    <div class="timeline-title">Honeybooth VR</div>
-                    <div class="timeline-meta">
-                      <strong>VR Exhibition Platform</strong> | Level Design · Programming
-                    </div>
-                    <div class="timeline-body">
-                      VR 박람회 플랫폼을 위한 가상 전시장 프로젝트입니다.
-플레이어는 열기구를 타고 섬을 이동하며 전시장을 탐색하고,
-참가기업으로서 부스를 배치하거나 관람객으로서 전시를 체험하는 두 역할을 모두 경험할 수 있습니다.
-전시장 레벨 컨셉과 섬 지형·동선 구조를 설계하고,
-부스 배치 로직을 구현했습니다.
-                    </div>
+          <!-- 2021 · Honeybooth VR -->
+          <a class="timeline-item timeline-link" href="projects/honeybooth-vr.html">
+            <div class="timeline-dot"></div>
+            <div class="timeline-content">
+              <div class="timeline-header">
+                <div>
+                  <div class="timeline-year">2021</div>
+                  <div class="timeline-title">Honeybooth VR</div>
+                  <div class="timeline-meta">
+                    <strong>VR Exhibition Platform</strong> | Level Design · Programming
                   </div>
-
-                  <div class="timeline-thumbs">
-                    <img
-                      src="assets/images/honeybooth-vr/main.webp"
-                      alt="Honeybooth VR gameplay"
-                      loading="lazy"
-                    />
+                  <div class="timeline-body">
+                    VR 박람회 플랫폼을 위한 가상 전시장 프로젝트입니다.
+                    플레이어는 열기구를 타고 섬을 이동하며 전시장을 탐색하고,
+                    참가기업으로서 부스를 배치하거나 관람객으로서 전시를 체험하는 두 역할을 모두 경험할 수 있습니다.
+                    전시장 레벨 컨셉과 섬 지형·동선 구조를 설계하고,
+                    부스 배치 로직을 구현했습니다.
                   </div>
                 </div>
+
+                <div class="timeline-thumbs">
+                  <img src="assets/images/honeybooth-vr/main.webp" alt="Honeybooth VR gameplay" loading="lazy" />
+                </div>
               </div>
-            </a>
-
-
-<!-- 더 도어 -->
-<a
-  class="timeline-item timeline-link"
-  href="projects/thedoor-brokentape.html"
->
-  <div class="timeline-dot"></div>
-  <div class="timeline-content">
-    <div class="timeline-header">
-      <div>
-        <div class="timeline-year">2021</div>
-        <div class="timeline-title">The Door: Broken Tape</div>
-        <div class="timeline-meta">
-          <strong>VR Game</strong> | Level Design · Environment · 3D Modeling · Lighting
-        </div>
-        <div class="timeline-body">
-          플레이어는 자신의 방에 남겨진 오브젝트를 단서로 카페, 온실, 바닷가 등
-          서로 다른 공간을 오가며 잊고 있던 기억을 따라갑니다.
-          각 공간의 소리와 분위기를 통해 과거의 장면을 다시 마주하도록 설계했으며,
-          공간·소품 디자인과 3D 모델링, 라이팅·최적화를 담당했습니다.
-        </div>
-      </div>
-
-      <div class="timeline-thumbs">
-        <img
-          src="assets/images/thedoor-brokentape/main.webp"
-          alt="The Door: Broken Tape gameplay"
-          loading="lazy"
-        />
-      </div>
-    </div>
-  </div>
-</a>
-
-
-            <!-- 이상한 나라의 안정상 -->
-            <a
-  class="timeline-item timeline-link"
-  href="projects/nonormal-wonderland.html"
->
-  <div class="timeline-dot"></div>
-  <div class="timeline-content">
-    <div class="timeline-header">
-      <div>
-        <div class="timeline-year">2021</div>
-        <div class="timeline-title">No-normal in Wonderland</div>
-        <div class="timeline-meta">
-        <strong>Art Game</strong> | Game · Level · System Design · Programming
-        </div>
-        <div class="timeline-body">
-          다수의 기준이 ‘정상성’을 규정하는 사회 속에서 개인의 주체성이
-          어떻게 흔들리는지를 탐구하는 아트게임입니다. 플레이어는 각 레벨의
-          규칙 속에서 선택을 반복하며, 그 선택이 만들어내는 결과와
-          ‘반쪽짜리 자유’의 구조를 경험하게 됩니다.
-        </div>
-      </div>
-
-      <div class="timeline-thumbs">
-        <img
-          src="assets/images/nonormal-wonderland/main.webp"
-          alt="No-normal in Wonderland gameplay"
-          loading="lazy"
-        />
-      </div>
-    </div>
-  </div>
-</a>
-        
-
-            <!-- 2021 · The Nameless Cat (가장 오래된 것, 마지막) -->
-            <a
-  class="timeline-item timeline-link"
-  href="projects/perfectlab-namelesscat.html"
->
-  <div class="timeline-dot"></div>
-  <div class="timeline-content">
-    <div class="timeline-header">
-      <!-- 왼쪽: 연도 + 제목 + 메타 + 설명 모두 한 칼럼 -->
-      <div>
-        <div class="timeline-year">2021</div>
-        <div class="timeline-title">
-          The Perfect Lab: The Nameless Cat
-        </div>
-        <div class="timeline-meta">
-        <strong>Art Game</strong> | Game · Level · System Design · Programming
-        </div>
-        <div class="timeline-body">
-          연속된 실험의 부작용으로 몸이 파랗게 변한 실험용 고양이가,
-          이상반응으로 발현된 능력으로 자신을 폐기하려는 연구원들을 제압하고
-          7개의 실험실 구역을 돌파해 연인 고양이에게 돌아가는 아트게임입니다.
-        </div>
-      </div>
-
-      <!-- 오른쪽: 썸네일만 -->
-      <div class="timeline-thumbs">
-        <img
-          src="assets/images/perfectlab-namelesscat/main.webp"
-          alt="Nameless Cat gameplay"
-          loading="lazy"
-        />
-      </div>
-    </div>
-  </div>
-</a>
-
-          
-
             </div>
+          </a>
+
+
+          <!-- 더 도어 -->
+          <a class="timeline-item timeline-link" href="projects/thedoor-brokentape.html">
+            <div class="timeline-dot"></div>
+            <div class="timeline-content">
+              <div class="timeline-header">
+                <div>
+                  <div class="timeline-year">2021</div>
+                  <div class="timeline-title">The Door: Broken Tape</div>
+                  <div class="timeline-meta">
+                    <strong>VR Game</strong> | Level Design · Environment · 3D Modeling · Lighting
+                  </div>
+                  <div class="timeline-body">
+                    플레이어는 자신의 방에 남겨진 오브젝트를 단서로 카페, 온실, 바닷가 등
+                    서로 다른 공간을 오가며 잊고 있던 기억을 따라갑니다.
+                    각 공간의 소리와 분위기를 통해 과거의 장면을 다시 마주하도록 설계했으며,
+                    공간·소품 디자인과 3D 모델링, 라이팅·최적화를 담당했습니다.
+                  </div>
+                </div>
+
+                <div class="timeline-thumbs">
+                  <img src="assets/images/thedoor-brokentape/main.webp" alt="The Door: Broken Tape gameplay"
+                    loading="lazy" />
+                </div>
+              </div>
+            </div>
+          </a>
+
+
+          <!-- 이상한 나라의 안정상 -->
+          <a class="timeline-item timeline-link" href="projects/nonormal-wonderland.html">
+            <div class="timeline-dot"></div>
+            <div class="timeline-content">
+              <div class="timeline-header">
+                <div>
+                  <div class="timeline-year">2021</div>
+                  <div class="timeline-title">No-normal in Wonderland</div>
+                  <div class="timeline-meta">
+                    <strong>Art Game</strong> | Game · Level · System Design · Programming
+                  </div>
+                  <div class="timeline-body">
+                    다수의 기준이 ‘정상성’을 규정하는 사회 속에서 개인의 주체성이
+                    어떻게 흔들리는지를 탐구하는 아트게임입니다. 플레이어는 각 레벨의
+                    규칙 속에서 선택을 반복하며, 그 선택이 만들어내는 결과와
+                    ‘반쪽짜리 자유’의 구조를 경험하게 됩니다.
+                  </div>
+                </div>
+
+                <div class="timeline-thumbs">
+                  <img src="assets/images/nonormal-wonderland/main.webp" alt="No-normal in Wonderland gameplay"
+                    loading="lazy" />
+                </div>
+              </div>
+            </div>
+          </a>
+
+
+          <!-- 2021 · The Nameless Cat (가장 오래된 것, 마지막) -->
+          <a class="timeline-item timeline-link" href="projects/perfectlab-namelesscat.html">
+            <div class="timeline-dot"></div>
+            <div class="timeline-content">
+              <div class="timeline-header">
+                <!-- 왼쪽: 연도 + 제목 + 메타 + 설명 모두 한 칼럼 -->
+                <div>
+                  <div class="timeline-year">2021</div>
+                  <div class="timeline-title">
+                    The Perfect Lab: The Nameless Cat
+                  </div>
+                  <div class="timeline-meta">
+                    <strong>Art Game</strong> | Game · Level · System Design · Programming
+                  </div>
+                  <div class="timeline-body">
+                    연속된 실험의 부작용으로 몸이 파랗게 변한 실험용 고양이가,
+                    이상반응으로 발현된 능력으로 자신을 폐기하려는 연구원들을 제압하고
+                    7개의 실험실 구역을 돌파해 연인 고양이에게 돌아가는 아트게임입니다.
+                  </div>
+                </div>
+
+                <!-- 오른쪽: 썸네일만 -->
+                <div class="timeline-thumbs">
+                  <img src="assets/images/perfectlab-namelesscat/main.webp" alt="Nameless Cat gameplay"
+                    loading="lazy" />
+                </div>
+              </div>
+            </div>
+          </a>
+
+
+
+        </div>
+      </div>
+  </div>
+  </section>
+
+  <!-- PANEL 4.5: RESEARCH -->
+  <section class="panel panel--research" id="research">
+    <div class="panel-inner panel-inner--narrow">
+      <div class="panel-label">Research</div>
+      <h2 class="panel-title">XR UX &amp; AI Audience Research</h2>
+
+      <div class="research-grid">
+        <div class="research-item">
+          <div class="research-title">AI Audience &amp; Backchannel</div>
+          <div class="research-body">
+            VR 발표 환경에서 AI 청중의 고개 끄덕임, 시선, 멈춤(pause) 등이
+            발표자의 인지·정서 상태와 신뢰 형성에 미치는 영향을 연구합니다.
           </div>
         </div>
-      </section>
-
-      <!-- PANEL 4.5: RESEARCH -->
-      <section class="panel panel--research" id="research">
-        <div class="panel-inner panel-inner--narrow">
-          <div class="panel-label">Research</div>
-          <h2 class="panel-title">XR UX &amp; AI Audience Research</h2>
-
-          <div class="research-grid">
-            <div class="research-item">
-              <div class="research-title">AI Audience &amp; Backchannel</div>
-              <div class="research-body">
-                VR 발표 환경에서 AI 청중의 고개 끄덕임, 시선, 멈춤(pause) 등이
-                발표자의 인지·정서 상태와 신뢰 형성에 미치는 영향을 연구합니다.
-              </div>
-            </div>
-            <div class="research-item">
-              <div class="research-title">Pause as Social Signal</div>
-              <div class="research-body">
-                ASR–LLM–TTS 파이프라인에서 발생하는 지연을 숨기지 않고,
-                “생각하는 침묵”으로 해석되도록 디자인하는 인터랙션 모델을
-                탐구합니다.
-              </div>
-            </div>
-            <div class="research-item">
-              <div class="research-title">Therapeutic &amp; Cognitive XR</div>
-              <div class="research-body">
-                발표 불안 완화, 치매·인지 저하 지원 등 정서·인지 케어를 위한 XR
-                환경을 설계하고, 자극 강도와 난이도 조절 구조를 연구합니다.
-              </div>
-            </div>
+        <div class="research-item">
+          <div class="research-title">Pause as Social Signal</div>
+          <div class="research-body">
+            ASR–LLM–TTS 파이프라인에서 발생하는 지연을 숨기지 않고,
+            “생각하는 침묵”으로 해석되도록 디자인하는 인터랙션 모델을
+            탐구합니다.
           </div>
+        </div>
+        <div class="research-item">
+          <div class="research-title">Therapeutic &amp; Cognitive XR</div>
+          <div class="research-body">
+            발표 불안 완화, 치매·인지 저하 지원 등 정서·인지 케어를 위한 XR
+            환경을 설계하고, 자극 강도와 난이도 조절 구조를 연구합니다.
+          </div>
+        </div>
+      </div>
 
-          <!-- 필요하면 나중에 논문/발표 링크 블록 추가 -->
-          <!--
+      <!-- 필요하면 나중에 논문/발표 링크 블록 추가 -->
+      <!--
           <div class="research-pubs">
             <div class="research-subtitle">Selected Publications</div>
             <ul>
@@ -431,127 +370,122 @@
             </ul>
           </div>
           -->
-        </div>
-      </section>
+    </div>
+  </section>
 
-      <!-- PANEL 5: AI AUDIENCE HIGHLIGHT -->
-      <section class="panel panel--ai">
-        <div class="panel-inner">
-          <div class="panel-label">Highlight</div>
-          <h2 class="panel-title">AI Audience Agent · System View</h2>
-          <div class="ai-layout">
-            <div class="ai-left">
-              <h3 class="ai-subtitle">System Architecture</h3>
-              <p class="ai-text">
-                AI Audience Agent는 다음과 같은 파이프라인으로 동작합니다.
-              </p>
-              <ul class="ai-list">
-                <li>
-                  <strong>ASR</strong> — 발표자의 음성을 실시간 스트리밍으로
-                  인식
-                </li>
-                <li>
-                  <strong>LLM</strong> — 발표 내용과 흐름에 맞는 질문·백채널
-                  생성
-                </li>
-                <li>
-                  <strong>TTS</strong> — 생성된 텍스트를 에이전트 음성으로 변환
-                </li>
-                <li>
-                  <strong>VR Agent Control</strong> — 음성과 함께 시선·고개
-                  끄덕임·표정·상체 제스처 제어
-                </li>
-              </ul>
-              <p class="ai-text">
-                기술적 지연을 숨기기보다, 기다리는 동안의 몸짓을 디자인함으로써
-                시스템의 한계를 하나의 <em>사회적 신호</em>로 전환했습니다.
-              </p>
-            </div>
-            <div class="ai-right">
-              <div class="ai-box">
-                <div class="ai-diagram-title">Pipeline Sketch</div>
-                <div class="ai-diagram">
-                  <div class="ai-node">User Voice</div>
-                  <div class="ai-arrow">ASR</div>
-                  <div class="ai-node">Text</div>
-                  <div class="ai-arrow">LLM</div>
-                  <div class="ai-node">Response</div>
-                  <div class="ai-arrow">TTS</div>
-                  <div class="ai-node">VR Agent</div>
-                </div>
-                <div class="ai-diagram-caption">
-                  실제 구현에서는 각 단계가 비동기적으로 연결되며, VR 에이전트의
-                  상태와 연동됩니다.
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- PANEL 6: TEACHING -->
-      <section class="panel panel--teach" id="teaching">
-        <div class="panel-inner">
-          <div class="panel-label">Teaching</div>
-          <h2 class="panel-title">Creative Coding & XR Studio</h2>
-          <div class="teach-grid">
-            <div class="teach-card">
-              <div class="teach-title">AR Player Lab</div>
-              <div class="teach-meta">AR · Shader · Arduino</div>
-              <div class="teach-body">
-                AR 환경에서 셰이더와 아두이노를 연결해, 학생들이 자신의 몸과
-                디지털 오브젝트의 관계를 실험하는 랩 수업을 운영했습니다.
-              </div>
-            </div>
-            <div class="teach-card">
-              <div class="teach-title">Art Boundary Collision</div>
-              <div class="teach-meta">Intro to Creative Coding</div>
-              <div class="teach-body">
-                예술과 코드의 경계를 주제로, p5.js와 Unity를 활용해 개인의
-                서사를 인터랙티브하게 구현하는 수업을 진행했습니다.
-              </div>
-            </div>
-            <div class="teach-card">
-              <div class="teach-title">Generative Design Studio</div>
-              <div class="teach-meta">Algorithmic Thinking</div>
-              <div class="teach-body">
-                규칙·시스템을 설계해 형태와 움직임을 생성하는 제너러티브 디자인
-                스튜디오를 운영하며, 알고리즘적 사고를 훈련시켰습니다.
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- PANEL 7: CONTACT -->
-      <section class="panel panel--contact" id="contact">
-        <div class="panel-inner contact-inner">
-          <div class="panel-label">Contact</div>
-          <h2 class="panel-title">Let’s build the next system together</h2>
-
-          <p class="contact-text">
-            협업 제안, 프로젝트·리서치 문의, 강의·워크숍 초청 모두
-            환영합니다.<br /><br />
+  <!-- PANEL 5: AI AUDIENCE HIGHLIGHT -->
+  <section class="panel panel--ai">
+    <div class="panel-inner">
+      <div class="panel-label">Highlight</div>
+      <h2 class="panel-title">AI Audience Agent · System View</h2>
+      <div class="ai-layout">
+        <div class="ai-left">
+          <h3 class="ai-subtitle">System Architecture</h3>
+          <p class="ai-text">
+            AI Audience Agent는 다음과 같은 파이프라인으로 동작합니다.
           </p>
+          <ul class="ai-list">
+            <li>
+              <strong>ASR</strong> — 발표자의 음성을 실시간 스트리밍으로
+              인식
+            </li>
+            <li>
+              <strong>LLM</strong> — 발표 내용과 흐름에 맞는 질문·백채널
+              생성
+            </li>
+            <li>
+              <strong>TTS</strong> — 생성된 텍스트를 에이전트 음성으로 변환
+            </li>
+            <li>
+              <strong>VR Agent Control</strong> — 음성과 함께 시선·고개
+              끄덕임·표정·상체 제스처 제어
+            </li>
+          </ul>
+          <p class="ai-text">
+            기술적 지연을 숨기기보다, 기다리는 동안의 몸짓을 디자인함으로써
+            시스템의 한계를 하나의 <em>사회적 신호</em>로 전환했습니다.
+          </p>
+        </div>
+        <div class="ai-right">
+          <div class="ai-box">
+            <div class="ai-diagram-title">Pipeline Sketch</div>
+            <div class="ai-diagram">
+              <div class="ai-node">User Voice</div>
+              <div class="ai-arrow">ASR</div>
+              <div class="ai-node">Text</div>
+              <div class="ai-arrow">LLM</div>
+              <div class="ai-node">Response</div>
+              <div class="ai-arrow">TTS</div>
+              <div class="ai-node">VR Agent</div>
+            </div>
+            <div class="ai-diagram-caption">
+              실제 구현에서는 각 단계가 비동기적으로 연결되며, VR 에이전트의
+              상태와 연동됩니다.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 
-          <p class="contact-text">
-            <span class="icon-row">
-              <!-- Email icon -->
-              <svg class="icon" viewBox="0 0 24 24">
-                <path
-                  fill="currentColor"
-                  d="M12 13.065L1.8 6h20.4L12 13.065zM12 15l10-6v9H2v-9l10 6z"
-                />
-              </svg>
-              <a href="mailto:atelier@borades.art">atelier@borades.art</a>
-            </span>
+  <!-- PANEL 6: TEACHING -->
+  <section class="panel panel--teach" id="teaching">
+    <div class="panel-inner">
+      <div class="panel-label">Teaching</div>
+      <h2 class="panel-title">Creative Coding & XR Studio</h2>
+      <div class="teach-grid">
+        <div class="teach-card">
+          <div class="teach-title">AR Player Lab</div>
+          <div class="teach-meta">AR · Shader · Arduino</div>
+          <div class="teach-body">
+            AR 환경에서 셰이더와 아두이노를 연결해, 학생들이 자신의 몸과
+            디지털 오브젝트의 관계를 실험하는 랩 수업을 운영했습니다.
+          </div>
+        </div>
+        <div class="teach-card">
+          <div class="teach-title">Art Boundary Collision</div>
+          <div class="teach-meta">Intro to Creative Coding</div>
+          <div class="teach-body">
+            예술과 코드의 경계를 주제로, p5.js와 Unity를 활용해 개인의
+            서사를 인터랙티브하게 구현하는 수업을 진행했습니다.
+          </div>
+        </div>
+        <div class="teach-card">
+          <div class="teach-title">Generative Design Studio</div>
+          <div class="teach-meta">Algorithmic Thinking</div>
+          <div class="teach-body">
+            규칙·시스템을 설계해 형태와 움직임을 생성하는 제너러티브 디자인
+            스튜디오를 운영하며, 알고리즘적 사고를 훈련시켰습니다.
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 
-            <span class="icon-row">
-              <!-- Github icon -->
-              <svg class="icon" viewBox="0 0 24 24">
-                <path
-                  fill="currentColor"
-                  d="M12 .5C5.65.5.5 5.65.5 12c0 5.1 3.3 9.45 7.9 11
+  <!-- PANEL 7: CONTACT -->
+  <section class="panel panel--contact" id="contact">
+    <div class="panel-inner contact-inner">
+      <div class="panel-label">Contact</div>
+      <h2 class="panel-title">Let’s build the next system together</h2>
+
+      <p class="contact-text">
+        협업 제안, 프로젝트·리서치 문의, 강의·워크숍 초청 모두
+        환영합니다.<br /><br />
+      </p>
+
+      <p class="contact-text">
+        <span class="icon-row">
+          <!-- Email icon -->
+          <svg class="icon" viewBox="0 0 24 24">
+            <path fill="currentColor" d="M12 13.065L1.8 6h20.4L12 13.065zM12 15l10-6v9H2v-9l10 6z" />
+          </svg>
+          <a href="mailto:atelier@borades.art">atelier@borades.art</a>
+        </span>
+
+        <span class="icon-row">
+          <!-- Github icon -->
+          <svg class="icon" viewBox="0 0 24 24">
+            <path fill="currentColor" d="M12 .5C5.65.5.5 5.65.5 12c0 5.1 3.3 9.45 7.9 11
                .6.1.8-.25.8-.55v-2c-3.2.7-3.9-1.4-3.9-1.4-.55-1.35-1.3-1.7-1.3-1.7
                -1.05-.7.05-.7.05-.7 1.15.1 1.75 1.2 1.75 1.2 1.05 1.75 2.8 1.25 3.45.95
                .1-.75.4-1.25.7-1.55-2.55-.3-5.25-1.3-5.25-5.85
@@ -560,39 +494,34 @@
                c2.2-1.5 3.2-1.2 3.2-1.2.65 1.6.2 2.85.1 3.15
                .75.8 1.2 1.85 1.2 3.1 0 4.55-2.7 5.55-5.25 5.85
                .4.35.75 1 .75 2v2.95c0 .3.2.7.8.55 4.6-1.55 7.9-5.9 7.9-11
-               C23.5 5.65 18.35.5 12 .5z"
-                />
-              </svg>
-              <a href="https://github.com/boracles" target="_blank"
-                >github.com/boracles</a
-              >
-            </span>
+               C23.5 5.65 18.35.5 12 .5z" />
+          </svg>
+          <a href="https://github.com/boracles" target="_blank">github.com/boracles</a>
+        </span>
 
-            <span class="icon-row">
-              <!-- Location icon -->
-              <svg class="icon" viewBox="0 0 24 24">
-                <path
-                  fill="currentColor"
-                  d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5
-               c-1.38 0-2.5-1.12-2.5-2.5S10.62 6.5 12 6.5s2.5 1.12 2.5 2.5S13.38 11.5 12 11.5z"
-                />
-              </svg>
-              Seoul, South Korea
-            </span>
-          </p>
+        <span class="icon-row">
+          <!-- Location icon -->
+          <svg class="icon" viewBox="0 0 24 24">
+            <path fill="currentColor" d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5
+               c-1.38 0-2.5-1.12-2.5-2.5S10.62 6.5 12 6.5s2.5 1.12 2.5 2.5S13.38 11.5 12 11.5z" />
+          </svg>
+          Seoul, South Korea
+        </span>
+      </p>
 
-          <div class="contact-foot">
-            © <span id="year"></span> Atelier BORACLES · Bora Youn. All rights reserved.
-          </div>
-          
-        </div>
-      </section>
+      <div class="contact-foot">
+        © <span id="year"></span> Atelier BORACLES · Bora Youn. All rights reserved.
+      </div>
+
     </div>
+  </section>
+  </div>
 
-    <script>
-      document.getElementById("year").textContent = new Date()
-        .getFullYear()
-        .toString();
-    </script>
-  </body>
+  <script>
+    document.getElementById("year").textContent = new Date()
+      .getFullYear()
+      .toString();
+  </script>
+</body>
+
 </html>
