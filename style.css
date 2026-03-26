@@ -275,9 +275,9 @@ body {
 }
 
 .intro-tagline {
-  font-size: 1.1rem;
+  font-size: clamp(1rem, 1.4vw, 1.35rem);
   color: #ffffff;
-  line-height: 1.8;
+  line-height: 1.6;
   font-family: "Sweet", "Noto Sans KR", sans-serif;
 }
 
