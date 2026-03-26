@@ -285,15 +285,27 @@ body {
   font-weight: 600;
 }
 
-/* 배경 영상 */
-.intro-bg-video {
+/* 유튜브 배경 */
+.intro-bg-yt {
   position: absolute;
   inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+  overflow: hidden;
   z-index: 0;
   pointer-events: none;
+}
+
+/* 16:9 영상이 화면을 덮도록 크롭 */
+.intro-bg-yt iframe {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 100vw;
+  height: 56.25vw; /* 16:9 */
+  min-width: 177.78vh; /* 16:9 */
+  min-height: 100vh;
+  transform: translate(-50%, -50%);
+  border: 0;
+  z-index: 0;
 }
 
 /* 상단/하단 fade overlay */
