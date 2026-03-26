@@ -402,16 +402,69 @@ body {
   background: #000000;
 }
 
+.founder-main {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+}
+
 .founder-name {
   font-weight: 700;
   color: #ffffff;
 }
 
 .founder-role {
-  display: inline-block;
-  margin-bottom: 10px;
   font-weight: 700;
   color: rgba(255, 255, 255, 0.96);
+}
+
+.founder-desc {
+  color: rgba(255, 255, 255, 0.78);
+}
+
+.founder-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 14px;
+  padding: 7px 14px;
+  border: 1px solid rgba(255, 255, 255, 0.42);
+  border-radius: 999px;
+  color: #ffffff;
+  text-decoration: none;
+  font-size: 0.84rem;
+  line-height: 1;
+  font-family: "Sweet", "Noto Sans KR", sans-serif;
+  transition: border-color 0.2s ease, background-color 0.2s ease, color 0.2s ease;
+}
+
+.founder-link:hover {
+  border-color: rgba(255, 255, 255, 0.82);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.founder-top {
+  display: grid;
+  grid-template-columns: 96px minmax(0, 1fr);
+  gap: 16px;
+  align-items: start;
+  margin-top: 8px;
+}
+
+.founder-photo {
+  width: 96px;
+  aspect-ratio: 3 / 4;
+  object-fit: cover;
+  display: block;
+  filter: grayscale(100%);
+}
+
+.founder-info {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
 }
 
 #aboutCanvas {
@@ -479,6 +532,14 @@ body {
 /* 제목 아래 여백 조금 더 넓게 */
 .panel--caps .panel-title {
   margin-bottom: 96px; /* 80 → 96 */
+}
+
+.panel--about {
+  padding-top: 120px;
+}
+
+.panel--about .panel-inner {
+  margin-top: 100px;
 }
 
 /* 전체 그리드 행 간격 넉넉하게 */
