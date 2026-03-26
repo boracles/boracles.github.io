@@ -185,22 +185,11 @@ document.addEventListener("DOMContentLoaded", () => {
       energy: 0, // 0 ~ 1 근처
     };
 
-    // ★ 왼쪽 텍스트 높이에 맞춰서 오른쪽 + 캔버스 높이 맞추기
     function syncAboutHeightOnly() {
-      const left = document.querySelector(".about-left");
-      const right = document.querySelector(".about-right");
-      if (!left || !right) return;
-
-      // 모바일(1열)에서는 강제 높이 제거
       if (window.innerWidth <= 880) {
-        right.style.height = "";
         aboutCanvas.style.height = "";
         return;
       }
-
-      const h = left.getBoundingClientRect().height;
-      right.style.height = `${h}px`; // 오른쪽 박스 높이
-      aboutCanvas.style.height = `${h}px`; // 캔버스 CSS 높이
     }
 
     function resize() {
@@ -415,17 +404,14 @@ window.addEventListener("load", () => {
   window.addEventListener("touchstart", enablePlay, { once: true });
   window.addEventListener("click", enablePlay, { once: true });
 
-  // ============================
   // ABOUT: 오른쪽 비주얼 높이를 왼쪽 텍스트와 맞추기
-  // ============================
   function syncAboutHeight() {
     const left = document.querySelector(".about-left");
     const right = document.querySelector(".about-right");
     if (!left || !right) return;
 
-    // 모바일(한 컬럼)일 때는 고정값만 쓰고 높이 동기화 안 함
     if (window.innerWidth <= 880) {
-      right.style.height = ""; // JS로 준 값 제거
+      right.style.height = "";
       return;
     }
 

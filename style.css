@@ -174,6 +174,9 @@ body {
   color: #ffffff;
   text-decoration: none;
   text-transform: capitalize;
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 /* 기본은 밑줄 없음 */
@@ -249,6 +252,21 @@ body {
 /* ==========================
    INTRO
 ========================== */
+
+.intro-title,
+.intro-tagline,
+.bodoni-title,
+.about-text,
+.about-meta-label,
+.about-meta-text,
+.nav-name,
+.nav-role,
+.nav-right a {
+  user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  cursor: default;
+}
 
 .panel--intro {
   padding-top: 60px;
@@ -335,12 +353,13 @@ body {
 .about-shell {
   width: 100%;
   display: grid;
-  grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 32px;
-  align-items: stretch; /* ← 양쪽 칼럼 높이 맞추기 */
+  align-items: start;
 }
 
 .about-left {
+  grid-column: 1 / span 2;
   display: flex;
   flex-direction: column;
   gap: 20px;
@@ -375,15 +394,29 @@ body {
 }
 
 .about-right {
+  grid-column: 3;
   position: relative;
-  height: 100%; /* ← JS로 높이 넣어줄 때 필요 */
+  height: 420px;
+  align-self: start;
   overflow: hidden;
   background: #000000;
 }
 
+.founder-name {
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.founder-role {
+  display: inline-block;
+  margin-bottom: 10px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.96);
+}
+
 #aboutCanvas {
   width: 100%;
-  height: 100%; /* 부모(.about-right)의 높이를 그대로 */
+  height: 100%;
   display: block;
 }
 
@@ -399,17 +432,17 @@ body {
 }
 
 .about-meta-block {
-  border-top: 0.1px solid#ffffff;
-  padding-top: 10px;
+  border-top: 1px solid rgba(255, 255, 255, 0.36);
+  padding-top: 14px;
 }
 
 .about-meta-label {
-  font-size: 0.8rem;
-  letter-spacing: 0.22em;
+  font-size: 0.85rem;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--text-soft);
+  color: rgba(255, 255, 255, 0.92);
   margin-bottom: 12px;
-  font-weight: 600;
+  font-weight: 800;
 }
 
 .about-meta-text {
@@ -898,12 +931,18 @@ body {
     grid-template-columns: 1fr 1fr;
   }
   .about-shell {
-    grid-template-columns: minmax(0, 1fr);
+    grid-template-columns: 1fr;
     gap: 24px;
   }
+  .about-left,
   .about-right {
-    min-height: 260px;
+    grid-column: auto;
   }
+
+  .about-right {
+    min-height: 280px;
+  }
+
   .nav {
     flex-direction: column;
     align-items: flex-start;
