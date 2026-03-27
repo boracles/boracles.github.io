@@ -871,6 +871,90 @@ body {
   margin-top: 10px;
 }
 
+
+.research-section-block {
+  margin-top: 56px;
+  padding-top: 24px;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.research-subtitle {
+  font-size: 0.82rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  opacity: 0.72;
+  margin-bottom: 18px;
+  font-weight: 600;
+}
+
+.publication-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.publication-item {
+  padding-bottom: 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.publication-meta {
+  font-size: 0.8rem;
+  opacity: 0.6;
+  margin-bottom: 6px;
+}
+
+.publication-title {
+  font-size: 1.05rem;
+  line-height: 1.4;
+  margin-bottom: 8px;
+}
+
+.publication-body {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  opacity: 0.82;
+}
+
+.research-notes-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.research-note-card {
+  display: block;
+  padding: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  text-decoration: none;
+  color: inherit;
+  transition: transform 0.18s ease, border-color 0.18s ease, background 0.18s ease;
+}
+
+.research-note-card:hover {
+  transform: translateY(-3px);
+  border-color: rgba(255, 255, 255, 0.26);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.research-note-meta {
+  font-size: 0.78rem;
+  opacity: 0.6;
+  margin-bottom: 8px;
+}
+
+.research-note-title {
+  font-size: 1rem;
+  line-height: 1.4;
+  margin-bottom: 8px;
+}
+
+.research-note-body {
+  font-size: 0.92rem;
+  line-height: 1.55;
+  opacity: 0.82;
+}
+
 /* ==========================
    TEACHING
 ========================== */
@@ -967,6 +1051,12 @@ body {
 /* ==========================
    RESPONSIVE
 ========================== */
+
+@media (max-width: 900px) {
+  .research-notes-grid {
+    grid-template-columns: 1fr;
+  }
+}
 
 @media (max-width: 880px) {
   /* Capabilities: 모바일에서는 6개가 모두 같은 간격으로 세로 나열되게 */
