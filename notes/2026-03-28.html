@@ -91,12 +91,19 @@
           <h2>Working Criteria</h2>
 
           <h3 class="note-subheading">Channel Categories</h3>
+
+          <p class="note-caption">
+            Key Design Features는 상호배타적인 상태 목록이 아니라, 청중 백채널
+            생성과 제어를 위한 구성 차원이다. 하나의 clip은 둘 이상의 feature를
+            포함할 수 있다.
+          </p>
+
           <table class="note-table note-table--channels">
             <thead>
               <tr>
                 <th>Category</th>
                 <th>Operational Definition</th>
-                <th>Key Observable Features</th>
+                <th>Key Design Features</th>
                 <th>Typical Examples</th>
                 <th>Classification Rule</th>
               </tr>
@@ -104,15 +111,18 @@
             <tbody>
               <tr>
                 <td rowspan="5">Body posture</td>
-                <td rowspan="5">몸통·상체·팔의 자세 형태로 드러나는 반응.</td>
-                <td>uprightness</td>
-                <td>BODY_uprightNeutral, BODY_slumped</td>
                 <td rowspan="5">
-                  반응의 핵심 정보가 고개의 짧은 움직임이나 시선 변화보다
-                  몸통·상체·팔의 자세 형태에서 읽히면 body posture로 분류한다.
-                  짧은 nod, shake, head turn은 head movement로, 반복적인 몸
-                  움직임이나 조작행동은 transient action 또는 별도
-                  movement/action으로 분류한다.
+                  몸통·상체·팔의 자세 구성과 정렬을 통해 드러나는 반응.
+                </td>
+                <td>torso uprightness</td>
+                <td>BODY_uprightNeutral</td>
+                <td rowspan="5">
+                  이 범주는 청중 반응이 몸통·상체·팔의 자세 구성과 정렬을 통해
+                  어떻게 드러나는지를 기술하기 위한 것이다. 따라서 짧은 nod,
+                  shake, head turn처럼 머리의 국소적 움직임이 중심인 경우는 head
+                  movement 차원에서 보고, 반복적인 몸 움직임이나 조작행동처럼
+                  사건성이 강한 경우는 transient action 또는 별도의
+                  movement/action 차원에서 다룬다.
                 </td>
               </tr>
               <tr>
@@ -125,38 +135,45 @@
               </tr>
               <tr>
                 <td>openness / closure</td>
-                <td>BODY_backwardClosed, BODY_selfContactClosed</td>
+                <td>
+                  BODY_open,<br />
+                  BODY_closed,<br />
+                  BODY_armsCrossed
+                </td>
               </tr>
               <tr>
-                <td>self-contact</td>
-                <td>BODY_selfContactClosed</td>
+                <td>self-contact / self-support</td>
+                <td>BODY_selfContact, BODY_headSupport</td>
               </tr>
 
               <tr>
                 <td rowspan="5">Head movement</td>
-                <td rowspan="5">머리의 움직임 패턴으로 드러나는 반응.</td>
-                <td>nod</td>
+                <td rowspan="5">
+                  머리의 국소적 움직임 패턴으로 드러나는 반응.
+                </td>
+                <td>head nod</td>
                 <td>Small nod, Repeated nod</td>
                 <td rowspan="5">
-                  반응의 핵심 정보가 머리의 움직임 패턴에서 읽히면 head
-                  movement로 분류한다. 시선 방향 변화가 핵심이면 gaze로, 몸통과
-                  팔의 자세가 핵심이면 body posture로 분류한다.
+                  이 범주는 반응의 핵심 정보가 머리의 국소적 움직임 패턴에서
+                  드러나는 경우를 기술하기 위한 것이다. 시선 방향 변화가
+                  핵심이면 gaze 차원에서, 몸통·상체·팔의 자세 구성이 핵심이면
+                  body posture 차원에서 다룬다.
                 </td>
               </tr>
               <tr>
-                <td>shake</td>
+                <td>head shake</td>
                 <td>Head shake</td>
               </tr>
               <tr>
-                <td>tilt</td>
+                <td>head tilt</td>
                 <td>Head tilt</td>
               </tr>
               <tr>
-                <td>dip</td>
-                <td>Downward dip</td>
+                <td>head down</td>
+                <td>Downward head movement</td>
               </tr>
               <tr>
-                <td>turn-away</td>
+                <td>head turn-away</td>
                 <td>Turn-away</td>
               </tr>
 
@@ -171,6 +188,7 @@
                   시선 방향이 중심이면 gaze로 분류한다.
                 </td>
               </tr>
+
               <tr>
                 <td>frown</td>
                 <td>Frown</td>
@@ -213,18 +231,41 @@
           <h3 class="note-subheading">Literature Basis</h3>
           <ul class="note-references">
             <li>
-              <strong>Body posture</strong>는 Pöschl &amp; Döring (2012)이
-              posture를 독립적 비언어 차원으로 다루고 sitting upright, leaning
-              forward, leaning back with folded arms, turning the upper part of
-              the body sideways와 같은 자세 예시를 제시한 점을 반영하였다. 다만
-              BODY_slumped와 BODY_selfContactClosed는 해당 문헌의 직접
-              범주라기보다, 관찰 기반 연구를 바탕으로 본 연구에서 확장한 작업적
-              범주이다.
+              <strong>Body posture.</strong> Pöschl &amp; Döring (2012)은 발표를
+              듣는 청중의 비언어 행동 중 posture를 독립 차원으로 다루며 sitting
+              upright, leaning forward, leaning back with folded arms, turning
+              the upper part of the body sideways와 같은 자세를 제시하였다. Kang
+              (2016)은 이를 더 세분화하여 torso upright, torso forward, torso
+              backward, torso back in the chair, torso bent forward와 같은 torso
+              정렬 변화와, arms crossed, chin/cheek touch, supporting head, neck
+              touch와 같은 arm/hand-related posture cue를 구분해 코딩하였다. 본
+              연구의 torso uprightness, sagittal lean, lateral orientation은
+              이러한 torso 정렬 및 방향 변화에, self-contact / self-support는
+              chin/cheek touch, supporting head, neck touch와 같은
+              self-contact-related arm/hand posture cue에 근거해 정리하였다.
+              한편 openness / closure는 Pöschl &amp; Döring (2012)의 leaning
+              back with folded arms와 같은 조합적 자세 예시와, open posture와
+              closed posture를 대비한 자세 조작이 사회적 판단 및 시선 처리와
+              관련됨을 보인 Zloteanu et al. (2021)을 참고하여, 팔과 몸통의
+              개방성/폐쇄성을 기술하기 위한 해석 축으로 도입하였다. 따라서 본
+              표의 body posture feature는 발표 상황의 청중 백채널 생성과 제어를
+              위해 torso alignment, lean direction, arm configuration,
+              self-contact cue를 feature level에서 작업적으로 재구성한 체계이다.
             </li>
             <li>
-              <strong>Head movement</strong>는 listener response 및 backchannel
-              연구에서 head nods, shakes 등이 gaze, facial expression과 구분되는
-              독립 비언어 신호로 다뤄진 점을 반영하였다.
+              <strong>Head movement.</strong> Head movement는 발표 상황의 청중
+              반응과 listener response를 구성하는 독립 비언어 신호로 다루어진다.
+              Kang (2016)은 audience posture coding scheme에서 head를 별도
+              부위로 분리하고 head up, head turn, head down, head tilt, head
+              nod, head shake를 독립적으로 코딩하였다. 본 연구의 nod, shake,
+              tilt, dip, turn-away는 이러한 head movement 항목을 바탕으로 발표
+              상황의 청중 백채널 생성에 맞게 재구성한 작업적 feature이다. 또한
+              de Kok and Heylen (2012)과 Ondáš et al. (2023)은 listener response
+              및 backchannel의 대표적 비언어 신호로 head nods와 head shakes를
+              제시하였고, Tudor et al. (2013)도 발표를 듣는 청중의 attentiveness
+              cue 중 하나로 nods를 언급하였다. 따라서 본 표의 head movement
+              feature는 발표 청중의 반응에서 반복적으로 관찰되는 머리의 국소적
+              움직임을 독립 채널로 다루기 위한 체계이다.
             </li>
             <li>
               <strong>Facial expression</strong>은 실제 청중 관찰 연구와 virtual
@@ -398,6 +439,12 @@
               https://doi.org/10.1109/MCG.2017.3271465
             </li>
             <li>
+              de Kok, I., &amp; Heylen, D. (2012). Analyzing nonverbal listener
+              responses using parallel recordings of multiple listeners.
+              <em>Cognitive Processing, 13</em>(Suppl 2), 499–506.
+              https://doi.org/10.1007/s10339-012-0434-3
+            </li>
+            <li>
               Etienne, E., Leclercq, A.-L., Remacle, A., Dessart, L., &amp;
               Schyns, M. (2023). Perception of avatars nonverbal behaviors in
               virtual reality.
@@ -405,11 +452,40 @@
               https://doi.org/10.1002/mar.21871
             </li>
             <li>
+              Kang, N. (2016).
+              <em
+                >Public speaking in virtual reality: Audience design and speaker
+                experiences</em
+              >
+              (Doctoral thesis, Delft University of Technology).
+              https://doi.org/10.4233/uuid:e920dec8-2b71-4377-bc0f-8f9c950fff42
+            </li>
+            <li>
+              Ondáš, S., Kiktová, E., Pleva, M., &amp; Juhár, J. (2023).
+              Analysis of backchannel inviting cues in dyadic speech
+              communication.
+              <em>Electronics, 12</em>(17), 3705.
+              https://doi.org/10.3390/electronics12173705
+            </li>
+            <li>
               Poeschl, S., &amp; Doering, N. (2012). Designing virtual audiences
               for fear of public speaking training: An observation study on
               realistic nonverbal behavior.
               <em>Annual Review of Cybertherapy and Telemedicine, 181</em>,
               218–222. https://doi.org/10.3233/978-1-61499-121-2-218
+            </li>
+            <li>
+              Tudor, A.-D., Poeschl, S., &amp; Döring, N. (2013). What do
+              audiences do when they sit and listen?
+              <em>Studies in Health Technology and Informatics, 191</em>, 120.
+              https://doi.org/10.3233/978-1-61499-282-0-120
+            </li>
+            <li>
+              Zloteanu, M., Krumhuber, E. G., &amp; Richardson, D. C. (2021).
+              Sitting in judgment: How body posture influences deception
+              detection and gazing behavior.
+              <em>Behavioral Sciences, 11</em>(6), 85.
+              https://doi.org/10.3390/bs11060085
             </li>
           </ul>
         </section>

@@ -1225,13 +1225,6 @@ body.note-page {
 }
 
 .note-shell {
-  width: min(760px, calc(100% - 40px));
-  margin: 0 auto;
-  padding: 140px 0 100px;
-}
-
-.note-shell,
-.notes-archive-shell {
   width: min(980px, calc(100% - 56px));
   margin: 0 auto;
   padding: 148px 0 120px;
@@ -1264,11 +1257,6 @@ body.note-page {
 
 .note-breadcrumb span {
   color: rgba(255, 255, 255, 0.45);
-}
-
-.note-article {
-  width: 100%;
-  max-width: 760px;
 }
 
 .notes-archive-shell {
@@ -1449,17 +1437,6 @@ body.note-page {
   line-height: 1.65;
   color: rgba(255, 255, 255, 0.74);
 }
-
-.note-references {
-  margin: 0.8rem 0 1.8rem;
-  padding-left: 1.2rem;
-}
-
-.note-references li {
-  margin-bottom: 1rem;
-  line-height: 1.85;
-  color: rgba(255, 255, 255, 0.82);
-}
 .note-references {
   margin: 0.8rem 0 1.8rem;
   padding-left: 1.2rem;
@@ -1554,6 +1531,17 @@ body.note-page {
   font-weight: 600;
   letter-spacing: 0.01em;
   opacity: 0.9;
+}
+
+.note-section p.note-caption {
+  margin: 0.2rem 0 1.35rem;
+  padding-left: 12px;
+  border-left: 1px solid rgba(255, 255, 255, 0.16);
+  font-size: 0.8rem;
+  line-height: 1.65;
+  color: rgba(255, 255, 255, 0.56);
+  font-weight: 400;
+  max-width: none;
 }
 
 /* ==========================
@@ -1724,12 +1712,14 @@ body.note-page {
 
   .note-shell,
   .notes-archive-shell {
-    width: min(100%, calc(100% - 28px));
-    padding: 128px 0 96px;
+    width: min(980px, calc(100% - 56px));
+    margin: 0 auto;
+    padding: 148px 0 120px;
   }
 
   .note-article {
-    max-width: 100%;
+    width: min(760px, 100%);
+    margin: 0 auto;
   }
 
   .note-title {
