@@ -1436,6 +1436,41 @@ body.note-page {
   font-style: italic;
 }
 
+.note-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1rem 0 1.6rem;
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+.note-table th,
+.note-table td {
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  padding: 0.8rem 0.7rem;
+  text-align: left;
+  vertical-align: top;
+}
+
+.note-table th {
+  font-weight: 600;
+  opacity: 0.9;
+}
+
+.note-table td:first-child,
+.note-table th:first-child {
+  white-space: nowrap;
+}
+
+.note-subheading {
+  margin: 1.2rem 0 0.6rem;
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  opacity: 0.9;
+}
+
 /* ==========================
    RESPONSIVE
 ========================== */

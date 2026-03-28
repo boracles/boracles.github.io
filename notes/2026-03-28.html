@@ -83,16 +83,241 @@
                     다루어진다는 점에 근거한다 (Poeschl &amp; Döring, 2012; Chollet &amp; Scherer, 2017; Etienne et al., 2023).
                     둘째, 각 반응이 비교적 유지되는 sustained state인지, 짧게 발생했다가 종료되는 transient action인지에 따라 반응 형식을 구분한다.
                     이 두 번째 구분은 선행연구에서 직접 제시된 범주라기보다,
-                    청중 반응의 시간적 전개 양상을 분석하기 위해 본 노트에서 설정한 작업적 구분이다.
+                    청중 반응의 시간적 전개 양상을 분석하기 위해 본 연구에서 설정한 작업적 구분이다.
                 </p>
             </section>
-
             <section class="note-section">
                 <h2>Working Criteria</h2>
-                <p>
-                    현재 시점에서의 임시 판단 기준이나 분류 기준을 적는다.
-                    무엇을 BODY로 보고, 무엇을 ACTION으로 볼지 기준을 명시한다.
-                </p>
+
+                <h3 class="note-subheading">Channel Categories</h3>
+                <table class="note-table">
+                    <thead>
+                        <tr>
+                            <th>Category</th>
+                            <th>Operational Definition</th>
+                            <th>Primary Cue</th>
+                            <th>Typical Examples</th>
+                            <th>Classification Rule</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Body posture</td>
+                            <td>
+                                몸통·상체·팔 배치의 전반적 정렬과 개방성/폐쇄성, 전후 기울기,
+                                안정성/처짐이 중심이 되는 반응.
+                            </td>
+                            <td>
+                                torso alignment, openness/closure, lean direction, arm containment
+                            </td>
+                            <td>
+                                Neutral (BODY_neutral),<br>
+                                Attentive (BODY_attentive),<br>
+                                Slumped (BODY_slumped),<br>
+                                Reserved lean (BODY_reservedLean),<br>
+                                Self-monitoring (BODY_selfMonitoring)
+                            </td>
+                            <td>
+                                반응의 핵심 정보가 몸 전체 자세의 유지된 배치에서 읽히면
+                                body posture로 분류한다.
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Head movement</td>
+                            <td>
+                                고개의 방향, 끄덕임, 흔들기, 기울임, 순간적 dip/jerk,
+                                speaker로부터의 turn-away가 중심이 되는 반응.
+                            </td>
+                            <td>
+                                nod, shake, tilt, dip, jerk, turn-away
+                            </td>
+                            <td>
+                                Small nod,
+                                Repeated nod,
+                                Head tilt,
+                                Downward dip,
+                                Head shake,
+                                Turn-away
+                            </td>
+                            <td>
+                                반응의 핵심 정보가 머리의 움직임 패턴으로 읽히면
+                                head movement로 분류한다.
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Facial expression</td>
+                            <td>
+                                안면 근육 변화가 중심이 되는 반응.
+                                특히 smile, frown, doubt/raised-brow, neutral face처럼
+                                정서적·평가적 단서가 얼굴에서 읽히는 경우.
+                            </td>
+                            <td>
+                                smile, frown, brow raise, tension in mouth/eyes
+                            </td>
+                            <td>
+                                Smile,<br>
+                                Frown,<br>
+                                Doubt expression,
+                                Neutral face
+                            </td>
+                            <td>
+                                반응의 핵심 정보가 얼굴 표정 변화에서 읽히면
+                                facial expression으로 분류한다.
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Gaze</td>
+                            <td>
+                                시선의 유지, 회피, speaker-directed attention, looking away,
+                                side/down/up gaze direction이 중심이 되는 반응.
+                            </td>
+                            <td>
+                                eye contact, gaze maintenance, gaze aversion, looking away
+                            </td>
+                            <td>
+                                Sustained eye contact,<br>
+                                Brief gaze aversion,
+                                Prolonged looking away
+                            </td>
+                            <td>
+                                반응의 핵심 정보가 시선 방향과 주시 유지/이탈에서 읽히면
+                                gaze로 분류한다.
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3 class="note-subheading">Response Forms</h3>
+                <table class="note-table">
+                    <thead>
+                        <tr>
+                            <th>Form</th>
+                            <th>Operational Definition</th>
+                            <th>Temporal Profile</th>
+                            <th>Typical Examples</th>
+                            <th>Classification Rule</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Sustained state</td>
+                            <td>
+                                비교적 일정 시간 유지되며 청중의 listening stance,
+                                attentiveness, reservation, discomfort, self-monitoring 같은
+                                상태를 나타내는 반응.
+                            </td>
+                            <td>
+                                hold / settle → hold / minimal ongoing variation
+                            </td>
+                            <td>
+                                BODY_neutral, BODY_attentive_forwardLean,
+                                BODY_reserved_backwardLean_subtle,
+                                BODY_selfMonitoring_slightClosed,
+                                BODY_sideOriented, BODY_selfRegulating_discomfort
+                            </td>
+                            <td>
+                                시작과 종료보다 “유지되는 상태”가 핵심이면
+                                sustained state로 기록한다.
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Transient action</td>
+                            <td>
+                                시작과 종료가 비교적 뚜렷하고, 짧은 사건처럼 발생하는 반응.
+                                task-driven, physiological, social, bodily adjustment,
+                                self-regulation, discomfort/fidget action을 포함한다.
+                            </td>
+                            <td>
+                                brief / very brief / short sustained / repeated episode
+                            </td>
+                            <td>
+                                ACT_noteTaking, ACT_photographingSlides, ACT_deviceChecking,
+                                ACT_yawn, ACT_cough, ACT_whispering, ACT_sideConversation,
+                                ACT_drinking, ACT_seatAdjustment, ACT_selfContact,
+                                ACT_smallStretch, ACT_handReposition, ACT_restlessSeatMove,
+                                ACT_repeatedHandMove
+                            </td>
+                            <td>
+                                사건성이 강하고 onset–offset이 비교적 분명하면
+                                transient action으로 기록한다.
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <table class="note-table">
+                    <thead>
+                        <tr>
+                            <th>Decision Issue</th>
+                            <th>Rule</th>
+                            <th>Example</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>State vs. action</td>
+                            <td>
+                                유지된 배치가 핵심이면 state, 짧은 episode가 핵심이면 action으로 우선 판정한다.
+                            </td>
+                            <td>
+                                backward lean 유지 = sustained state /
+                                seat adjustment 1회 = transient action
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Head vs. gaze</td>
+                            <td>
+                                시선 방향 변화가 핵심이면 gaze, 고개 운동 자체가 핵심이면 head movement로 판정한다.
+                            </td>
+                            <td>
+                                눈은 speaker에서 벗어나지만 고개는 거의 고정 = gaze /
+                                고개를 좌우로 흔듦 = head movement
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Body vs. head</td>
+                            <td>
+                                torso·arm configuration이 의미의 중심이면 body posture,
+                                고개 movement가 의미의 중심이면 head movement로 판정한다.
+                            </td>
+                            <td>
+                                folded arms + backward torso = body posture /
+                                repeated nod = head movement
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Body vs. action</td>
+                            <td>
+                                자세 변화가 새로운 stable configuration으로 남으면 body posture,
+                                잠깐 발생하고 사라지면 transient action으로 판정한다.
+                            </td>
+                            <td>
+                                slump로 내려가 유지 = body posture /
+                                small stretch 1회 = transient action
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Multiple cues in one clip</td>
+                            <td>
+                                1차로 form(state/action)을 정하고, 2차로 가장 지배적으로 지각되는 channel을 기록한다.
+                            </td>
+                            <td>
+                                cough하면서 briefly head dips = transient action / head-linked action
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Speaker interpretation priority</td>
+                            <td>
+                                발표자가 가장 먼저 읽게 되는 신호를 우선 기록한다.
+                                사회적 평가 신호로 직접 읽히는 cue를 우선한다.
+                            </td>
+                            <td>
+                                nod는 agreement cue, shake는 disagreement cue,
+                                looking away는 disengagement cue
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
             </section>
 
             <section class="note-section">
