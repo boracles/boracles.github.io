@@ -1422,6 +1422,20 @@ body.note-page {
   color: rgba(255, 255, 255, 0.74);
 }
 
+.note-references {
+  margin: 0;
+  padding-left: 1.2rem;
+}
+
+.note-references li {
+  margin-bottom: 0.95rem;
+  line-height: 1.75;
+}
+
+.note-references em {
+  font-style: italic;
+}
+
 /* ==========================
    RESPONSIVE
 ========================== */
