@@ -36,30 +36,34 @@
       <article class="note-article">
         <header class="note-header">
           <div class="note-meta">2026.03.28 · XR / HCI / AI Agents</div>
-          <h1 class="note-title">[Note Title]</h1>
+          <h1 class="note-title">
+            Operational Criteria for Classifying Audience Nonverbal Responses
+          </h1>
           <p class="note-summary">
-            [이 노트가 오늘 무엇을 정리하는지 한 문장으로]
+            발표 상황에서 관찰되는 청중의 비언어 반응을 가상 청중 백채널 생성과
+            제어에 활용하기 위해, 반응 채널, 시간적 형식, 그리고 판정 규칙을
+            포함한 작업적 분류 기준을 정리한다.
           </p>
         </header>
 
         <section class="note-section note-section--highlight">
           <h2>Research Goal</h2>
           <p>
-            발표를 듣는 청중의 비언어 반응을 가상 청중 백채널 생성과 제어에
-            활용하기 위해, 반응 채널, 시간적 형식, 그리고 판정 규칙을 포함하는
-            작업적 분류 체계를 정교화한다.
+            발표자의 발화 내용과 발표 맥락에 적절하게 반응하는 AI 청중의
+            백채널을 생성하기 위해, 청중 비언어 반응의 반응 채널, 시간적 형식,
+            그리고 선택 및 판정 규칙을 포함하는 작업적 생성 기준을 정교화한다.
           </p>
         </section>
 
         <section class="note-section note-section--highlight">
           <h2>Research Question</h2>
           <p>
-            RQ1. 발표 상황에서 청중의 비언어 반응은 어떤 비언어 채널로 구분할 수
-            있는가? <br />
-            RQ2. 이러한 반응은 시간적 전개 양상에 따라 어떤 시간적 형식으로
-            구분할 수 있는가? <br />
-            RQ3. 복합적 단서를 포함한 청중 반응 클립의 분류를 위해 어떤 판정
-            규칙이 필요한가?
+            RQ1. 발표 상황에서 청중의 비언어 반응은 AI 청중 백채널 생성을 위해
+            어떤 반응 채널과 시간적 형식으로 조직될 수 있는가? <br />
+            RQ2. 발표 내용과 발표 맥락에 따라 어떤 청중 반응이 적절한 백채널로
+            선택되어야 하는가? <br />
+            RQ3. 복합적 단서를 포함한 청중 반응을 생성 가능한 단위로 다루기 위해
+            어떤 선택 및 판정 규칙이 필요한가?
           </p>
         </section>
 
@@ -204,26 +208,31 @@
 
               <tr>
                 <td rowspan="4">Gaze</td>
-                <td rowspan="4">시선의 방향과 유지 여부로 드러나는 반응.</td>
-                <td>eye contact</td>
-                <td>Sustained eye contact</td>
                 <td rowspan="4">
-                  반응의 핵심 정보가 시선 방향과 주시 유지/이탈에서 읽히면
-                  gaze로 분류한다. 고개 운동 자체가 핵심이면 head movement로,
-                  몸통과 팔의 자세가 핵심이면 body posture로 분류한다.
+                  행위에 직접 종속되지 않은 시선의 대상과 유지/이탈 패턴으로
+                  드러나는 반응.
+                </td>
+                <td>speaker-directed gaze</td>
+                <td>GAZE_atSpeaker</td>
+                <td rowspan="4">
+                  반응의 핵심 정보가 고개 운동 자체가 아니라 시선의 대상
+                  (speaker, slides/display, elsewhere)과 유지/이탈 패턴에서
+                  드러나면 gaze로 분류한다. 단, 시선이 필기, 노트북 사용, 휴대폰
+                  확인과 같은 명확한 행위 수행에 종속된 경우에는 action으로 우선
+                  분류한다.
                 </td>
               </tr>
               <tr>
-                <td>gaze maintenance</td>
-                <td>Sustained eye contact</td>
+                <td>slide-directed gaze</td>
+                <td>GAZE_atSlides</td>
               </tr>
               <tr>
-                <td>gaze aversion</td>
-                <td>Brief gaze aversion</td>
+                <td>brief gaze aversion</td>
+                <td>GAZE_briefAversion</td>
               </tr>
               <tr>
-                <td>looking away</td>
-                <td>Prolonged looking away</td>
+                <td>sustained looking away</td>
+                <td>GAZE_lookingAway</td>
               </tr>
             </tbody>
           </table>
@@ -293,9 +302,29 @@
               doubtful response를 구분하기 위한 작업적 분류로 구성하였다.
             </li>
             <li>
-              <strong>Gaze</strong>는 실제 청중 관찰과 backchannel 연구에서 gaze
-              direction이 listener feedback과 attention signal의 핵심 단서로
-              다뤄진 점을 반영하였다.
+              <strong>Gaze.</strong> Gaze는 청중 반응의 핵심 정보가 행위에 직접
+              종속되지 않은 시선의 대상과 유지/이탈 패턴에서 드러날 때 이를
+              기술하기 위한 채널이다. 실제 대화 및 listener response 연구에서는
+              gaze가 상대에 대한 주시와 시선 이탈을 통해 상호작용 상태를
+              드러내는 핵심 비언어 단서로 다뤄져 왔다. Bavelas et al. (2002)는
+              listener responses를 협력적 과정으로 보며 gaze의 역할을
+              강조하였고, Degutyte and Astell (2021)의 review는 eye gaze가 turn
+              yielding, speech monitoring, backchannel, conversation breakdown
+              repair와 관련된다고 정리하였다. 이는 gaze 연구의 핵심 관심이
+              단순한 눈 움직임 자체보다 시선의 대상과 유지/이탈 패턴에 있음을
+              보여준다. 또한 public speaking 및 virtual audience 연구에서는
+              청중의 gaze direction이 발표자에 대한 attention과 engagement를
+              드러내는 주요 단서로 다뤄진다 (Kang, 2016; Ristorcelli et al.,
+              2024). 다만 발표 상황에서는 청중의 시선 대상이 화자뿐 아니라
+              슬라이드나 화면과 같은 시각 자료를 향할 수도 있으므로, 본 연구는
+              발표 청중 백채널 생성을 위한 작업적 feature를 speaker-directed
+              gaze, slide-directed gaze, brief gaze aversion, sustained looking
+              away로 정의하였다. 이때 slide-directed gaze는 발표 내용과 시각
+              자료를 따라가는 attention을, sustained looking away는 발표와
+              무관한 방향으로 시선이 이탈한 상태를 기술하기 위한 feature로 둔다.
+              한편 시선이 필기, 노트북 사용, 휴대폰 확인과 같은 명확한 행위
+              수행에 종속된 경우에는 독립적인 gaze response라기보다 action
+              episode의 일부로 간주한다.
             </li>
           </ul>
 
@@ -453,6 +482,12 @@
           <h2>References</h2>
           <ul class="note-references">
             <li>
+              Bavelas, J. B., Coates, L., &amp; Johnson, T. (2002). Listener
+              responses as a collaborative process: The role of gaze.
+              <em>Journal of Communication, 52</em>(3), 566–580.
+              https://doi.org/10.1111/j.1460-2466.2002.tb02562.x
+            </li>
+            <li>
               Chollet, M., &amp; Scherer, S. (2017). Perception of virtual
               audiences.
               <em>IEEE Computer Graphics and Applications, 37</em>(4), 50–59.
@@ -463,6 +498,12 @@
               responses using parallel recordings of multiple listeners.
               <em>Cognitive Processing, 13</em>(Suppl 2), 499–506.
               https://doi.org/10.1007/s10339-012-0434-3
+            </li>
+            <li>
+              Degutyte, Z., &amp; Astell, A. (2021). The role of eye gaze in
+              regulating turn taking in conversations: A systematized review of
+              methods and findings. <em>Frontiers in Psychology, 12</em>,
+              616471. https://doi.org/10.3389/fpsyg.2021.616471
             </li>
             <li>
               Etienne, E., Leclercq, A.-L., Remacle, A., Dessart, L., &amp;
