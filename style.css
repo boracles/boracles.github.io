@@ -4,49 +4,56 @@
 
 @font-face {
   font-family: "Sweet";
-  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2304-2@1.0/SUITE-Light.woff2") format("woff2");
+  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2304-2@1.0/SUITE-Light.woff2")
+    format("woff2");
   font-weight: 300;
   font-display: swap;
 }
 
 @font-face {
   font-family: "Sweet";
-  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2304-2@1.0/SUITE-Regular.woff2") format("woff2");
+  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2304-2@1.0/SUITE-Regular.woff2")
+    format("woff2");
   font-weight: 400;
   font-display: swap;
 }
 
 @font-face {
   font-family: "Sweet";
-  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2304-2@1.0/SUITE-Medium.woff2") format("woff2");
+  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2304-2@1.0/SUITE-Medium.woff2")
+    format("woff2");
   font-weight: 500;
   font-display: swap;
 }
 
 @font-face {
   font-family: "Sweet";
-  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2304-2@1.0/SUITE-SemiBold.woff2") format("woff2");
+  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2304-2@1.0/SUITE-SemiBold.woff2")
+    format("woff2");
   font-weight: 600;
   font-display: swap;
 }
 
 @font-face {
   font-family: "Sweet";
-  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2304-2@1.0/SUITE-Bold.woff2") format("woff2");
+  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2304-2@1.0/SUITE-Bold.woff2")
+    format("woff2");
   font-weight: 700;
   font-display: swap;
 }
 
 @font-face {
   font-family: "Sweet";
-  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2304-2@1.0/SUITE-ExtraBold.woff2") format("woff2");
+  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2304-2@1.0/SUITE-ExtraBold.woff2")
+    format("woff2");
   font-weight: 800;
   font-display: swap;
 }
 
 @font-face {
   font-family: "Sweet";
-  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2304-2@1.0/SUITE-Heavy.woff2") format("woff2");
+  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2304-2@1.0/SUITE-Heavy.woff2")
+    format("woff2");
   font-weight: 900;
   font-display: swap;
 }
@@ -133,9 +140,11 @@ body {
   height: 90px;
   /* 너무 두껍지 않게 – 필요하면 60/80으로 조절 */
 
-  background: linear-gradient(to bottom,
-      rgba(0, 0, 0, 1) 0%,
-      rgba(0, 0, 0, 0) 100%);
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 1) 0%,
+    rgba(0, 0, 0, 0) 100%
+  );
 
   z-index: -1;
   /* 네비 텍스트 뒤, 영상 위 */
@@ -459,7 +468,10 @@ body {
   font-size: 0.84rem;
   line-height: 1;
   font-family: "Sweet", "Noto Sans KR", sans-serif;
-  transition: border-color 0.2s ease, background-color 0.2s ease, color 0.2s ease;
+  transition:
+    border-color 0.2s ease,
+    background-color 0.2s ease,
+    color 0.2s ease;
 }
 
 .founder-link:hover {
@@ -828,7 +840,7 @@ body {
 }
 
 /* 섹션끼리 시각적으로도 구분하고 싶으면 */
-.project-section+.project-section {
+.project-section + .project-section {
   margin-top: 64px;
   /* 이후 섹션은 더 여유 */
   border-top: 1px solid #333333;
@@ -877,7 +889,7 @@ body {
   padding-left: 18px;
 }
 
-.ai-list li+li {
+.ai-list li + li {
   margin-top: 4px;
 }
 
@@ -922,7 +934,6 @@ body {
   margin-top: 10px;
 }
 
-
 .research-section-block {
   margin-top: 56px;
   padding-top: 24px;
@@ -945,7 +956,10 @@ body {
 .research-item--area,
 .research-note-card {
   border-radius: 4px;
-  transition: transform 0.18s ease, border-color 0.18s ease, background 0.18s ease;
+  transition:
+    transform 0.18s ease,
+    border-color 0.18s ease,
+    background 0.18s ease;
 }
 
 .research-item--area:hover,
@@ -1006,7 +1020,9 @@ body {
   text-decoration: none;
   border-bottom: 1px solid rgba(255, 255, 255, 0.25);
   padding-bottom: 2px;
-  transition: color 0.18s ease, border-color 0.18s ease;
+  transition:
+    color 0.18s ease,
+    border-color 0.18s ease;
 }
 
 .publication-links a:hover {
@@ -1031,7 +1047,9 @@ body {
   text-decoration: none;
   border-bottom: 1px solid rgba(255, 255, 255, 0.28);
   padding-bottom: 2px;
-  transition: color 0.18s ease, border-color 0.18s ease;
+  transition:
+    color 0.18s ease,
+    border-color 0.18s ease;
 }
 
 .research-notes-more a:hover {
@@ -1067,7 +1085,10 @@ body {
   border: 1px solid rgba(255, 255, 255, 0.12);
   text-decoration: none;
   color: inherit;
-  transition: transform 0.18s ease, border-color 0.18s ease, background 0.18s ease;
+  transition:
+    transform 0.18s ease,
+    border-color 0.18s ease,
+    background 0.18s ease;
 }
 
 .research-note-card:hover {
@@ -1108,7 +1129,9 @@ body {
   border-top: 1px solid #333333;
   padding-top: 10px;
   padding-right: 4px;
-  transition: background 0.16s ease, border-color 0.16s ease;
+  transition:
+    background 0.16s ease,
+    border-color 0.16s ease;
 }
 
 .teach-card:hover {
@@ -1229,7 +1252,9 @@ body.note-page {
   text-decoration: none;
   border-bottom: 1px solid rgba(255, 255, 255, 0.22);
   padding-bottom: 2px;
-  transition: color 0.18s ease, border-color 0.18s ease;
+  transition:
+    color 0.18s ease,
+    border-color 0.18s ease;
 }
 
 .note-breadcrumb a:hover {
@@ -1361,7 +1386,7 @@ body.note-page {
   color: #ffffff;
 }
 
-.note-section+.note-section:not(.note-section--highlight) {
+.note-section + .note-section:not(.note-section--highlight) {
   margin-top: 10px;
 }
 
@@ -1381,7 +1406,10 @@ body.note-page {
   text-decoration: none;
   color: inherit;
   background: rgba(255, 255, 255, 0.015);
-  transition: transform 0.18s ease, border-color 0.18s ease, background 0.18s ease;
+  transition:
+    transform 0.18s ease,
+    border-color 0.18s ease,
+    background 0.18s ease;
 }
 
 .note-list-item:hover {
@@ -1423,15 +1451,25 @@ body.note-page {
 }
 
 .note-references {
-  margin: 0;
+  margin: 0.8rem 0 1.8rem;
   padding-left: 1.2rem;
 }
 
 .note-references li {
-  margin-bottom: 0.95rem;
-  line-height: 1.75;
+  margin-bottom: 1rem;
+  line-height: 1.85;
+  color: rgba(255, 255, 255, 0.82);
+}
+.note-references {
+  margin: 0.8rem 0 1.8rem;
+  padding-left: 1.2rem;
 }
 
+.note-references li {
+  margin-bottom: 1rem;
+  line-height: 1.85;
+  color: rgba(255, 255, 255, 0.82);
+}
 .note-references em {
   font-style: italic;
 }
@@ -1439,30 +1477,77 @@ body.note-page {
 .note-table {
   width: 100%;
   border-collapse: collapse;
-  margin: 1rem 0 1.6rem;
-  font-size: 0.95rem;
-  line-height: 1.6;
+  margin: 1rem 0 1.8rem;
+  font-size: 0.9rem;
+  line-height: 1.75;
 }
 
 .note-table th,
 .note-table td {
   border-top: 1px solid rgba(255, 255, 255, 0.12);
   border-bottom: 1px solid rgba(255, 255, 255, 0.12);
-  padding: 0.8rem 0.7rem;
+  padding: 1rem 0.85rem;
   text-align: left;
   vertical-align: top;
+  word-break: keep-all;
+  overflow-wrap: break-word;
 }
 
 .note-table th {
   font-weight: 600;
   opacity: 0.9;
+  color: rgba(255, 255, 255, 0.92);
 }
 
 .note-table td:first-child,
 .note-table th:first-child {
   white-space: nowrap;
+  width: 11%;
 }
 
+.note-table th:nth-child(2),
+.note-table td:nth-child(2) {
+  width: 24%;
+}
+
+.note-table th:nth-child(3),
+.note-table td:nth-child(3) {
+  width: 17%;
+}
+
+.note-table th:nth-child(4),
+.note-table td:nth-child(4) {
+  width: 22%;
+}
+
+.note-table th:nth-child(5),
+.note-table td:nth-child(5) {
+  width: 26%;
+}
+.note-table--channels th:nth-child(1),
+.note-table--channels td:nth-child(1) {
+  width: 11%;
+}
+
+.note-table--channels th:nth-child(2),
+.note-table--channels td:nth-child(2) {
+  width: 24%;
+}
+
+.note-table--channels th:nth-child(3),
+.note-table--channels td:nth-child(3) {
+  width: 17%;
+}
+
+.note-table--channels th:nth-child(4),
+.note-table--channels td:nth-child(4) {
+  width: 22%;
+}
+
+.note-table--channels th:nth-child(5),
+.note-table--channels td:nth-child(5) {
+  width: 26%;
+}
 .note-subheading {
   margin: 1.2rem 0 0.6rem;
   font-size: 1rem;
@@ -1662,6 +1747,30 @@ body.note-page {
   .note-section--highlight {
     padding: 18px 18px 20px;
     border-radius: 12px;
+  }
+
+  .note-table {
+    font-size: 0.82rem;
+    line-height: 1.65;
+  }
+
+  .note-table th,
+  .note-table td {
+    padding: 0.75rem 0.55rem;
+  }
+
+  .note-table--channels td[rowspan] {
+    vertical-align: top;
+  }
+
+  .note-table--channels td,
+  .note-table--channels th {
+    line-height: 1.75;
+  }
+
+  .note-table--channels td:nth-child(3),
+  .note-table--channels td:nth-child(4) {
+    white-space: normal;
   }
 }
 
