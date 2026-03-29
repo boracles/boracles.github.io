@@ -112,9 +112,8 @@
           <h3 class="note-subheading">Channel Categories</h3>
 
           <p class="note-caption">
-            Key Design Features는 상호배타적인 상태 목록이 아니라, 청중 백채널
-            생성과 제어를 위한 구성 차원이다. 하나의 clip은 둘 이상의 feature를
-            포함할 수 있다.
+            Channel Categories는 청중 반응을 어떤 비언어 채널을 중심으로
+            생성하고 제어할지를 정리하기 위한 channel-level organization이다.
           </p>
 
           <table class="note-table note-table--channels">
@@ -122,125 +121,309 @@
               <tr>
                 <th>Category</th>
                 <th>Operational Definition</th>
-                <th>Key Design Features</th>
-                <th>Typical Examples</th>
-                <th>Generation Rule</th>
+                <th>Core Parameters</th>
+                <th>Generation Principle</th>
               </tr>
             </thead>
             <tbody>
               <tr>
-                <td rowspan="5">Body posture</td>
-                <td rowspan="5">
-                  몸통·상체·팔의 자세 구성과 정렬을 통해 드러나는 반응.
-                </td>
-                <td>torso uprightness</td>
-                <td>BODY_uprightNeutral</td>
-                <td rowspan="5">
-                  AI 청중 백채널 생성에서 반응의 핵심이 몸통·상체·팔의 자세
-                  구성과 정렬로 실현될 때, 이를 body posture 채널을 통해
-                  생성한다.
-                </td>
-              </tr>
-              <tr>
-                <td>sagittal lean</td>
-                <td>BODY_forwardLean, BODY_backwardLean</td>
-              </tr>
-              <tr>
-                <td>lateral orientation</td>
-                <td>BODY_laterallyOriented</td>
-              </tr>
-              <tr>
-                <td>openness / closure</td>
+                <td>Body posture</td>
+                <td>몸통·상체·팔의 상대적 배치와 정렬을 통해 드러나는 반응.</td>
                 <td>
-                  BODY_open,<br />
-                  BODY_closed,<br />
-                  BODY_armsCrossed
+                  trunk alignment,<br />
+                  lean direction,<br />
+                  body orientation,<br />
+                  arm configuration,<br />
+                  self-contact cue
                 </td>
-              </tr>
-              <tr>
-                <td>self-contact / self-support</td>
-                <td>BODY_selfContact, BODY_headSupport</td>
+                <td>
+                  반응의 핵심 의미가 torso 및 arm configuration의 안정된 배치로
+                  실현될 때, 해당 반응은 body posture 중심으로 생성한다.
+                </td>
               </tr>
 
               <tr>
-                <td rowspan="5">Head movement</td>
-                <td rowspan="5">
-                  머리의 짧고 국소적인 운동 패턴으로 드러나는 반응.
-                </td>
-                <td>head nod</td>
-                <td>HEAD_nod</td>
-                <td rowspan="5">
-                  반응의 핵심 정보가 머리의 짧고 국소적인 운동 패턴에서 드러나면
-                  head movement 채널의 반응으로 다룬다.
-                </td>
-              </tr>
-              <tr>
-                <td>head shake</td>
-                <td>HEAD_shake</td>
-              </tr>
-              <tr>
-                <td>head tilt</td>
-                <td>HEAD_tilt</td>
-              </tr>
-              <tr>
-                <td>downward head movement</td>
-                <td>HEAD_down</td>
-              </tr>
-              <tr>
-                <td>head turn / orientation shift</td>
-                <td>HEAD_turn</td>
-              </tr>
-
-              <tr>
-                <td rowspan="4">Facial expression</td>
-                <td rowspan="4">얼굴 표정 변화로 드러나는 반응.</td>
-                <td>neutral expression</td>
-                <td>FACIAL_neutral</td>
-                <td rowspan="4">
-                  반응의 핵심 정보가 얼굴 표정 변화에서 드러나면 facial
-                  expression 채널의 반응으로 다룬다.
-                </td>
-              </tr>
-              <tr>
-                <td>smile</td>
-                <td>FACIAL_smile</td>
-              </tr>
-              <tr>
-                <td>frown</td>
-                <td>FACIAL_frown</td>
-              </tr>
-              <tr>
-                <td>doubt / uncertainty expression</td>
-                <td>FACIAL_doubt</td>
-              </tr>
-
-              <tr>
-                <td rowspan="4">Gaze</td>
-                <td rowspan="4">
-                  행위에 직접 종속되지 않은 시선의 대상과 유지/이탈 패턴으로
+                <td>Head movement</td>
+                <td>
+                  머리의 짧고 국소적인 운동 또는 짧은 orientation 변화로
                   드러나는 반응.
                 </td>
-                <td>speaker-directed gaze</td>
-                <td>GAZE_atSpeaker</td>
-                <td rowspan="4">
-                  반응의 핵심 정보가 고개 운동 자체가 아니라 시선의 대상
-                  (speaker, slides/display, elsewhere)과 유지/이탈 패턴에서
-                  드러나면 gaze 채널의 반응으로 다룬다. 단, 시선이 필기, 노트북
-                  사용, 휴대폰 확인과 같은 명확한 행위 수행에 종속된 경우에는
-                  독립적인 gaze 반응보다 action episode의 일부로 우선 다룬다.
+                <td>
+                  nod,<br />
+                  shake,<br />
+                  brief tilt / tilt hold,<br />
+                  downward dip,<br />
+                  turn / orientation shift
+                </td>
+                <td>
+                  머리의 짧은 국소 운동이 핵심이면 head movement 중심으로
+                  구성한다.
+                </td>
+              </tr>
+
+              <tr>
+                <td>Facial expression</td>
+                <td>얼굴 전체의 표정 상태 변화로 실현되는 반응.</td>
+                <td>
+                  neutral face,<br />
+                  smiling face,<br />
+                  concerned face,<br />
+                  doubtful face
+                </td>
+                <td>
+                  반응의 핵심이 얼굴 전체 표정 상태의 변화에 있을 때 facial
+                  expression으로 구성한다.
+                </td>
+              </tr>
+
+              <tr>
+                <td>Gaze</td>
+                <td>
+                  행위 수행 자체가 아니라 시선의 대상과 유지/이탈 패턴으로
+                  드러나는 반응.
+                </td>
+                <td>
+                  gaze target,<br />
+                  dwell duration,<br />
+                  alternation pattern,<br />
+                  aversion pattern
+                </td>
+                <td>
+                  시선 대상과 유지/이탈 패턴이 핵심이면 gaze pattern으로
+                  구성한다.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h3 class="note-subheading">Channel Parameters</h3>
+
+          <p class="note-caption">
+            Channel Parameters는 각 채널 내부에서 실제 state clip 및 action
+            clip을 설계하기 위한 parameter level의 작업적 축이다. 아래 항목은
+            상호배타적인 최종 state 목록이 아니라, clip을 조합하고 naming rule을
+            정리하기 위한 구성 요소이다.
+          </p>
+
+          <h4 class="note-subheading">Body Posture Parameters</h4>
+          <table class="note-table">
+            <thead>
+              <tr>
+                <th>Parameter</th>
+                <th>Operational Meaning</th>
+                <th>Typical Values</th>
+                <th>Notes for Generation</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Trunk alignment</td>
+                <td>몸통의 전반적 세움 정도와 처짐 정도를 나타내는 축.</td>
+                <td>upright / slumped</td>
+                <td>
+                  sustained state의 기본 posture quality를 결정하는 핵심 축으로
+                  사용한다.
                 </td>
               </tr>
               <tr>
-                <td>slide-directed gaze</td>
-                <td>GAZE_atSlides</td>
+                <td>Lean direction</td>
+                <td>몸통이 전후 방향으로 기울어지는 정도를 나타내는 축.</td>
+                <td>neutral / forward / backward</td>
+                <td>
+                  attentiveness, psychological distance, reduced engagement의
+                  차이를 표현할 때 사용한다.
+                </td>
               </tr>
               <tr>
-                <td>brief gaze aversion</td>
-                <td>GAZE_briefAversion</td>
+                <td>Body orientation</td>
+                <td>
+                  몸통이 발표자를 정면으로 향하는지, 부분적으로 옆으로
+                  틀어지는지를 나타내는 축.
+                </td>
+                <td>toward speaker / side-oriented</td>
+                <td>
+                  발표자로부터의 orientation shift나 부분적 social diversion을
+                  표현할 때 사용한다.
+                </td>
               </tr>
               <tr>
-                <td>sustained looking away</td>
-                <td>GAZE_lookingAway</td>
+                <td>Arm configuration</td>
+                <td>팔의 개방성, 폐쇄성, 교차 여부를 나타내는 축.</td>
+                <td>open / closed / crossed</td>
+                <td>
+                  trunk parameter와 결합하여 openness, reserve, defensive
+                  stance를 세밀하게 조정한다.
+                </td>
+              </tr>
+              <tr>
+                <td>Self-contact cue</td>
+                <td>
+                  손이 얼굴이나 머리, 몸에 닿아 자기지지 또는 자기조절의 흔적을
+                  형성하는 cue.
+                </td>
+                <td>none / chin-touch / cheek-touch / head-support</td>
+                <td>
+                  기본 state의 일부로 약하게 유지할 수도 있고, 짧은
+                  self-regulatory action으로 별도 처리할 수도 있다.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h4 class="note-subheading">Head Movement Parameters</h4>
+          <table class="note-table">
+            <thead>
+              <tr>
+                <th>Parameter</th>
+                <th>Operational Meaning</th>
+                <th>Typical Values</th>
+                <th>Notes for Generation</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Nod pattern</td>
+                <td>이해, 동의, 내용 추적과 관련된 상하 운동 패턴.</td>
+                <td>single nod / repeated nod / slow nod</td>
+                <td>짧은 backchannel burst로 주로 사용한다.</td>
+              </tr>
+              <tr>
+                <td>Shake pattern</td>
+                <td>부정, 의문, 비동의와 관련된 좌우 운동 패턴.</td>
+                <td>small shake / repeated shake</td>
+                <td>
+                  facial cue와 결합하면 stronger negative reading을 만들 수
+                  있다.
+                </td>
+              </tr>
+              <tr>
+                <td>Tilt pattern</td>
+                <td>
+                  고개 기울임을 통해 uncertainty나 reflective attention을
+                  드러내는 패턴.
+                </td>
+                <td>brief tilt / tilt hold</td>
+                <td>
+                  brief action과 sustained hold 모두 가능하므로 temporal form을
+                  분리해 다룬다.
+                </td>
+              </tr>
+              <tr>
+                <td>Downward dip</td>
+                <td>고개를 아래로 잠깐 내리는 국소적 움직임.</td>
+                <td>brief dip / downward glance-linked dip</td>
+                <td>
+                  독립 head action일 수도 있고, 일부 action episode의 일부로
+                  결합될 수도 있다.
+                </td>
+              </tr>
+              <tr>
+                <td>Turn / orientation shift</td>
+                <td>
+                  발표자 또는 정면으로부터 머리 방향이 부분적으로 이동하는 패턴.
+                </td>
+                <td>brief turn / held turn</td>
+                <td>
+                  head channel로 기록할지 gaze/action과 결합할지는 지배적 의미에
+                  따라 판정한다.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h4 class="note-subheading">Facial Expression Parameters</h4>
+          <table class="note-table">
+            <thead>
+              <tr>
+                <th>Parameter</th>
+                <th>Operational Meaning</th>
+                <th>Typical Values</th>
+                <th>Notes for Generation</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Neutral face</td>
+                <td>marked affect가 없는 기준 facial state.</td>
+                <td>neutral</td>
+                <td>
+                  기본 attentive baseline에서 가장 자주 사용되는 facial
+                  state이다.
+                </td>
+              </tr>
+              <tr>
+                <td>Smile</td>
+                <td>긍정적 수용, 호감, 유쾌함을 드러내는 facial pattern.</td>
+                <td>small smile / brief smile</td>
+                <td>
+                  overtly positive social attitude를 만들고자 할 때 사용한다.
+                </td>
+              </tr>
+              <tr>
+                <td>Brow furrow / frown</td>
+                <td>
+                  난해함, 비판적 평가, 부정적 반응과 연결되는 facial pattern.
+                </td>
+                <td>mild furrow / brief frown</td>
+                <td>
+                  confusion과 negative evaluation이 겹칠 수 있으므로 문맥 기반
+                  선택이 필요하다.
+                </td>
+              </tr>
+              <tr>
+                <td>Raised-brow doubt face</td>
+                <td>의심, 판단 유보, uncertainty를 드러내는 facial pattern.</td>
+                <td>brief raised-brow doubt / mild held doubt</td>
+                <td>
+                  smile이나 frown보다 약한 evaluative ambiguity를 표현할 때
+                  적합하다.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h4 class="note-subheading">Gaze Parameters</h4>
+          <table class="note-table">
+            <thead>
+              <tr>
+                <th>Parameter</th>
+                <th>Operational Meaning</th>
+                <th>Typical Values</th>
+                <th>Notes for Generation</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Gaze target</td>
+                <td>시선이 향하는 주 대상.</td>
+                <td>speaker / slides-display / elsewhere</td>
+                <td>발표 attention과 disengagement를 구분하는 기본 축이다.</td>
+              </tr>
+              <tr>
+                <td>Dwell duration</td>
+                <td>특정 target에 시선이 머무는 지속 시간.</td>
+                <td>brief / sustained</td>
+                <td>
+                  brief aversion과 looking away state를 분리할 때 중요하다.
+                </td>
+              </tr>
+              <tr>
+                <td>Alternation pattern</td>
+                <td>둘 이상의 target 사이를 번갈아 보는 패턴.</td>
+                <td>speaker ↔ slides / irregular scan</td>
+                <td>
+                  발표자와 시각 자료를 함께 추적하는 일반 청취 상태를 설계할 때
+                  유용하다.
+                </td>
+              </tr>
+              <tr>
+                <td>Aversion pattern</td>
+                <td>발표 관련 대상에서 시선이 이탈하는 패턴.</td>
+                <td>brief aversion / sustained looking away</td>
+                <td>
+                  brief aversion은 transient action, sustained looking away는
+                  state로 우선 다룬다.
+                </td>
               </tr>
             </tbody>
           </table>
@@ -256,90 +439,57 @@
               backward, torso back in the chair, torso bent forward와 같은 torso
               정렬 변화와, arms crossed, chin/cheek touch, supporting head, neck
               touch와 같은 arm/hand-related posture cue를 구분해 코딩하였다. 본
-              연구의 torso uprightness, sagittal lean, lateral orientation은
-              이러한 torso 정렬 및 방향 변화에, self-contact / self-support는
-              chin/cheek touch, supporting head, neck touch와 같은
-              self-contact-related arm/hand posture cue에 근거해 정리하였다.
-              한편 openness / closure는 Pöschl &amp; Döring (2012)의 leaning
-              back with folded arms와 같은 조합적 자세 예시와, open posture와
-              closed posture를 대비한 자세 조작이 사회적 판단 및 시선 처리와
-              관련됨을 보인 Zloteanu et al. (2021)을 참고하여, 팔과 몸통의
-              개방성/폐쇄성을 기술하기 위한 해석 축으로 도입하였다. 따라서 본
-              표의 body posture feature는 발표 상황의 청중 백채널 생성과 제어를
-              위해 torso alignment, lean direction, arm configuration,
-              self-contact cue를 feature level에서 작업적으로 재구성한 체계이다.
+              연구는 이러한 근거를 바탕으로 body posture를 trunk alignment, lean
+              direction, body orientation, arm configuration, self-contact cue의
+              parameter level로 재구성하였다. 이때 openness / closure는 독립
+              state label이 아니라 arm configuration과 trunk arrangement의
+              조합을 기술하는 해석 축으로 제한하여 사용한다.
             </li>
             <li>
-              <strong>Head movement.</strong> Head movement는 청중 반응의 핵심
-              정보가 머리의 국소적 운동 패턴에서 드러날 때 이를 기술하기 위한
-              채널이다. Kang (2016)은 발표 상황의 청중 posture coding에서 head를
-              body와 분리된 부위로 다루며 head up, head turn, head down, head
-              tilt, head nod, head shake를 독립적으로 코딩하였다. 이는 청중
-              반응에서 머리 움직임이 몸통 자세와 구별되는 관찰 단위로 취급될 수
-              있음을 보여준다. 또한 de Kok and Heylen (2012)과 Ondáš et al.
-              (2023)은 listener response와 backchannel에서 nod와 shake를
-              대표적인 비언어 신호로 제시하였고, Tudor et al. (2013) 역시 발표
-              청중의 attentiveness cue 중 하나로 nod를 언급하였다. 본 연구는
-              이러한 논의를 바탕으로 발표 청중 백채널 생성을 위한 작업적
-              feature를 head nod, head shake, head tilt, downward head movement,
-              head turn / orientation shift로 정의하였다. 이에 따라 반응의 핵심
-              정보가 머리의 짧고 국소적인 운동 패턴에서 드러나는 경우를 head
-              movement로 분류하였다.
+              <strong>Head movement.</strong> Kang (2016)은 발표 상황의 청중
+              posture coding에서 head를 body와 분리된 부위로 다루며 head up,
+              head turn, head down, head tilt, head nod, head shake를 독립적으로
+              코딩하였다. 또한 de Kok and Heylen (2012)과 Ondáš et al. (2023)은
+              listener response 및 backchannel에서 nod와 shake를 대표적인 비언어
+              신호로 제시하였다. 이에 따라 본 연구는 head movement를 body
+              posture와 구분되는 독립 채널로 두되, nod, shake, tilt, downward
+              dip, turn을 parameter level에서 정리하고, brief action과 held
+              orientation을 temporal form에 따라 구분해 다룬다.
             </li>
             <li>
-              <strong>Facial expression.</strong> Facial expression은 청중
-              반응의 핵심 정보가 얼굴 표정 변화에서 드러날 때 이를 기술하기 위한
-              채널이다. de Kok and Heylen (2012)은 listener response에 facial
-              expressions가 포함된다고 보았고, annotation에서도 smiles, lip
-              press, frown, raised brows와 같은 얼굴 반응을 별도로 다루었다.
-              또한 Tolins and Fox Tree (2014)는 backchannels가 facial
-              expressions, nods, gestures를 포함한다고 설명하였다. 이는 얼굴
-              표정이 청중 반응을 구성하는 독립적 비언어 채널로 취급될 수 있음을
-              보여준다. 본 연구에서는 발표 청중 백채널 생성을 위한 facial
-              feature를 최소 작업 단위로 정리하였다. 먼저 neutral expression은
-              marked affect가 없는 기준 상태로 두었다. smile과 frown은 virtual
-              audience perception 연구에서 각각 happy와 unhappy affective
-              stance를 전달하는 핵심 facial signal로 반복적으로 보고되므로
-              대표적인 positive / negative facial response로 설정하였다
-              (Ristorcelli et al., 2024). 한편 doubt / uncertainty expression은
-              raised brows에 기반한 doubt expression이 happy나 unhappy보다
-              neutral cluster에 더 가깝게 지각된다는 결과를 바탕으로, 명확한
-              긍정·부정보다 의심, 망설임, 판단 유보를 드러내는 facial response를
-              기술하기 위한 feature로 두었다 (Ristorcelli et al., 2024). 따라서
-              본 연구의 facial expression feature는 neutral, positive, negative,
-              doubtful response를 구분하기 위한 작업적 분류로 구성하였다.
+              <strong>Facial expression.</strong> de Kok and Heylen (2012)은
+              listener response annotation에서 smiles, lip press, frown, raised
+              brows와 같은 얼굴 반응을 별도로 다루었고, Tolins and Fox Tree
+              (2014) 역시 backchannels에 facial expressions가 포함된다고 보았다.
+              또한 Ristorcelli et al. (2024)은 virtual audience의 happy,
+              unhappy, doubtful facial cue가 사회적 태도 지각에 영향을 준다고
+              보고하였다. 본 연구는 이러한 논의를 바탕으로 facial expression을
+              의미 label이 아니라 가능한 한 형태 중심의 parameter로 정리하여
+              neutral face, smile, brow furrow / frown, raised-brow doubt face로
+              구성한다.
             </li>
             <li>
-              <strong>Gaze.</strong> Gaze는 청중 반응의 핵심 정보가 행위에 직접
-              종속되지 않은 시선의 대상과 유지/이탈 패턴에서 드러날 때 이를
-              기술하기 위한 채널이다. 실제 대화 및 listener response 연구에서는
-              gaze가 상대에 대한 주시와 시선 이탈을 통해 상호작용 상태를
-              드러내는 핵심 비언어 단서로 다뤄져 왔다. Bavelas et al. (2002)는
-              listener responses를 협력적 과정으로 보며 gaze의 역할을
-              강조하였고, Degutyte and Astell (2021)의 review는 eye gaze가 turn
-              yielding, speech monitoring, backchannel, conversation breakdown
-              repair와 관련된다고 정리하였다. 이는 gaze 연구의 핵심 관심이
-              단순한 눈 움직임 자체보다 시선의 대상과 유지/이탈 패턴에 있음을
-              보여준다. 또한 public speaking 및 virtual audience 연구에서는
-              청중의 gaze direction이 발표자에 대한 attention과 engagement를
-              드러내는 주요 단서로 다뤄진다 (Kang, 2016; Ristorcelli et al.,
-              2024). 다만 발표 상황에서는 청중의 시선 대상이 화자뿐 아니라
-              슬라이드나 화면과 같은 시각 자료를 향할 수도 있으므로, 본 연구는
-              발표 청중 백채널 생성을 위한 작업적 feature를 speaker-directed
-              gaze, slide-directed gaze, brief gaze aversion, sustained looking
-              away로 정의하였다. 이때 slide-directed gaze는 발표 내용과 시각
-              자료를 따라가는 attention을, sustained looking away는 발표와
-              무관한 방향으로 시선이 이탈한 상태를 기술하기 위한 feature로 둔다.
-              한편 시선이 필기, 노트북 사용, 휴대폰 확인과 같은 명확한 행위
-              수행에 종속된 경우에는 독립적인 gaze response라기보다 action
-              episode의 일부로 간주한다.
+              <strong>Gaze.</strong> Bavelas et al. (2002)는 listener
+              responses를 협력적 과정으로 보며 gaze의 역할을 강조하였고,
+              Degutyte and Astell (2021)은 eye gaze가 speech monitoring,
+              backchannel, turn management와 관련됨을 정리하였다. 또한 발표 상황
+              및 virtual audience 연구에서는 청중의 gaze direction이 발표자 및
+              시각 자료에 대한 attention과 engagement를 드러내는 주요 단서로
+              다루어진다 (Kang, 2016; Ristorcelli et al., 2024). 이에 따라 본
+              연구는 gaze를 speaker, slides/display, elsewhere를 중심으로 한
+              target parameter와 dwell, alternation, aversion pattern으로
+              정리한다. 다만 note taking, typing, device checking과 같이 시선이
+              명시적 과업 수행에 종속되는 경우에는 독립 gaze보다 action
+              episode의 일부로 우선 처리한다.
             </li>
           </ul>
 
           <h3 class="note-subheading">Episode Categories</h3>
           <p class="note-caption">
-            Episode Categories는 단일 channel feature로 환원되지 않는 복합
-            transient action을 생성 단위로 다루기 위한 작업적 범주이다.
+            Episode Categories는 단일 channel parameter로 충분히 표현되지 않는
+            복합 transient action을 독립적인 생성 단위로 다루기 위한 작업적
+            organization layer이다. 이 범주에서는 시선, 머리, 손, 자세 변화가
+            결합될 수 있으나, 분류의 기준은 지배적 의미가 되는 행위 자체에 있다.
           </p>
           <table class="note-table">
             <thead>
@@ -352,11 +502,11 @@
             </thead>
             <tbody>
               <tr>
-                <td>Task-driven action episode</td>
+                <td>Task-driven episode</td>
                 <td>
                   특정 과업 수행이나 기록 행위가 중심이 되는 짧은 행동 episode.
-                  시선, 손 움직임, 자세 변화가 동반되더라도 핵심 정보는 note
-                  taking, device use, recording behavior와 같은 행위 자체에
+                  동반되는 gaze, hand movement, posture shift가 있더라도 핵심
+                  정보는 note taking, typing, device use, recording behavior에
                   있다.
                 </td>
                 <td>
@@ -366,8 +516,7 @@
                   ACT_photographingSlides
                 </td>
                 <td>
-                  note-taking, typing, device checking, slide photographing과
-                  같은 과업 수행 또는 기록 행위가 핵심이면 task-driven action
+                  과업 수행 또는 기록 행위 자체가 지배적이면 task-driven
                   episode로 생성한다.
                 </td>
               </tr>
@@ -386,30 +535,31 @@
               </tr>
 
               <tr>
-                <td>Physiological action episode</td>
+                <td>Physiological interruption episode</td>
                 <td>
-                  생리적 필요나 신체 상태 변화에서 비롯되는 짧은 행동 episode.
+                  생리적 필요나 신체 상태 변화에서 비롯되는 짧은 interruption
+                  episode.
                 </td>
                 <td>
                   ACT_yawn,<br />
                   ACT_cough
                 </td>
                 <td>
-                  피로, 기침, 하품 등 생리적 interruption을 표현해야 할 때
-                  physiological action episode로 생성한다.
+                  피로, 하품, 기침 등 생리적 interruption을 표현해야 할 때
+                  physiological interruption episode로 생성한다.
                 </td>
               </tr>
 
               <tr>
-                <td>Self-regulatory / adjustment episode</td>
+                <td>Self-regulatory adjustment episode</td>
                 <td>
                   자세를 재조정하거나 불편을 완화하기 위해 발생하는 짧은
                   자기조절 행동 episode.
                 </td>
                 <td>ACT_fidgeting, ACT_briefSelfTouch, ACT_seatAdjustment</td>
                 <td>
-                  안정된 자세 유지보다 미세한 조정이나 불편 완화가 핵심이면
-                  self-regulatory / adjustment episode로 생성한다.
+                  안정된 자세 유지보다 미세 조정이나 긴장 완화가 핵심이면
+                  self-regulatory adjustment episode로 생성한다.
                 </td>
               </tr>
             </tbody>
@@ -418,34 +568,19 @@
           <h3 class="note-subheading">Literature Basis</h3>
           <ul class="note-references">
             <li>
-              <strong>Episode types.</strong> Episode type은 발표를 듣는 청중의
-              비언어 반응 중 단일 채널 feature로 환원되기보다 복합 행위로
-              실현되는 transient action을 생성 단위로 조직하기 위한 작업적
-              범주이다. 관찰 기반 발표 청중 연구는 note taking, electronic
-              device use, talking to a neighbor, moving objects around,
-              fidgeting과 같은 복합 행동이 attention / inattention 패턴을
-              구성함을 보여준다 (Tudor et al., 2013). 또한 발표를 듣는 청중 관찰
-              연구에서는 turning to the neighbor and start talking, taking notes
-              for a long time와 같은 행동 패턴도 보고되었다 (Pöschl &amp;
-              Döring, 2012). 본 연구는 이러한 행동이 body posture, gaze,
-              facial/head response 등 여러 비언어 요소가 결합되어 실현되는 복합
-              행위라는 점에 주목하여, 이를 단일 채널 feature로 환원하기보다
-              별도의 action episode 단위로 조직한다. 따라서 note taking, device
-              use, side conversation과 같이 과업 수행이나 국소적 사회 상호작용이
-              핵심인 행동은 episode category로 다룬다. 반면 nod, shake, facial
-              expression, gaze aversion과 같이 반응의 핵심이 특정 비언어
-              채널에서 직접 실현되는 경우에는 channel category와 response form
-              층위에서 다루고, 별도의 episode type으로 중복 설정하지 않는다.
-              이에 따라 본 연구는 관찰 기반 근거가 직접 확인되는 task-driven
-              action episode와 social side-action episode를 핵심 episode
-              type으로 설정하였다. 한편 physiological action episode와
-              self-regulatory / adjustment episode는 발표 청중의 보조적
-              interruption 및 adjustment를 생성 수준에서 다루기 위해 제한적으로
-              도입한 작업적 확장 범주이다. ACT_typing은 Tudor et al. (2013)의
-              electronic device use를 구현 수준에서 세분화한 작업적 subtype이며,
-              ACT_photographingSlides는 note taking 및 device-based recording
-              behavior를 발표 상황의 생성 단위로 분리한 작업적 subtype으로
-              포함하였다.
+              <strong>Episode types.</strong> 관찰 기반 발표 청중 연구는 note
+              taking, electronic device use, talking to a neighbor, moving
+              objects around, fidgeting과 같은 복합 행동이 attention /
+              inattention 패턴을 구성함을 보여준다 (Tudor et al., 2013). 또한
+              Pöschl &amp; Döring (2012)은 발표를 듣는 청중의 행동으로 turning
+              to the neighbor and start talking, taking notes for a long time와
+              같은 복합 행동 패턴을 보고하였다. 본 연구는 이러한 행동이 단일
+              channel parameter보다 여러 비언어 요소가 결합된 episode로
+              실현된다고 보고, 이를 별도의 action episode 단위로 조직한다. 이에
+              따라 note taking, device use, side conversation과 같이 행위 자체가
+              지배적인 경우에는 episode category로 다루고, nod, shake, smile,
+              gaze aversion처럼 특정 채널의 signal로 직접 실현되는 경우에는
+              channel-based response form으로 다룬다.
             </li>
           </ul>
 
@@ -453,10 +588,132 @@
 
           <p class="note-caption">
             Response Forms는 실제 생성에 사용하는 animation clip 단위를 정리한
-            표이다. Sustained state는 body, gaze, facial feature가 결합된 유지형
-            state clip으로, transient action은 짧은 event clip 또는 action
-            episode로 구성한다.
+            표이다. Sustained state는 body, gaze, facial parameter를 결합한
+            유지형 state clip으로, transient action은 짧은 channel action clip
+            또는 action episode로 구성한다.
           </p>
+
+          <h4 class="note-subheading">Parameter-to-Clip Mapping</h4>
+          <table class="note-table">
+            <thead>
+              <tr>
+                <th>Channel</th>
+                <th>Parameter Pattern</th>
+                <th>Example Clip ID</th>
+                <th>Notes</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Body posture</td>
+                <td>upright + frontal + neutral arms</td>
+                <td>BODY_uprightNeutral</td>
+                <td>기본 attentive posture의 neutral baseline.</td>
+              </tr>
+              <tr>
+                <td>Body posture</td>
+                <td>upright + forward lean</td>
+                <td>BODY_forwardLean</td>
+                <td>높은 attentiveness를 표현하는 기본 body state.</td>
+              </tr>
+              <tr>
+                <td>Body posture</td>
+                <td>upright + backward lean</td>
+                <td>BODY_backwardLean</td>
+                <td>psychological distance 또는 reduced engagement를 표현.</td>
+              </tr>
+              <tr>
+                <td>Body posture</td>
+                <td>frontal + crossed arms</td>
+                <td>BODY_armsCrossed</td>
+                <td>arm configuration 중심 cue.</td>
+              </tr>
+              <tr>
+                <td>Body posture</td>
+                <td>upright + self-contact cue</td>
+                <td>BODY_selfContact</td>
+                <td>약한 자기조절 흔적이 포함된 body state.</td>
+              </tr>
+              <tr>
+                <td>Head movement</td>
+                <td>single nod</td>
+                <td>HEAD_nodSingle</td>
+                <td>짧은 agreement / understanding backchannel.</td>
+              </tr>
+              <tr>
+                <td>Head movement</td>
+                <td>repeated nod</td>
+                <td>HEAD_nodRepeated</td>
+                <td>연속적 내용 추적 또는 적극적 동의 cue.</td>
+              </tr>
+              <tr>
+                <td>Head movement</td>
+                <td>brief shake</td>
+                <td>HEAD_shakeBrief</td>
+                <td>의문이나 부정적 판단의 짧은 cue.</td>
+              </tr>
+              <tr>
+                <td>Head movement</td>
+                <td>brief tilt</td>
+                <td>HEAD_tiltBrief</td>
+                <td>잠깐의 reflective uncertainty cue.</td>
+              </tr>
+              <tr>
+                <td>Head movement</td>
+                <td>tilt hold</td>
+                <td>HEAD_tiltHold</td>
+                <td>유지형 head orientation state.</td>
+              </tr>
+              <tr>
+                <td>Facial expression</td>
+                <td>neutral face</td>
+                <td>FACIAL_neutral</td>
+                <td>기본 facial baseline.</td>
+              </tr>
+              <tr>
+                <td>Facial expression</td>
+                <td>brief smile</td>
+                <td>FACIAL_smile</td>
+                <td>긍정적 반응의 짧은 cue.</td>
+              </tr>
+              <tr>
+                <td>Facial expression</td>
+                <td>brow furrow / frown</td>
+                <td>FACIAL_frown</td>
+                <td>confusion 또는 negative evaluation cue.</td>
+              </tr>
+              <tr>
+                <td>Facial expression</td>
+                <td>raised-brow doubt face</td>
+                <td>FACIAL_doubt</td>
+                <td>판단 유보 또는 uncertainty cue.</td>
+              </tr>
+              <tr>
+                <td>Gaze</td>
+                <td>target = speaker</td>
+                <td>GAZE_atSpeaker</td>
+                <td>speaker-directed attention.</td>
+              </tr>
+              <tr>
+                <td>Gaze</td>
+                <td>target = slides/display</td>
+                <td>GAZE_atSlides</td>
+                <td>시각 자료 추적.</td>
+              </tr>
+              <tr>
+                <td>Gaze</td>
+                <td>brief aversion</td>
+                <td>GAZE_briefAversion</td>
+                <td>짧은 attention break.</td>
+              </tr>
+              <tr>
+                <td>Gaze</td>
+                <td>sustained looking away</td>
+                <td>GAZE_lookingAway</td>
+                <td>유지형 disengagement cue.</td>
+              </tr>
+            </tbody>
+          </table>
 
           <h4 class="note-subheading">Sustained State Clips</h4>
           <table class="note-table">
@@ -472,7 +729,7 @@
             </thead>
             <tbody>
               <tr>
-                <td>STATE_upright_speaker_neutral</td>
+                <td>STATE_upright_atSpeaker_neutral</td>
                 <td>BODY_uprightNeutral</td>
                 <td>GAZE_atSpeaker</td>
                 <td>FACIAL_neutral</td>
@@ -484,14 +741,14 @@
                 </td>
               </tr>
               <tr>
-                <td>STATE_upright_slides_neutral</td>
+                <td>STATE_upright_atSlides_neutral</td>
                 <td>BODY_uprightNeutral</td>
                 <td>GAZE_atSlides</td>
                 <td>FACIAL_neutral</td>
                 <td>hold</td>
                 <td>
-                  청중이 발표자의 시각 자료를 따라가고 있음을 보여주되, 정서적
-                  평가 신호는 최소화해야 할 때 생성한다.
+                  시각 자료를 따라가고 있음을 보여주되, overt affect는
+                  최소화해야 할 때 생성한다.
                 </td>
               </tr>
               <tr>
@@ -501,34 +758,34 @@
                 <td>FACIAL_neutral</td>
                 <td>slow alternation</td>
                 <td>
-                  청중이 발표자와 슬라이드를 번갈아 추적하는 일반적 청취 상태를
-                  표현해야 할 때 생성한다.
+                  발표자와 슬라이드를 번갈아 추적하는 일반적 청취 상태를 표현할
+                  때 생성한다.
                 </td>
               </tr>
               <tr>
-                <td>STATE_forwardLean_speaker_neutral</td>
+                <td>STATE_forwardLean_atSpeaker_neutral</td>
                 <td>BODY_forwardLean</td>
                 <td>GAZE_atSpeaker</td>
                 <td>FACIAL_neutral</td>
                 <td>hold</td>
                 <td>
-                  직접적인 시선 집중과 높은 attentiveness를 표현하되 overt
+                  직접적인 시선 집중과 높은 attentiveness를 표현하되, overtly
                   positive affect 없이 유지형 집중 상태를 보여줄 때 생성한다.
                 </td>
               </tr>
               <tr>
-                <td>STATE_forwardLean_slides_neutral</td>
+                <td>STATE_forwardLean_atSlides_neutral</td>
                 <td>BODY_forwardLean</td>
                 <td>GAZE_atSlides</td>
                 <td>FACIAL_neutral</td>
                 <td>hold</td>
                 <td>
-                  시각 자료에 대한 집중이 높고 내용 추적이 강조되는 상태를
-                  표현할 때 생성한다.
+                  시각 자료에 대한 집중과 내용 추적이 강조되는 상태를 표현할 때
+                  생성한다.
                 </td>
               </tr>
               <tr>
-                <td>STATE_backward_away_neutral</td>
+                <td>STATE_backward_lookingAway_neutral</td>
                 <td>BODY_backwardLean</td>
                 <td>GAZE_lookingAway</td>
                 <td>FACIAL_neutral</td>
@@ -539,7 +796,7 @@
                 </td>
               </tr>
               <tr>
-                <td>STATE_selfContact_speaker_neutral</td>
+                <td>STATE_selfContact_atSpeaker_neutral</td>
                 <td>BODY_selfContact</td>
                 <td>GAZE_atSpeaker</td>
                 <td>FACIAL_neutral</td>
@@ -552,12 +809,12 @@
             </tbody>
           </table>
 
-          <h4 class="note-subheading">Transient Action Clips</h4>
+          <h4 class="note-subheading">Transient Channel Action Clips</h4>
           <table class="note-table">
             <thead>
               <tr>
                 <th>Clip ID</th>
-                <th>Primary Type</th>
+                <th>Primary Channel</th>
                 <th>Main Realization</th>
                 <th>Temporal Profile</th>
                 <th>Generation Rule</th>
@@ -565,27 +822,46 @@
             </thead>
             <tbody>
               <tr>
-                <td>HEAD_nod</td>
-                <td>head action</td>
-                <td>head nod</td>
-                <td>brief / single or repeated</td>
+                <td>HEAD_nodSingle</td>
+                <td>head movement</td>
+                <td>single nod</td>
+                <td>brief</td>
                 <td>
                   동의, 이해, 내용 추적의 짧은 backchannel을 표현할 때 생성한다.
                 </td>
               </tr>
               <tr>
-                <td>HEAD_shake</td>
-                <td>head action</td>
-                <td>head shake</td>
+                <td>HEAD_nodRepeated</td>
+                <td>head movement</td>
+                <td>repeated nod</td>
+                <td>brief repeated burst</td>
+                <td>
+                  stronger agreement 또는 적극적 내용 추적을 표현할 때 생성한다.
+                </td>
+              </tr>
+              <tr>
+                <td>HEAD_shakeBrief</td>
+                <td>head movement</td>
+                <td>brief shake</td>
                 <td>brief</td>
                 <td>
                   불일치, 의문, 부정적 평가의 짧은 신호를 표현할 때 생성한다.
                 </td>
               </tr>
               <tr>
+                <td>HEAD_tiltBrief</td>
+                <td>head movement</td>
+                <td>brief tilt</td>
+                <td>brief</td>
+                <td>
+                  reflective attention이나 약한 uncertainty를 표현할 때
+                  생성한다.
+                </td>
+              </tr>
+              <tr>
                 <td>FACIAL_smile</td>
-                <td>facial action</td>
-                <td>smile</td>
+                <td>facial expression</td>
+                <td>brief smile</td>
                 <td>brief</td>
                 <td>
                   긍정적 평가, 호감, 유쾌함의 짧은 표정 반응을 표현할 때
@@ -594,17 +870,26 @@
               </tr>
               <tr>
                 <td>FACIAL_frown</td>
-                <td>facial action</td>
-                <td>frown</td>
+                <td>facial expression</td>
+                <td>brow furrow / frown</td>
                 <td>brief</td>
                 <td>
-                  혼란, 부정적 평가, 비판적 반응의 짧은 표정 신호를 표현할 때
-                  생성한다.
+                  confusion, 부정적 평가, 비판적 반응의 짧은 표정 신호를 표현할
+                  때 생성한다.
+                </td>
+              </tr>
+              <tr>
+                <td>FACIAL_doubt</td>
+                <td>facial expression</td>
+                <td>raised-brow doubt face</td>
+                <td>brief</td>
+                <td>
+                  판단 유보나 uncertainty의 짧은 표정 신호를 표현할 때 생성한다.
                 </td>
               </tr>
               <tr>
                 <td>GAZE_briefAversion</td>
-                <td>gaze action</td>
+                <td>gaze</td>
                 <td>brief aversion</td>
                 <td>very brief</td>
                 <td>
@@ -612,6 +897,21 @@
                   표현할 때 생성한다.
                 </td>
               </tr>
+            </tbody>
+          </table>
+
+          <h4 class="note-subheading">Action Episodes</h4>
+          <table class="note-table">
+            <thead>
+              <tr>
+                <th>Clip ID</th>
+                <th>Episode Type</th>
+                <th>Main Realization</th>
+                <th>Temporal Profile</th>
+                <th>Generation Rule</th>
+              </tr>
+            </thead>
+            <tbody>
               <tr>
                 <td>ACT_noteTaking</td>
                 <td>task-driven episode</td>
@@ -665,21 +965,21 @@
               </tr>
               <tr>
                 <td>ACT_yawn</td>
-                <td>physiological episode</td>
+                <td>physiological interruption episode</td>
                 <td>yawn</td>
                 <td>brief episode</td>
                 <td>피로나 생리적 interruption을 표현할 때 생성한다.</td>
               </tr>
               <tr>
                 <td>ACT_cough</td>
-                <td>physiological episode</td>
+                <td>physiological interruption episode</td>
                 <td>cough</td>
                 <td>brief episode</td>
                 <td>기침과 같은 생리적 interruption을 표현할 때 생성한다.</td>
               </tr>
               <tr>
                 <td>ACT_fidgeting</td>
-                <td>self-regulatory episode</td>
+                <td>self-regulatory adjustment episode</td>
                 <td>fidgeting</td>
                 <td>repeated short burst</td>
                 <td>
@@ -689,7 +989,7 @@
               </tr>
               <tr>
                 <td>ACT_briefSelfTouch</td>
-                <td>self-regulatory episode</td>
+                <td>self-regulatory adjustment episode</td>
                 <td>brief self-touch</td>
                 <td>brief episode</td>
                 <td>
@@ -699,7 +999,7 @@
               </tr>
               <tr>
                 <td>ACT_seatAdjustment</td>
-                <td>self-regulatory episode</td>
+                <td>self-regulatory adjustment episode</td>
                 <td>seat adjustment</td>
                 <td>brief episode</td>
                 <td>자세 재조정이나 착석 불편 완화를 표현할 때 생성한다.</td>
@@ -707,6 +1007,7 @@
             </tbody>
           </table>
 
+          <h3 class="note-subheading">Decision Rules</h3>
           <table class="note-table">
             <thead>
               <tr>
@@ -719,7 +1020,8 @@
               <tr>
                 <td>State vs. action</td>
                 <td>
-                  유지된 배치가 핵심이면 state, 짧은 episode가 핵심이면
+                  유지된 configuration이 핵심이면 sustained state, 짧게
+                  발생했다가 종료되는 burst나 episode가 핵심이면 transient
                   action으로 우선 판정한다.
                 </td>
                 <td>
@@ -728,10 +1030,21 @@
                 </td>
               </tr>
               <tr>
+                <td>Channel action vs. episode</td>
+                <td>
+                  의미의 중심이 특정 비언어 채널의 짧은 signal이면 channel
+                  action으로, 의미의 중심이 과업·사회적 상호작용·생리적
+                  interruption이면 episode로 판정한다.
+                </td>
+                <td>
+                  single nod = head action / note taking = task-driven episode
+                </td>
+              </tr>
+              <tr>
                 <td>Head vs. gaze</td>
                 <td>
-                  시선 방향 변화가 핵심이면 gaze, 고개 운동 자체가 핵심이면 head
-                  movement로 판정한다.
+                  시선 대상과 dwell pattern이 핵심이면 gaze, 고개 운동 자체가
+                  핵심이면 head movement로 판정한다.
                 </td>
                 <td>
                   눈은 speaker에서 벗어나지만 고개는 거의 고정 = gaze / 고개를
@@ -741,8 +1054,8 @@
               <tr>
                 <td>Body vs. head</td>
                 <td>
-                  torso·arm configuration이 의미의 중심이면 body posture, 고개
-                  movement가 의미의 중심이면 head movement로 판정한다.
+                  torso 및 arm configuration이 의미의 중심이면 body posture,
+                  국소적 head motion이 의미의 중심이면 head movement로 판정한다.
                 </td>
                 <td>
                   folded arms + backward torso = body posture / repeated nod =
@@ -753,7 +1066,8 @@
                 <td>Body vs. action</td>
                 <td>
                   자세 변화가 새로운 stable configuration으로 남으면 body
-                  posture, 잠깐 발생하고 사라지면 transient action으로 판정한다.
+                  posture, 잠깐 발생하고 원래 상태로 복귀하면 transient action
+                  또는 adjustment episode로 판정한다.
                 </td>
                 <td>
                   slump로 내려가 유지 = body posture / small stretch 1회 =
@@ -761,25 +1075,38 @@
                 </td>
               </tr>
               <tr>
-                <td>Multiple cues in one clip</td>
+                <td>Self-contact handling</td>
                 <td>
-                  1차로 form(state/action)을 정하고, 2차로 가장 지배적으로
-                  지각되는 channel을 기록한다.
+                  self-contact가 유지형 자세 구성의 일부이면 body posture
+                  parameter로, 짧게 나타났다 사라지는 자기접촉이면
+                  self-regulatory adjustment episode로 판정한다.
                 </td>
                 <td>
-                  cough하면서 briefly head dips = transient action / head-linked
-                  action
+                  턱을 괴고 유지 = body posture / 잠깐 얼굴 만지기 =
+                  ACT_briefSelfTouch
+                </td>
+              </tr>
+              <tr>
+                <td>Multiple cues in one clip</td>
+                <td>
+                  1차로 temporal form(state/action/episode)을 정하고, 2차로 가장
+                  지배적으로 지각되는 channel 또는 episode type을 기록한다.
+                </td>
+                <td>
+                  cough하면서 briefly head dips = physiological interruption
+                  episode
                 </td>
               </tr>
               <tr>
                 <td>Speaker interpretation priority</td>
                 <td>
-                  발표자가 가장 먼저 읽게 되는 신호를 우선 기록한다. 사회적 평가
-                  신호로 직접 읽히는 cue를 우선한다.
+                  발표자가 가장 먼저 읽게 되는 사회적 평가 신호를 우선 기록한다.
+                  단, 구현 단계에서는 clip의 물리적 구성보다 speaker-side
+                  reading을 우선한다.
                 </td>
                 <td>
-                  nod는 agreement cue, shake는 disagreement cue, looking away는
-                  disengagement cue
+                  nod = agreement / understanding cue, shake = disagreement cue,
+                  looking away = disengagement cue
                 </td>
               </tr>
             </tbody>
