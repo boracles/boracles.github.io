@@ -56,7 +56,8 @@
           <p>
             발표자의 발화 내용과 발표 맥락에 적절하게 반응하는 AI 청중의
             백채널을 생성하기 위해, 청중 비언어 반응의 반응 채널, 시간적 형식,
-            그리고 선택 및 판정 규칙을 포함하는 작업적 생성 기준을 정교화한다.
+            행동 episode, 그리고 선택 규칙을 포함하는 작업적 생성 기준을
+            정교화한다.
           </p>
         </section>
 
@@ -123,7 +124,7 @@
                 <th>Operational Definition</th>
                 <th>Key Design Features</th>
                 <th>Typical Examples</th>
-                <th>Classification Rule</th>
+                <th>Generation Rule</th>
               </tr>
             </thead>
             <tbody>
@@ -135,8 +136,9 @@
                 <td>torso uprightness</td>
                 <td>BODY_uprightNeutral</td>
                 <td rowspan="5">
-                  반응의 핵심 정보가 몸통·상체·팔의 자세 구성과 정렬에서 드러날
-                  때, 이를 body posture 채널의 반응으로 다룬다.
+                  AI 청중 백채널 생성에서 반응의 핵심이 몸통·상체·팔의 자세
+                  구성과 정렬로 실현될 때, 이를 body posture 채널을 통해
+                  생성한다.
                 </td>
               </tr>
               <tr>
@@ -334,48 +336,373 @@
             </li>
           </ul>
 
-          <h3 class="note-subheading">Response Forms</h3>
+          <h3 class="note-subheading">Episode Categories</h3>
+          <p class="note-caption">
+            Episode Categories는 단일 channel feature로 환원되지 않는 복합
+            transient action을 생성 단위로 다루기 위한 작업적 범주이다.
+          </p>
           <table class="note-table">
             <thead>
               <tr>
-                <th>Form</th>
+                <th>Episode Type</th>
                 <th>Operational Definition</th>
-                <th>Temporal Profile</th>
                 <th>Typical Examples</th>
-                <th>Classification Rule</th>
+                <th>Generation Rule</th>
               </tr>
             </thead>
             <tbody>
               <tr>
-                <td>Sustained state</td>
-                <td>onset보다 일정 시간 유지되는 배치와 상태가 핵심인 반응.</td>
-                <td>settle → hold / hold with minimal variation</td>
+                <td>Task-driven action episode</td>
                 <td>
-                  BODY_uprightNeutral, BODY_forwardLean, BODY_backwardLean,
-                  BODY_laterallyOriented, BODY_selfContact, GAZE_atSpeaker,
-                  GAZE_atSlides, GAZE_lookingAway
+                  특정 과업 수행이나 기록 행위가 중심이 되는 짧은 행동 episode.
+                  시선, 손 움직임, 자세 변화가 동반되더라도 핵심 정보는 note
+                  taking, device use, recording behavior와 같은 행위 자체에
+                  있다.
                 </td>
                 <td>
-                  반응의 핵심 정보가 짧은 사건이 아니라 일정 시간 유지되는 자세,
-                  표정, 시선 상태에 있으면 sustained state 형식으로 본다.
+                  ACT_noteTaking,<br />
+                  ACT_typing,<br />
+                  ACT_deviceChecking,<br />
+                  ACT_photographingSlides
+                </td>
+                <td>
+                  note-taking, typing, device checking, slide photographing과
+                  같은 과업 수행 또는 기록 행위가 핵심이면 task-driven action
+                  episode로 생성한다.
+                </td>
+              </tr>
+
+              <tr>
+                <td>Social side-action episode</td>
+                <td>
+                  발표자 이외의 대상과의 짧은 상호작용이나 측면적 사회 행동으로
+                  나타나는 episode.
+                </td>
+                <td>ACT_sideConversation, ACT_whispering</td>
+                <td>
+                  옆 사람과의 짧은 사회적 교환이 핵심이면 social side-action
+                  episode로 생성한다.
+                </td>
+              </tr>
+
+              <tr>
+                <td>Physiological action episode</td>
+                <td>
+                  생리적 필요나 신체 상태 변화에서 비롯되는 짧은 행동 episode.
+                </td>
+                <td>
+                  ACT_yawn,<br />
+                  ACT_cough
+                </td>
+                <td>
+                  피로, 기침, 하품 등 생리적 interruption을 표현해야 할 때
+                  physiological action episode로 생성한다.
+                </td>
+              </tr>
+
+              <tr>
+                <td>Self-regulatory / adjustment episode</td>
+                <td>
+                  자세를 재조정하거나 불편을 완화하기 위해 발생하는 짧은
+                  자기조절 행동 episode.
+                </td>
+                <td>ACT_fidgeting, ACT_briefSelfTouch, ACT_seatAdjustment</td>
+                <td>
+                  안정된 자세 유지보다 미세한 조정이나 불편 완화가 핵심이면
+                  self-regulatory / adjustment episode로 생성한다.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h3 class="note-subheading">Literature Basis</h3>
+          <ul class="note-references">
+            <li>
+              <strong>Episode types.</strong> Episode type은 발표를 듣는 청중의
+              비언어 반응 중 단일 채널 feature로 환원되기보다 복합 행위로
+              실현되는 transient action을 생성 단위로 조직하기 위한 작업적
+              범주이다. 관찰 기반 발표 청중 연구는 note taking, electronic
+              device use, talking to a neighbor, moving objects around,
+              fidgeting과 같은 복합 행동이 attention / inattention 패턴을
+              구성함을 보여준다 (Tudor et al., 2013). 또한 발표를 듣는 청중 관찰
+              연구에서는 turning to the neighbor and start talking, taking notes
+              for a long time와 같은 행동 패턴도 보고되었다 (Pöschl &amp;
+              Döring, 2012). 본 연구는 이러한 행동이 body posture, gaze,
+              facial/head response 등 여러 비언어 요소가 결합되어 실현되는 복합
+              행위라는 점에 주목하여, 이를 단일 채널 feature로 환원하기보다
+              별도의 action episode 단위로 조직한다. 따라서 note taking, device
+              use, side conversation과 같이 과업 수행이나 국소적 사회 상호작용이
+              핵심인 행동은 episode category로 다룬다. 반면 nod, shake, facial
+              expression, gaze aversion과 같이 반응의 핵심이 특정 비언어
+              채널에서 직접 실현되는 경우에는 channel category와 response form
+              층위에서 다루고, 별도의 episode type으로 중복 설정하지 않는다.
+              이에 따라 본 연구는 관찰 기반 근거가 직접 확인되는 task-driven
+              action episode와 social side-action episode를 핵심 episode
+              type으로 설정하였다. 한편 physiological action episode와
+              self-regulatory / adjustment episode는 발표 청중의 보조적
+              interruption 및 adjustment를 생성 수준에서 다루기 위해 제한적으로
+              도입한 작업적 확장 범주이다. ACT_typing은 Tudor et al. (2013)의
+              electronic device use를 구현 수준에서 세분화한 작업적 subtype이며,
+              ACT_photographingSlides는 note taking 및 device-based recording
+              behavior를 발표 상황의 생성 단위로 분리한 작업적 subtype으로
+              포함하였다.
+            </li>
+          </ul>
+
+          <h3 class="note-subheading">Response Forms</h3>
+
+          <p class="note-caption">
+            Response Forms는 실제 생성에 사용하는 animation clip 단위를 정리한
+            표이다. Sustained state는 body, gaze, facial feature가 결합된 유지형
+            state clip으로, transient action은 짧은 event clip 또는 action
+            episode로 구성한다.
+          </p>
+
+          <h4 class="note-subheading">Sustained State Clips</h4>
+          <table class="note-table">
+            <thead>
+              <tr>
+                <th>Clip ID</th>
+                <th>Body</th>
+                <th>Gaze</th>
+                <th>Facial</th>
+                <th>Temporal Profile</th>
+                <th>Generation Rule</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>STATE_upright_speaker_neutral</td>
+                <td>BODY_uprightNeutral</td>
+                <td>GAZE_atSpeaker</td>
+                <td>FACIAL_neutral</td>
+                <td>hold</td>
+                <td>
+                  발표 내용에 기본적 attention이 유지되고, 직접적인 긍정·부정
+                  평가를 강조하지 않는 neutral attentive baseline이 필요할 때
+                  생성한다.
                 </td>
               </tr>
               <tr>
-                <td>Transient action</td>
+                <td>STATE_upright_slides_neutral</td>
+                <td>BODY_uprightNeutral</td>
+                <td>GAZE_atSlides</td>
+                <td>FACIAL_neutral</td>
+                <td>hold</td>
                 <td>
-                  onset–offset이 비교적 분명하며 짧은 episode처럼 발생하는 반응.
+                  청중이 발표자의 시각 자료를 따라가고 있음을 보여주되, 정서적
+                  평가 신호는 최소화해야 할 때 생성한다.
                 </td>
-                <td>brief / very brief / short episode / repeated burst</td>
+              </tr>
+              <tr>
+                <td>STATE_upright_alternating_neutral</td>
+                <td>BODY_uprightNeutral</td>
+                <td>GAZE_atSpeaker ↔ GAZE_atSlides</td>
+                <td>FACIAL_neutral</td>
+                <td>slow alternation</td>
                 <td>
-                  HEAD_nod, HEAD_shake, HEAD_tilt, HEAD_down, HEAD_turn,
-                  FACIAL_smile, FACIAL_frown, FACIAL_doubt, GAZE_briefAversion,
-                  ACT_noteTaking, ACT_deviceChecking, ACT_yawn, ACT_cough,
-                  ACT_whispering, ACT_seatAdjustment
+                  청중이 발표자와 슬라이드를 번갈아 추적하는 일반적 청취 상태를
+                  표현해야 할 때 생성한다.
                 </td>
+              </tr>
+              <tr>
+                <td>STATE_forwardLean_speaker_neutral</td>
+                <td>BODY_forwardLean</td>
+                <td>GAZE_atSpeaker</td>
+                <td>FACIAL_neutral</td>
+                <td>hold</td>
                 <td>
-                  반응의 핵심 정보가 유지된 상태보다 발생과 종료가 비교적 뚜렷한
-                  짧은 사건에 있으면 transient action 형식으로 본다.
+                  직접적인 시선 집중과 높은 attentiveness를 표현하되 overt
+                  positive affect 없이 유지형 집중 상태를 보여줄 때 생성한다.
                 </td>
+              </tr>
+              <tr>
+                <td>STATE_forwardLean_slides_neutral</td>
+                <td>BODY_forwardLean</td>
+                <td>GAZE_atSlides</td>
+                <td>FACIAL_neutral</td>
+                <td>hold</td>
+                <td>
+                  시각 자료에 대한 집중이 높고 내용 추적이 강조되는 상태를
+                  표현할 때 생성한다.
+                </td>
+              </tr>
+              <tr>
+                <td>STATE_backward_away_neutral</td>
+                <td>BODY_backwardLean</td>
+                <td>GAZE_lookingAway</td>
+                <td>FACIAL_neutral</td>
+                <td>hold</td>
+                <td>
+                  낮은 engagement 또는 심리적 거리두기를 유지형 상태로 표현할 때
+                  생성한다.
+                </td>
+              </tr>
+              <tr>
+                <td>STATE_selfContact_speaker_neutral</td>
+                <td>BODY_selfContact</td>
+                <td>GAZE_atSpeaker</td>
+                <td>FACIAL_neutral</td>
+                <td>hold</td>
+                <td>
+                  attention은 유지되지만 약한 긴장이나 자기조절의 흔적이 동반된
+                  청취 상태를 표현할 때 생성한다.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h4 class="note-subheading">Transient Action Clips</h4>
+          <table class="note-table">
+            <thead>
+              <tr>
+                <th>Clip ID</th>
+                <th>Primary Type</th>
+                <th>Main Realization</th>
+                <th>Temporal Profile</th>
+                <th>Generation Rule</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>HEAD_nod</td>
+                <td>head action</td>
+                <td>head nod</td>
+                <td>brief / single or repeated</td>
+                <td>
+                  동의, 이해, 내용 추적의 짧은 backchannel을 표현할 때 생성한다.
+                </td>
+              </tr>
+              <tr>
+                <td>HEAD_shake</td>
+                <td>head action</td>
+                <td>head shake</td>
+                <td>brief</td>
+                <td>
+                  불일치, 의문, 부정적 평가의 짧은 신호를 표현할 때 생성한다.
+                </td>
+              </tr>
+              <tr>
+                <td>FACIAL_smile</td>
+                <td>facial action</td>
+                <td>smile</td>
+                <td>brief</td>
+                <td>
+                  긍정적 평가, 호감, 유쾌함의 짧은 표정 반응을 표현할 때
+                  생성한다.
+                </td>
+              </tr>
+              <tr>
+                <td>FACIAL_frown</td>
+                <td>facial action</td>
+                <td>frown</td>
+                <td>brief</td>
+                <td>
+                  혼란, 부정적 평가, 비판적 반응의 짧은 표정 신호를 표현할 때
+                  생성한다.
+                </td>
+              </tr>
+              <tr>
+                <td>GAZE_briefAversion</td>
+                <td>gaze action</td>
+                <td>brief aversion</td>
+                <td>very brief</td>
+                <td>
+                  순간적 attention break, hesitation, mild disengagement를
+                  표현할 때 생성한다.
+                </td>
+              </tr>
+              <tr>
+                <td>ACT_noteTaking</td>
+                <td>task-driven episode</td>
+                <td>note taking</td>
+                <td>short episode</td>
+                <td>기록 행위 자체가 핵심 행동으로 나타나야 할 때 생성한다.</td>
+              </tr>
+              <tr>
+                <td>ACT_typing</td>
+                <td>task-driven episode</td>
+                <td>typing / device-based recording</td>
+                <td>short episode</td>
+                <td>
+                  노트북이나 디지털 기기를 통한 기록 행위를 표현할 때 생성한다.
+                </td>
+              </tr>
+              <tr>
+                <td>ACT_deviceChecking</td>
+                <td>task-driven episode</td>
+                <td>device checking</td>
+                <td>brief episode</td>
+                <td>
+                  발표 흐름에서 이탈한 기기 확인 행동을 표현할 때 생성한다.
+                </td>
+              </tr>
+              <tr>
+                <td>ACT_photographingSlides</td>
+                <td>task-driven episode</td>
+                <td>slide photographing</td>
+                <td>brief episode</td>
+                <td>
+                  슬라이드 기록을 위해 기기를 들어 촬영하는 행동을 표현할 때
+                  생성한다.
+                </td>
+              </tr>
+              <tr>
+                <td>ACT_sideConversation</td>
+                <td>social side-action episode</td>
+                <td>side conversation</td>
+                <td>short episode</td>
+                <td>옆 사람과의 짧은 사회적 교환이 핵심일 때 생성한다.</td>
+              </tr>
+              <tr>
+                <td>ACT_whispering</td>
+                <td>social side-action episode</td>
+                <td>whispering</td>
+                <td>brief episode</td>
+                <td>
+                  작은 목소리의 국소적 사회 상호작용을 표현할 때 생성한다.
+                </td>
+              </tr>
+              <tr>
+                <td>ACT_yawn</td>
+                <td>physiological episode</td>
+                <td>yawn</td>
+                <td>brief episode</td>
+                <td>피로나 생리적 interruption을 표현할 때 생성한다.</td>
+              </tr>
+              <tr>
+                <td>ACT_cough</td>
+                <td>physiological episode</td>
+                <td>cough</td>
+                <td>brief episode</td>
+                <td>기침과 같은 생리적 interruption을 표현할 때 생성한다.</td>
+              </tr>
+              <tr>
+                <td>ACT_fidgeting</td>
+                <td>self-regulatory episode</td>
+                <td>fidgeting</td>
+                <td>repeated short burst</td>
+                <td>
+                  안정된 청취 상태보다 미세한 불편 완화나 안절부절의 움직임이
+                  핵심일 때 생성한다.
+                </td>
+              </tr>
+              <tr>
+                <td>ACT_briefSelfTouch</td>
+                <td>self-regulatory episode</td>
+                <td>brief self-touch</td>
+                <td>brief episode</td>
+                <td>
+                  짧은 자기접촉을 통한 자기조절 또는 긴장 완화를 표현할 때
+                  생성한다.
+                </td>
+              </tr>
+              <tr>
+                <td>ACT_seatAdjustment</td>
+                <td>self-regulatory episode</td>
+                <td>seat adjustment</td>
+                <td>brief episode</td>
+                <td>자세 재조정이나 착석 불편 완화를 표현할 때 생성한다.</td>
               </tr>
             </tbody>
           </table>
