@@ -1316,19 +1316,20 @@ body.note-page {
 
 .note-title {
   font-family: "futura-pt", "Sweet", "Noto Sans KR", sans-serif;
-  font-size: clamp(2.8rem, 5vw, 4.4rem);
-  line-height: 1.02;
+  font-size: clamp(2.2rem, 9vw, 3rem);
+  line-height: 1.06;
   letter-spacing: -0.02em;
   margin: 0 0 20px;
   color: #ffffff;
   font-weight: 600;
+  max-width: none;
 }
 
 .note-summary {
   font-size: 1.08rem;
   line-height: 1.8;
   color: rgba(255, 255, 255, 0.78);
-  max-width: 720px;
+  max-width: none;
   margin: 0;
 }
 
@@ -1720,11 +1721,6 @@ body.note-page {
   .note-article {
     width: min(760px, 100%);
     margin: 0 auto;
-  }
-
-  .note-title {
-    font-size: clamp(2.2rem, 9vw, 3rem);
-    line-height: 1.06;
   }
 
   .note-summary,
