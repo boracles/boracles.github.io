@@ -30,19 +30,24 @@
       <div class="note-breadcrumb">
         <a href="index.html">Research Notes</a>
         <span>/</span>
-        <span>2026.03.27</span>
+        <span
+          >A Design Framework for Evaluative Backchannels in AI Audience Agents
+          for XR Presentation Environments</span
+        >
       </div>
 
       <article class="note-article">
         <header class="note-header">
-          <div class="note-meta">2026.03.28 · XR / HCI / AI Agents</div>
+          <div class="note-meta">
+            2026.03.28-2026.03.29 · XR / HCI / AI Agents
+          </div>
           <h1 class="note-title">
-            Operational Criteria for Classifying Audience Nonverbal Responses
+            Operational Criteria for Structuring Audience Nonverbal Responses
           </h1>
           <p class="note-summary">
             발표 상황에서 관찰되는 청중의 비언어 반응을 가상 청중 백채널 생성과
             제어에 활용하기 위해, 반응 채널, 시간적 형식, 그리고 판정 규칙을
-            포함한 작업적 분류 기준을 정리한다.
+            포함한 작업적 기준을 정리한다.
           </p>
         </header>
 
@@ -70,13 +75,13 @@
         <section class="note-section">
           <h2>Current Ambiguity</h2>
           <p>
-            현재 설계한 청중 반응 클립의 구분 체계는 실질적인 구현과 제어를 위해
-            구성되었으나, 아직 충분한 문헌적 근거 위에서 체계적으로
+            현재 설계한 청중 반응 클립의 작업적 구성 체계는 실질적인 구현과
+            제어를 위해 구성되었으나, 아직 충분한 문헌적 근거 위에서 체계적으로
             정당화되었다고 보기는 어렵다. 특히 실제 발표 맥락에서 청중의 어떤
             비언어적 반응이 관찰되는지, 각 반응이 실제 발표 상황에서 발표자에게
             어떤 평가적 신호로 해석되는지, 그리고 이러한 행동 단위를 가상
             청중에게 적용했을 때 사용자에게 어떤 사회적 태도나 인상으로
-            지각되는지를 직접적으로 다룬 문헌은 제한적이다. 따라서 현재의 분류
+            지각되는지를 직접적으로 다룬 문헌은 제한적이다. 따라서 현재의 작업적
             체계를 보다 근거 있게 정교화하기 위해, 청중 행동에 대한 관찰 기반
             연구와 발표 상황에서의 사회적 해석, 가상 에이전트 및 가상 청중의
             비언어 행동 지각에 관한 인접 문헌을 함께 검토하여 그 근거를 보강할
@@ -87,14 +92,15 @@
         <section class="note-section">
           <h2>Audience Response Framework</h2>
           <p>
-            본 노트에서는 청중 반응을 두 층위에서 구분한다. 첫째, 반응이
-            나타나는 주요 채널에 따라 body posture, head movement, facial
-            expression, gaze로 분류한다. 이는 실제 청중 관찰 연구와 가상 청중
-            지각 연구에서 posture, facial expression, gaze, head movement가 주요
-            비언어 단서로 반복적으로 다루어진다는 점에 근거한다 (Poeschl &amp;
-            Döring, 2012; Chollet &amp; Scherer, 2017; Etienne et al., 2023).
-            둘째, 각 반응이 비교적 유지되는 sustained state인지, 짧게 발생했다가
-            종료되는 transient action인지에 따라 반응 형식을 구분한다. 이 두
+            본 노트에서는 청중 반응을 AI 청중 백채널 생성과 제어를 위해 두
+            층위에서 조직한다. 첫째, 반응이 나타나는 주요 채널에 따라 body
+            posture, head movement, facial expression, gaze의 네 채널로
+            정리한다. 이는 실제 청중 관찰 연구와 가상 청중 지각 연구에서
+            posture, facial expression, gaze, head movement가 주요 비언어 단서로
+            반복적으로 다루어진다는 점에 근거한다 (Poeschl &amp; Döring, 2012;
+            Chollet &amp; Scherer, 2017; Etienne et al., 2023). 둘째, 각 반응이
+            비교적 유지되는 sustained state인지, 짧게 발생했다가 종료되는
+            transient action인지에 따라 시간적 형식으로 나누어 다룬다. 이 두
             번째 구분은 선행연구에서 직접 제시된 범주라기보다, 청중 반응의
             시간적 전개 양상을 분석하기 위해 본 연구에서 설정한 작업적 구분이다.
           </p>
@@ -129,8 +135,8 @@
                 <td>torso uprightness</td>
                 <td>BODY_uprightNeutral</td>
                 <td rowspan="5">
-                  반응의 핵심 정보가 몸통·상체·팔의 자세 구성과 정렬에서
-                  드러나면 body posture로 분류한다.
+                  반응의 핵심 정보가 몸통·상체·팔의 자세 구성과 정렬에서 드러날
+                  때, 이를 body posture 채널의 반응으로 다룬다.
                 </td>
               </tr>
               <tr>
@@ -163,7 +169,7 @@
                 <td>HEAD_nod</td>
                 <td rowspan="5">
                   반응의 핵심 정보가 머리의 짧고 국소적인 운동 패턴에서 드러나면
-                  head movement로 분류한다.
+                  head movement 채널의 반응으로 다룬다.
                 </td>
               </tr>
               <tr>
@@ -190,7 +196,7 @@
                 <td>FACIAL_neutral</td>
                 <td rowspan="4">
                   반응의 핵심 정보가 얼굴 표정 변화에서 드러나면 facial
-                  expression으로 분류한다.
+                  expression 채널의 반응으로 다룬다.
                 </td>
               </tr>
               <tr>
@@ -217,9 +223,9 @@
                 <td rowspan="4">
                   반응의 핵심 정보가 고개 운동 자체가 아니라 시선의 대상
                   (speaker, slides/display, elsewhere)과 유지/이탈 패턴에서
-                  드러나면 gaze로 분류한다. 단, 시선이 필기, 노트북 사용, 휴대폰
-                  확인과 같은 명확한 행위 수행에 종속된 경우에는 action으로 우선
-                  분류한다.
+                  드러나면 gaze 채널의 반응으로 다룬다. 단, 시선이 필기, 노트북
+                  사용, 휴대폰 확인과 같은 명확한 행위 수행에 종속된 경우에는
+                  독립적인 gaze 반응보다 action episode의 일부로 우선 다룬다.
                 </td>
               </tr>
               <tr>
@@ -342,37 +348,33 @@
             <tbody>
               <tr>
                 <td>Sustained state</td>
-                <td>시작과 종료보다 유지되는 상태가 핵심인 반응.</td>
-                <td>hold / settle → hold / minimal ongoing variation</td>
+                <td>onset보다 일정 시간 유지되는 배치와 상태가 핵심인 반응.</td>
+                <td>settle → hold / hold with minimal variation</td>
                 <td>
-                  BODY_neutral, BODY_attentive_forwardLean,
-                  BODY_reserved_backwardLean_subtle,
-                  BODY_selfMonitoring_slightClosed, BODY_sideOriented,
-                  BODY_selfRegulating_discomfort
+                  BODY_uprightNeutral, BODY_forwardLean, BODY_backwardLean,
+                  BODY_laterallyOriented, BODY_selfContact, GAZE_atSpeaker,
+                  GAZE_atSlides, GAZE_lookingAway
                 </td>
                 <td>
-                  시작과 종료보다 “유지되는 상태”가 핵심이면 sustained state로
-                  기록한다.
+                  반응의 핵심 정보가 짧은 사건이 아니라 일정 시간 유지되는 자세,
+                  표정, 시선 상태에 있으면 sustained state 형식으로 본다.
                 </td>
               </tr>
               <tr>
                 <td>Transient action</td>
                 <td>
-                  짧은 사건처럼 발생하며 onset–offset이 분명한 반응.
-                  task-driven, physiological, social, bodily adjustment,
-                  self-regulation, discomfort/fidget action을 포함한다.
+                  onset–offset이 비교적 분명하며 짧은 episode처럼 발생하는 반응.
                 </td>
-                <td>brief / very brief / short sustained / repeated episode</td>
+                <td>brief / very brief / short episode / repeated burst</td>
                 <td>
-                  ACT_noteTaking, ACT_photographingSlides, ACT_deviceChecking,
-                  ACT_yawn, ACT_cough, ACT_whispering, ACT_sideConversation,
-                  ACT_drinking, ACT_seatAdjustment, ACT_selfContact,
-                  ACT_smallStretch, ACT_handReposition, ACT_restlessSeatMove,
-                  ACT_repeatedHandMove
+                  HEAD_nod, HEAD_shake, HEAD_tilt, HEAD_down, HEAD_turn,
+                  FACIAL_smile, FACIAL_frown, FACIAL_doubt, GAZE_briefAversion,
+                  ACT_noteTaking, ACT_deviceChecking, ACT_yawn, ACT_cough,
+                  ACT_whispering, ACT_seatAdjustment
                 </td>
                 <td>
-                  사건성이 강하고 onset–offset이 비교적 분명하면 transient
-                  action으로 기록한다.
+                  반응의 핵심 정보가 유지된 상태보다 발생과 종료가 비교적 뚜렷한
+                  짧은 사건에 있으면 transient action 형식으로 본다.
                 </td>
               </tr>
             </tbody>

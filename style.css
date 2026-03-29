@@ -1301,9 +1301,13 @@ body.note-page {
 }
 
 .note-header {
-  margin-bottom: 52px;
-  padding-bottom: 28px;
+  margin-bottom: 24px;
+  padding-bottom: 24px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.note-header + .note-section--highlight {
+  margin-top: 10px;
 }
 
 .note-meta {
@@ -1361,7 +1365,7 @@ body.note-page {
   padding: 22px 24px 24px;
   border: 1px solid rgba(255, 255, 255, 0.12);
   background: rgba(255, 255, 255, 0.025);
-  border-radius: 6px;
+  border-radius: 0px;
 }
 
 .note-section--highlight h2 {
