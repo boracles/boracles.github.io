@@ -118,7 +118,7 @@
             <tr>
               <th>Category</th>
               <th>Operational Definition</th>
-              <th>Core Parameters</th>
+              <th>Parameters</th>
               <th>Generation Principle</th>
             </tr>
           </thead>
@@ -130,24 +130,23 @@
                 trunk alignment,<br />
                 lean direction,<br />
                 body orientation,<br />
-                arm configuration,<br />
+                arm placement,<br />
                 self-contact cue
               </td>
               <td>
-                반응의 핵심 의미가 torso 및 arm configuration의 안정된 배치로 실현될 때, 해당 반응은 body posture 중심으로 생성한다.
+                반응의 핵심 의미가 torso와 arm placement를 중심으로 한 자세 구성에 있을 때, 해당 반응은 body posture 중심으로 생성한다.
               </td>
             </tr>
 
             <tr>
               <td>Head movement</td>
               <td>
-                머리의 짧고 국소적인 운동 또는 짧은 orientation 변화로 드러나는 반응.
+                머리의 짧고 국소적인 운동 또는 orientation 변화로 드러나는 반응.
               </td>
               <td>
-                nod,<br />
-                shake,<br />
-                brief tilt,<br />
-                downward dip,<br />
+                nod pattern,<br />
+                shake pattern,<br />
+                tilt / dip pattern,<br />
                 turn / orientation shift
               </td>
               <td>
@@ -172,16 +171,15 @@
             <tr>
               <td>Gaze</td>
               <td>
-                행위 수행 자체가 아니라 시선의 대상과 유지/이탈 패턴으로 드러나는 반응.
+                행위 수행 자체가 아니라 시선의 대상과 유지 시간, 그리고 대상 간 전환 패턴으로 드러나는 반응.
               </td>
               <td>
                 gaze target,<br />
                 dwell duration,<br />
-                alternation pattern,<br />
-                aversion pattern
+                alternation pattern
               </td>
               <td>
-                반응의 핵심이 시선의 대상과 유지/이탈 패턴에 있을 때, 해당 반응은 gaze 중심으로 생성한다.
+                반응의 핵심이 시선의 대상, 유지 시간, 대상 간 전환 패턴에 있을 때, 해당 반응은 gaze 중심으로 생성한다.
               </td>
             </tr>
           </tbody>
@@ -202,61 +200,72 @@
             <tr>
               <th>Parameter</th>
               <th>Operational Meaning</th>
-              <th>Typical Values</th>
+              <th>Typical Value</th>
               <th>Notes for Generation</th>
             </tr>
           </thead>
           <tbody>
             <tr>
-              <td>Trunk alignment</td>
-              <td>몸통의 전반적 세움 정도와 처짐 정도를 나타내는 축.</td>
-              <td>upright / slumped</td>
-              <td>
-                sustained state의 기본 posture quality를 결정하는 핵심 축으로
-                사용한다.
-              </td>
+              <td rowspan="2">Trunk alignment</td>
+              <td rowspan="2">몸통의 전반적 세움 정도와 처짐 정도를 나타내는 축.</td>
+              <td>upright</td>
+              <td>기본 attentive posture와 안정된 청취 상태에 사용한다.</td>
             </tr>
             <tr>
-              <td>Lean direction</td>
-              <td>몸통이 전후 방향으로 기울어지는 정도를 나타내는 축.</td>
-              <td>neutral / forward / backward</td>
-              <td>
-                attentiveness, psychological distance, reduced engagement의
-                차이를 표현할 때 사용한다.
-              </td>
+              <td>slumped</td>
+              <td>낮은 에너지, 피로, reduced engagement 상태에 사용한다.</td>
+            </tr>
+
+            <tr>
+              <td rowspan="3">Lean direction</td>
+              <td rowspan="3">몸통이 전후 방향으로 기울어지는 정도를 나타내는 축.</td>
+              <td>neutral</td>
+              <td>기본적인 청취 자세를 유지하는 상태에 사용한다.</td>
             </tr>
             <tr>
-              <td>Body orientation</td>
-              <td>
-                몸통이 발표자를 정면으로 향하는지, 부분적으로 옆으로
-                틀어지는지를 나타내는 축.
-              </td>
-              <td>toward speaker / side-oriented</td>
-              <td>
-                발표자로부터의 orientation shift나 부분적 social diversion을
-                표현할 때 사용한다.
-              </td>
+              <td>forward</td>
+              <td>집중, 높은 attentiveness, 적극적 내용 추적 상태에 사용한다.</td>
             </tr>
             <tr>
-              <td>Arm configuration</td>
-              <td>팔의 개방성, 폐쇄성, 교차 여부를 나타내는 축.</td>
-              <td>open / closed / crossed</td>
-              <td>
-                trunk parameter와 결합하여 openness, reserve, defensive
-                stance를 세밀하게 조정한다.
-              </td>
+              <td>backward</td>
+              <td>심리적 거리두기, reduced engagement, reserve 상태에 사용한다.</td>
+            </tr>
+
+            <tr>
+              <td rowspan="2">Body orientation</td>
+              <td rowspan="2">몸통이 발표자를 정면으로 향하는지, 부분적으로 옆으로 틀어지는지를 나타내는 축.</td>
+              <td>toward speaker</td>
+              <td>발표자 중심의 attention을 유지하는 상태에 사용한다.</td>
             </tr>
             <tr>
-              <td>Self-contact cue</td>
-              <td>
-                손이 얼굴이나 머리, 몸에 닿아 자기지지 또는 자기조절의 흔적을
-                형성하는 cue.
-              </td>
-              <td>none / chin-touch / cheek-touch / head-support</td>
-              <td>
-                기본 state의 일부로 약하게 유지할 수도 있고, 짧은
-                self-regulatory action으로 별도 처리할 수도 있다.
-              </td>
+              <td>side-oriented</td>
+              <td>부분적 social diversion 또는 발표자로부터의 orientation shift를 표현할 때 사용한다.</td>
+            </tr>
+
+            <tr>
+              <td rowspan="2">Arm placement</td>
+              <td rowspan="2">팔의 기본 위치와 배치를 통해 드러나는 자세 구성.</td>
+              <td>open</td>
+              <td>개방적이고 안정된 청취 상태에 사용한다.</td>
+            </tr>
+            <tr>
+              <td>crossed</td>
+              <td>reserve, closure, defensive stance를 표현할 때 사용한다.</td>
+            </tr>
+
+            <tr>
+              <td rowspan="3">Self-contact cue</td>
+              <td rowspan="3">손이 얼굴이나 머리, 몸에 닿아 자기지지 또는 자기조절의 흔적을 형성하는 cue.</td>
+              <td>none</td>
+              <td>추가적인 self-contact 없이 기본 자세를 유지하는 상태에 사용한다.</td>
+            </tr>
+            <tr>
+              <td>face-touch</td>
+              <td>약한 자기조절 또는 reflective attention이 필요한 상태에 사용한다.</td>
+            </tr>
+            <tr>
+              <td>head-support</td>
+              <td>강한 자기지지 또는 낮은 에너지 상태를 표현할 때 사용한다.</td>
             </tr>
           </tbody>
         </table>
@@ -267,57 +276,56 @@
             <tr>
               <th>Parameter</th>
               <th>Operational Meaning</th>
-              <th>Typical Values</th>
+              <th>Typical Value</th>
               <th>Notes for Generation</th>
             </tr>
           </thead>
           <tbody>
             <tr>
-              <td>Nod pattern</td>
-              <td>이해, 동의, 내용 추적과 관련된 상하 운동 패턴.</td>
-              <td>single nod / repeated nod / slow nod</td>
-              <td>짧은 backchannel burst로 주로 사용한다.</td>
+              <td rowspan="2">Nod pattern</td>
+              <td rowspan="2">이해, 동의, 내용 추적과 관련된 상하 운동 패턴.</td>
+              <td>single nod</td>
+              <td>짧은 동의나 이해 신호에 사용한다.</td>
             </tr>
             <tr>
-              <td>Shake pattern</td>
-              <td>부정, 의문, 비동의와 관련된 좌우 운동 패턴.</td>
-              <td>small shake / repeated shake</td>
-              <td>
-                facial cue와 결합하면 stronger negative reading을 만들 수
-                있다.
-              </td>
+              <td>repeated nod</td>
+              <td>연속적 내용 추적이나 적극적 동의 반응에 사용한다.</td>
+            </tr>
+
+            <tr>
+              <td rowspan="1">Shake pattern</td>
+              <td rowspan="1">부정, 의문, 비동의와 관련된 좌우 운동 패턴.</td>
+              <td>brief shake</td>
+              <td>가벼운 의문이나 불일치 반응에 사용한다.</td>
+            </tr>
+
+            <tr>
+              <td rowspan="2">Tilt pattern</td>
+              <td rowspan="2">고개를 한쪽으로 기울여 약한 의문이나 판단 유보를 드러내는 패턴.</td>
+              <td>brief tilt</td>
+              <td>약한 의문이나 판단 유보 반응에 사용한다.</td>
             </tr>
             <tr>
-              <td>Tilt pattern</td>
-              <td>
-                고개 기울임을 통해 uncertainty나 reflective attention을
-                드러내는 패턴.
-              </td>
-              <td>brief tilt / tilt hold</td>
-              <td>
-                brief action과 sustained hold 모두 가능하므로 temporal form을
-                분리해 다룬다.
-              </td>
+              <td>tilt hold</td>
+              <td>지속적인 의문이나 판단 유보 상태에 사용한다.</td>
             </tr>
+
             <tr>
               <td>Downward dip</td>
-              <td>고개를 아래로 잠깐 내리는 국소적 움직임.</td>
-              <td>brief dip / downward glance-linked dip</td>
-              <td>
-                독립 head action일 수도 있고, 일부 action episode의 일부로
-                결합될 수도 있다.
-              </td>
+              <td>고개를 아래로 짧게 내리는 국소적 움직임.</td>
+              <td>brief dip</td>
+              <td>일시적 망설임이나 순간적 처리 부담 반응에 사용한다.</td>
+            </tr>
+
+            <tr>
+              <td rowspan="2">Turn / orientation shift</td>
+              <td rowspan="2">발표자 또는 정면으로부터 머리 방향이 부분적으로 이동하는 패턴.</td>
+              <td>brief turn</td>
+              <td>순간적 attention shift나 짧은 방향 전환 반응에 사용한다.</td>
             </tr>
             <tr>
-              <td>Turn / orientation shift</td>
-              <td>
-                발표자 또는 정면으로부터 머리 방향이 부분적으로 이동하는 패턴.
-              </td>
-              <td>brief turn / held turn</td>
-              <td>
-                head channel로 기록할지 gaze/action과 결합할지는 지배적 의미에
-                따라 판정한다.
-              </td>
+              <td>held turn</td>
+              <td>지속적 orientation shift 또는 부분적 disengagement 상태에 사용한다.</td>
             </tr>
           </tbody>
         </table>
@@ -337,34 +345,30 @@
               <td rowspan="3">Brow configuration</td>
               <td rowspan="3">눈썹의 상승 또는 찌푸림을 통해 드러나는 상안면 변화.</td>
               <td>neutral</td>
-              <td>중립적 경청이나 기본 attentive state를 유지하는 상태로 사용한다.</td>
+              <td>중립적 경청이나 기본 attentive state를 유지하는 상태에 사용한다.</td>
             </tr>
             <tr>
               <td>raised</td>
-              <td>주의 고조, 가벼운 의문, 반응성 증가를 시사하는 상안면 cue로 활용할 수 있다.</td>
+              <td>주의 고조, 가벼운 의문, 반응성 증가 반응에 사용한다.</td>
             </tr>
             <tr>
               <td>lowered-furrowed</td>
-              <td>난이도 지각, 긴장, 부정적 평가 가능성을 시사하는 상안면 cue로 활용할 수 있다.</td>
+              <td>난이도 지각, 긴장, 부정적 평가 반응에 사용한다.</td>
             </tr>
 
             <tr>
-              <td rowspan="4">Periocular configuration</td>
-              <td rowspan="4">눈둘레의 열림, 이완, 긴장을 통해 드러나는 변화.</td>
+              <td rowspan="3">Periocular configuration</td>
+              <td rowspan="3">눈둘레의 열림 또는 긴장을 통해 드러나는 변화.</td>
               <td>neutral</td>
-              <td>기본 경청 상태에서 사용한다.</td>
-            </tr>
-            <tr>
-              <td>attentive</td>
-              <td>집중, 수용적 경청, 가벼운 동의가 필요한 반응에 사용한다.</td>
+              <td>기본 경청과 attentive state에 사용한다.</td>
             </tr>
             <tr>
               <td>widened</td>
-              <td>주의 환기, 순간적 놀람, 반응성 증가가 필요한 반응에 사용한다.</td>
+              <td>주의 환기, 순간적 놀람, 반응성 증가 반응에 사용한다.</td>
             </tr>
             <tr>
               <td>tightened</td>
-              <td>긴장, 노력, 불편, 비판적 주의가 필요한 반응에 사용한다.</td>
+              <td>긴장, 노력, 불편, 비판적 주의 반응에 사용한다.</td>
             </tr>
 
             <tr>
@@ -396,7 +400,6 @@
               <td>dropped</td>
               <td>강한 놀람, 당혹, 반응 중단 상태에 사용한다.</td>
             </tr>
-
           </tbody>
         </table>
 
@@ -406,42 +409,46 @@
             <tr>
               <th>Parameter</th>
               <th>Operational Meaning</th>
-              <th>Typical Values</th>
+              <th>Typical Value</th>
               <th>Notes for Generation</th>
             </tr>
           </thead>
           <tbody>
             <tr>
-              <td>Gaze target</td>
-              <td>시선이 향하는 주 대상.</td>
-              <td>speaker / slides-display / elsewhere</td>
-              <td>발표 attention과 disengagement를 구분하는 기본 축이다.</td>
+              <td rowspan="3">Gaze target</td>
+              <td rowspan="3">시선이 향하는 주 대상을 나타내는 축.</td>
+              <td>speaker</td>
+              <td>발표자 중심의 attention 상태에 사용한다.</td>
             </tr>
             <tr>
-              <td>Dwell duration</td>
-              <td>특정 target에 시선이 머무는 지속 시간.</td>
-              <td>brief / sustained</td>
-              <td>
-                brief aversion과 looking away state를 분리할 때 중요하다.
-              </td>
+              <td>slides/display</td>
+              <td>시각 자료 추적 상태에 사용한다.</td>
             </tr>
             <tr>
-              <td>Alternation pattern</td>
-              <td>둘 이상의 target 사이를 번갈아 보는 패턴.</td>
-              <td>speaker ↔ slides / irregular scan</td>
-              <td>
-                발표자와 시각 자료를 함께 추적하는 일반 청취 상태를 설계할 때
-                유용하다.
-              </td>
+              <td>elsewhere</td>
+              <td>발표 관련 대상에서 이탈한 상태에 사용한다.</td>
+            </tr>
+
+            <tr>
+              <td rowspan="2">Dwell duration</td>
+              <td rowspan="2">특정 target에 시선이 머무는 지속 시간을 나타내는 축.</td>
+              <td>brief</td>
+              <td>짧은 attention shift나 brief aversion 반응에 사용한다.</td>
             </tr>
             <tr>
-              <td>Aversion pattern</td>
-              <td>발표 관련 대상에서 시선이 이탈하는 패턴.</td>
-              <td>brief aversion / sustained looking away</td>
-              <td>
-                brief aversion은 transient action, sustained looking away는
-                state로 우선 다룬다.
-              </td>
+              <td>sustained</td>
+              <td>유지형 attention 상태 또는 sustained looking-away 상태에 사용한다.</td>
+            </tr>
+
+            <tr>
+              <td rowspan="2">Alternation pattern</td>
+              <td rowspan="2">둘 이상의 target 사이를 번갈아 보는 패턴.</td>
+              <td>speaker ↔ slides/display</td>
+              <td>발표자와 시각 자료를 함께 추적하는 일반 청취 상태에 사용한다.</td>
+            </tr>
+            <tr>
+              <td>irregular scan</td>
+              <td>안정된 추적보다 분산된 시선 이동이 필요한 상태에 사용한다.</td>
             </tr>
           </tbody>
         </table>
@@ -484,8 +491,7 @@
             이러한 facial action 기술을 바탕으로, 발표를 듣는 청중 백채널 생성에 필요한 작업적
             parameter level에서 facial expression을 재조직한다. brow configuration,
             periocular configuration, mouth configuration, jaw configuration을 중심으로
-            구성하며, 이후 이러한 형태 단위가 발표 맥락 속에서 어떤 evaluative function과
-            연결되는지 매핑한다.
+            구성하며, 이후 이러한 형태 단위가 발표 맥락 속 평가적 의미와 연결되는 생성 단위로 사용한다.
           </li>
           <li>
             <strong>Gaze.</strong> Bavelas et al. (2002)는 listener
