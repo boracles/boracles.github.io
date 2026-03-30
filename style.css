@@ -4,56 +4,49 @@
 
 @font-face {
   font-family: "Sweet";
-  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2304-2@1.0/SUITE-Light.woff2")
-    format("woff2");
+  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2304-2@1.0/SUITE-Light.woff2") format("woff2");
   font-weight: 300;
   font-display: swap;
 }
 
 @font-face {
   font-family: "Sweet";
-  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2304-2@1.0/SUITE-Regular.woff2")
-    format("woff2");
+  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2304-2@1.0/SUITE-Regular.woff2") format("woff2");
   font-weight: 400;
   font-display: swap;
 }
 
 @font-face {
   font-family: "Sweet";
-  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2304-2@1.0/SUITE-Medium.woff2")
-    format("woff2");
+  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2304-2@1.0/SUITE-Medium.woff2") format("woff2");
   font-weight: 500;
   font-display: swap;
 }
 
 @font-face {
   font-family: "Sweet";
-  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2304-2@1.0/SUITE-SemiBold.woff2")
-    format("woff2");
+  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2304-2@1.0/SUITE-SemiBold.woff2") format("woff2");
   font-weight: 600;
   font-display: swap;
 }
 
 @font-face {
   font-family: "Sweet";
-  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2304-2@1.0/SUITE-Bold.woff2")
-    format("woff2");
+  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2304-2@1.0/SUITE-Bold.woff2") format("woff2");
   font-weight: 700;
   font-display: swap;
 }
 
 @font-face {
   font-family: "Sweet";
-  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2304-2@1.0/SUITE-ExtraBold.woff2")
-    format("woff2");
+  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2304-2@1.0/SUITE-ExtraBold.woff2") format("woff2");
   font-weight: 800;
   font-display: swap;
 }
 
 @font-face {
   font-family: "Sweet";
-  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2304-2@1.0/SUITE-Heavy.woff2")
-    format("woff2");
+  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2304-2@1.0/SUITE-Heavy.woff2") format("woff2");
   font-weight: 900;
   font-display: swap;
 }
@@ -140,11 +133,9 @@ body {
   height: 90px;
   /* 너무 두껍지 않게 – 필요하면 60/80으로 조절 */
 
-  background: linear-gradient(
-    to bottom,
-    rgba(0, 0, 0, 1) 0%,
-    rgba(0, 0, 0, 0) 100%
-  );
+  background: linear-gradient(to bottom,
+      rgba(0, 0, 0, 1) 0%,
+      rgba(0, 0, 0, 0) 100%);
 
   z-index: -1;
   /* 네비 텍스트 뒤, 영상 위 */
@@ -840,7 +831,7 @@ body {
 }
 
 /* 섹션끼리 시각적으로도 구분하고 싶으면 */
-.project-section + .project-section {
+.project-section+.project-section {
   margin-top: 64px;
   /* 이후 섹션은 더 여유 */
   border-top: 1px solid #333333;
@@ -889,7 +880,7 @@ body {
   padding-left: 18px;
 }
 
-.ai-list li + li {
+.ai-list li+li {
   margin-top: 4px;
 }
 
@@ -953,8 +944,7 @@ body {
   opacity: 1;
 }
 
-.research-item--area,
-.research-note-card {
+.research-item--area {
   border-radius: 4px;
   transition:
     transform 0.18s ease,
@@ -967,6 +957,26 @@ body {
   transform: translateY(-2px);
   border-color: rgba(255, 255, 255, 0.22);
   background: rgba(255, 255, 255, 0.03);
+}
+
+.research-note-card * {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* Research note archive list */
+.note-list-item,
+.note-list-item:link,
+.note-list-item:visited,
+.note-list-item:hover,
+.note-list-item:active {
+  color: #ffffff;
+  text-decoration: none;
+}
+
+.note-list-item * {
+  color: inherit;
+  text-decoration: none;
 }
 
 .research-subtitle {
@@ -1033,7 +1043,7 @@ body {
 .research-notes-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 18px;
+  gap: 20px;
 }
 
 .research-notes-more {
@@ -1080,11 +1090,14 @@ body {
 }
 
 .research-note-card {
-  display: block;
-  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  min-height: 180px;
+  padding: 22px 22px 20px;
   border: 1px solid rgba(255, 255, 255, 0.12);
-  text-decoration: none;
-  color: inherit;
+  background: rgba(255, 255, 255, 0.015);
+  border-radius: 6px;
   transition:
     transform 0.18s ease,
     border-color 0.18s ease,
@@ -1092,8 +1105,8 @@ body {
 }
 
 .research-note-card:hover {
-  transform: translateY(-3px);
-  border-color: rgba(255, 255, 255, 0.26);
+  transform: translateY(-2px);
+  border-color: rgba(255, 255, 255, 0.22);
   background: rgba(255, 255, 255, 0.03);
 }
 
@@ -1104,15 +1117,20 @@ body {
 }
 
 .research-note-title {
-  font-size: 1rem;
-  line-height: 1.4;
-  margin-bottom: 8px;
+  font-size: 1.28rem;
+  line-height: 1.38;
+  font-weight: 700;
+  margin: 0 0 14px;
+  color: #ffffff;
+  word-break: keep-all;
 }
 
 .research-note-body {
-  font-size: 0.92rem;
-  line-height: 1.55;
-  opacity: 0.82;
+  font-size: 0.97rem;
+  line-height: 1.72;
+  color: rgba(255, 255, 255, 0.78);
+  margin: 0;
+  word-break: keep-all;
 }
 
 /* ==========================
@@ -1306,7 +1324,7 @@ body.note-page {
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.note-header + .note-section--highlight {
+.note-header+.note-section--highlight {
   margin-top: 10px;
 }
 
@@ -1379,7 +1397,7 @@ body.note-page {
   color: #ffffff;
 }
 
-.note-section + .note-section:not(.note-section--highlight) {
+.note-section+.note-section:not(.note-section--highlight) {
   margin-top: 10px;
 }
 
@@ -1442,6 +1460,7 @@ body.note-page {
   line-height: 1.65;
   color: rgba(255, 255, 255, 0.74);
 }
+
 .note-references {
   margin: 0.8rem 0 1.8rem;
   padding-left: 1.2rem;
@@ -1452,6 +1471,7 @@ body.note-page {
   line-height: 1.85;
   color: rgba(255, 255, 255, 0.82);
 }
+
 .note-references em {
   font-style: italic;
 }
@@ -1506,6 +1526,7 @@ body.note-page {
 .note-table td:nth-child(5) {
   width: 26%;
 }
+
 .note-table--channels th:nth-child(1),
 .note-table--channels td:nth-child(1) {
   width: 11%;
@@ -1530,6 +1551,7 @@ body.note-page {
 .note-table--channels td:nth-child(5) {
   width: 26%;
 }
+
 .note-subheading {
   margin: 1.2rem 0 0.6rem;
   font-size: 1rem;
