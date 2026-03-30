@@ -973,6 +973,52 @@ body {
   text-decoration: none;
 }
 
+.note-topbar {
+  position: sticky;
+  top: 72px;
+  z-index: 12;
+  position: sticky;
+  background: #000000;
+  padding-bottom: 18px;
+}
+
+.note-topbar::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: -72px;
+  height: 72px;
+  background: #000000;
+  pointer-events: none;
+}
+
+.note-topbar::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -36px;
+  height: 36px;
+  background: linear-gradient(to bottom,
+      rgba(0, 0, 0, 1) 0%,
+      rgba(0, 0, 0, 0.82) 35%,
+      rgba(0, 0, 0, 0.42) 70%,
+      rgba(0, 0, 0, 0) 100%);
+  pointer-events: none;
+}
+
+.note-topbar .note-breadcrumb {
+  margin-bottom: 22px;
+  padding-top: 6px;
+}
+
+.note-topbar .note-header {
+  margin-bottom: 0;
+  padding-bottom: 22px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
 /* Research note archive list */
 .note-list-item,
 .note-list-item:link,
@@ -1347,12 +1393,16 @@ body.note-page {
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
+.note-section--first {
+  border-top: none;
+  padding-top: 18px;
+}
+
 .note-header+.note-section--highlight {
   margin-top: 10px;
 }
 
 .note-header+.note-section {
-  border-top: none;
   padding-top: 18px;
 }
 
@@ -1387,6 +1437,11 @@ body.note-page {
   margin-top: 22px;
   padding: 22px 0 24px;
   border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.note-section.note-section--first {
+  border-top: none;
+  padding-top: 18px;
 }
 
 .note-section h2 {
@@ -1828,8 +1883,8 @@ body.note-page {
   }
 
   .note-article {
-    width: min(760px, 100%);
-    margin: 0 auto;
+    position: relative;
+    z-index: 1;
   }
 
   .note-summary,
@@ -1837,11 +1892,6 @@ body.note-page {
   .note-section--highlight p {
     font-size: 1rem;
     line-height: 1.82;
-  }
-
-  .note-section--highlight {
-    padding: 18px 18px 20px;
-    border-radius: 12px;
   }
 
   .note-section .research-notes-grid {
