@@ -964,6 +964,15 @@ body {
   text-decoration: none;
 }
 
+.research-note-card,
+.research-note-card:link,
+.research-note-card:visited,
+.research-note-card:hover,
+.research-note-card:active {
+  color: #ffffff;
+  text-decoration: none;
+}
+
 /* Research note archive list */
 .note-list-item,
 .note-list-item:link,
@@ -1093,11 +1102,11 @@ body {
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  min-height: 180px;
+  min-height: 220px;
   padding: 22px 22px 20px;
   border: 1px solid rgba(255, 255, 255, 0.12);
   background: rgba(255, 255, 255, 0.015);
-  border-radius: 6px;
+  border-radius: 0px;
   transition:
     transform 0.18s ease,
     border-color 0.18s ease,
@@ -1117,8 +1126,8 @@ body {
 }
 
 .research-note-title {
-  font-size: 1.28rem;
-  line-height: 1.38;
+  font-size: 1.2rem;
+  line-height: 1.42;
   font-weight: 700;
   margin: 0 0 14px;
   color: #ffffff;
@@ -1126,7 +1135,7 @@ body {
 }
 
 .research-note-body {
-  font-size: 0.97rem;
+  font-size: 0.96rem;
   line-height: 1.72;
   color: rgba(255, 255, 255, 0.78);
   margin: 0;
@@ -1242,10 +1251,24 @@ body.note-page {
   min-height: 100vh;
 }
 
+.note-page::after {
+  content: "";
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 120px;
+  background: linear-gradient(to top,
+      rgba(0, 0, 0, 1) 0%,
+      rgba(0, 0, 0, 0) 100%);
+  pointer-events: none;
+  z-index: 5;
+}
+
 .note-shell {
   width: min(980px, calc(100% - 56px));
   margin: 0 auto;
-  padding: 148px 0 120px;
+  padding: 148px 0 160px;
 }
 
 .note-breadcrumb {
@@ -1326,6 +1349,11 @@ body.note-page {
 
 .note-header+.note-section--highlight {
   margin-top: 10px;
+}
+
+.note-header+.note-section {
+  border-top: none;
+  padding-top: 18px;
 }
 
 .note-meta {
@@ -1413,7 +1441,7 @@ body.note-page {
   gap: 18px;
   padding: 18px 20px;
   border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 8px;
+  border-radius: 0px;
   text-decoration: none;
   color: inherit;
   background: rgba(255, 255, 255, 0.015);
@@ -1552,6 +1580,57 @@ body.note-page {
   width: 26%;
 }
 
+.note-table--transient {
+  table-layout: fixed;
+}
+
+.note-table--transient th,
+.note-table--transient td {
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+.note-table--transient th:first-child,
+.note-table--transient td:first-child {
+  width: 14%;
+  white-space: normal !important;
+}
+
+.note-table--transient th:nth-child(2),
+.note-table--transient td:nth-child(2) {
+  width: 11%;
+}
+
+.note-table--transient th:nth-child(3),
+.note-table--transient td:nth-child(3) {
+  width: 10%;
+}
+
+.note-table--transient th:nth-child(4),
+.note-table--transient td:nth-child(4) {
+  width: 14%;
+}
+
+.note-table--transient th:nth-child(5),
+.note-table--transient td:nth-child(5) {
+  width: 10%;
+}
+
+.note-table--transient th:nth-child(6),
+.note-table--transient td:nth-child(6) {
+  width: 9%;
+}
+
+.note-table--transient th:nth-child(7),
+.note-table--transient td:nth-child(7) {
+  width: 10%;
+}
+
+.note-table--transient th:nth-child(8),
+.note-table--transient td:nth-child(8) {
+  width: 22%;
+}
+
 .note-subheading {
   margin: 1.2rem 0 0.6rem;
   font-size: 1rem;
@@ -1578,6 +1657,10 @@ body.note-page {
 @media (max-width: 900px) {
   .research-notes-grid {
     grid-template-columns: 1fr;
+  }
+
+  .research-note-card {
+    min-height: auto;
   }
 
   .research-grid--areas {
@@ -1761,6 +1844,10 @@ body.note-page {
     border-radius: 12px;
   }
 
+  .note-section .research-notes-grid {
+    margin-top: 8px;
+  }
+
   .note-table {
     font-size: 0.82rem;
     line-height: 1.65;
@@ -1806,5 +1893,9 @@ body.note-page {
   .intro-title {
     font-size: 3.6rem;
     line-height: 1.15;
+  }
+
+  .note-page::after {
+    height: 88px;
   }
 }
