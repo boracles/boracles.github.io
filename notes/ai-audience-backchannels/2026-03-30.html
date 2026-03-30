@@ -41,414 +41,485 @@
                     2026.03.30 · XR Presentation / AI Audience / Backchannel Selection Rules
                 </div>
                 <h1 class="note-title">
-                    Selection Rules for Generating Evaluative Backchannels from Content and Speech Cues
+                    Rule-Based Generation Pipeline for Content-Responsive Audience Backchannels
                 </h1>
                 <p class="note-summary">
-                    발표 구조 단계만이 아니라 발표 내용 단서와 발화 단서를 함께 고려하여,
+                    발표 구조 단계 및 내용 단서, 발화 단서를 고려하여,
                     어떤 청중 백채널이 언제 선택되고 어떤 방식으로 생성되어야 하는지에 대한
                     작업적 선택 규칙을 정리한다.
                 </p>
             </header>
         </div>
 
-        <article class="note-article">
-            <section class="note-section note-section--highlight">
-                <h2>Research Goal</h2>
-                <p>
-                    발표 내용과 발화 흐름에 반응하는 AI 청중의 evaluative backchannel을 생성하기 위해,
-                    발표 내용 단서와 발화 단서를 appraisal 관점에서 해석하고, 이에 따라 어떤
-                    sustained state와 transient state가 선택·전환되어야 하는지를 규칙 수준에서 정교화한다.
-                </p>
-            </section>
+        <section class="note-section note-section--highlight">
+            <h2>Research Goal</h2>
+            <p>
+                발표 음성을 STT 기반 텍스트 chunk로 변환한 뒤, 현재 발표 단계를 추론하고,
+                해당 단계의 appraisal question을 통해 발화 내용을 평가하여 기능군, 패턴,
+                채널 specification을 순차적으로 선택함으로써 AI 청중의 evaluative backchannel을
+                생성하는 rule-based generation pipeline을 정교화한다.
+            </p>
+        </section>
 
-            <section class="note-section note-section--highlight">
-                <h2>Research Question</h2>
-                <p>
-                    RQ1. 발표 내용 단서와 발화 단서는 AI 청중 백채널 생성을 위해 어떤 해석 단위로 조직될 수 있는가? <br />
-                    RQ2. 각 단서는 어떤 appraisal objective 또는 evaluative meaning과 연결될 수 있는가? <br />
-                    RQ3. 이러한 단서에 반응하여 어떤 sustained state와 transient state가 선택되고 전환되어야 하는가? <br />
-                    RQ4. 복수의 단서가 동시에 나타날 때 selection priority와 conflict resolution rule은 어떻게 설정되어야 하는가?
-                </p>
-            </section>
+        <section class="note-section note-section--highlight">
+            <h2>Research Question</h2>
+            <p>
+                RQ1. 발표 내용 기반 청중 반응 생성 엔진은 어떤 처리 단계와 중간 표현으로 구성되어야 하는가? <br />
+                RQ2. 발표 단계 prior와 appraisal vector는 어떤 방식으로 기능군 가중치로 변환되어야 하는가? <br />
+                RQ3. 주 기능군, 보조 기능군, self-regulation interrupt는 어떤 제약 아래 선택되고 조합되어야 하는가? <br />
+                RQ4. 선택된 pattern은 어떤 채널 구조와 modulation rule을 통해 실현되어야 하는가?
+            </p>
+        </section>
 
-            <section class="note-section">
-                <h2>Current Ambiguity</h2>
-                <p>
-                    현재까지는 발표 구조 단계에 따른 appraisal objective와 청중 반응의 기본 틀은 정리되어 있으나,
-                    실제 생성 시점에서 어떤 단서가 어떤 반응을 직접 유발해야 하는지는 아직 충분히 명확하지 않다.
-                    특히 발표 내용 단서와 발화 단서가 동시에 존재할 때 무엇을 우선적으로 해석해야 하는지,
-                    같은 단서라도 발표 구조 단계에 따라 다른 evaluative meaning으로 읽혀야 하는지,
-                    그리고 하나의 강한 transient signal이 기본 sustained state를 얼마나 변화시켜야 하는지에 대한
-                    작업적 기준이 더 필요하다.
-                </p>
-            </section>
+        <section class="note-section">
+            <h2>Current Ambiguity</h2>
+            <p>
+                현재까지는 발표 구조 단계에 따른 appraisal objective와 청중 반응의 기본 틀은 정리되어 있으나,
+                실제 생성 시점에서 어떤 단서가 어떤 반응을 직접 유발해야 하는지는 아직 충분히 명확하지 않다.
+                특히 발표 내용 단서와 발화 단서가 동시에 존재할 때 무엇을 우선적으로 해석해야 하는지,
+                같은 단서라도 발표 구조 단계에 따라 다른 evaluative meaning으로 읽혀야 하는지,
+                그리고 하나의 강한 transient signal이 기본 sustained state를 얼마나 변화시켜야 하는지에 대한
+                작업적 기준이 더 필요하다.
+            </p>
+        </section>
 
-            <section class="note-section">
-                <h2>Backchannel Selection Framework</h2>
-                <p>
-                    본 노트에서는 AI 청중 백채널 선택 규칙을 세 층위에서 정리한다.<br>
-                    첫째, 입력 단서를 발표 내용 단서와 발화 단서로 구분한다.<br>
-                    둘째, 각 단서를 appraisal objective와 evaluative meaning에 연결한다.<br>
-                    셋째, 이 해석 결과를 바탕으로 기본 sustained state를 유지할지, transient state를 덧입힐지,
-                    혹은 state transition을 유발할지를 selection rule로 정리한다.
-                </p>
-            </section>
+        <section class="note-section">
+            <h2>Backchannel Selection Framework</h2>
+            <p>
+                본 노트에서는 AI 청중 백채널 생성을 위한 rule-based generation pipeline을 정리한다.<br>
+                첫째, 발표 음성을 STT 기반 text chunk와 누적 문맥으로 변환한다.<br>
+                둘째, 현재 발표 단계와 해당 단계의 appraisal objective prior를 추론한다.<br>
+                셋째, appraisal vector를 기능군 가중치로 변환한 뒤 주 기능군과 보조 기능군을 선택한다.<br>
+                넷째, 선택된 기능군 내부 pattern을 channel specification으로 실현하고,
+                필요 시 self-regulation interrupt를 별도 이벤트로 삽입한다.
+            </p>
+        </section>
 
-            <section class="note-section">
-                <h2>Working Criteria</h2>
+        <section class="note-section">
+            <h2>Working Criteria</h2>
 
-                <h3 class="note-subheading">Cue Categories</h3>
-                <p class="note-caption">
-                    Cue Categories는 백채널 선택의 입력으로 사용되는 단서 유형을 정리한 것이다.
-                    여기서는 발표 내용 자체에서 오는 의미 단서와, 발화 수행 방식에서 드러나는 발화 단서를 구분한다.
-                </p>
+            <h3 class="note-subheading">Basic Constraints</h3>
+            <p class="note-caption">
+                아래 규칙은 각 시점에서 청중 반응 생성 엔진이 따라야 하는 최소 제약 조건이다.
+                기능군, 패턴, 채널, interrupt event는 이 제약 안에서만 선택 및 조합된다.
+            </p>
 
-                <table class="note-table">
-                    <thead>
-                        <tr>
-                            <th>Category</th>
-                            <th>Operational Definition</th>
-                            <th>Typical Cue</th>
-                            <th>Interpretive Focus</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>Content cue</td>
-                            <td>발표자가 제시하는 정보, 주장, 설명 구조, 근거 제시 방식에서 추출되는 단서.</td>
-                            <td>claim strength, novelty, ambiguity, evidential support, logical clarity</td>
-                            <td>청중이 내용을 어떻게 평가하는지와 관련된 appraisal</td>
-                        </tr>
-                        <tr>
-                            <td>Speech cue</td>
-                            <td>발화의 속도, 멈춤, 망설임, 강조, 유창성, 문장 마무리 방식 등 수행 방식에서 추출되는 단서.</td>
-                            <td>hesitation, pause, emphasis, disfluency, completion, pacing shift</td>
-                            <td>청중이 발화의 안정성, 확신, 어려움, 전환점을 어떻게 읽는지와 관련된 appraisal</td>
-                        </tr>
-                    </tbody>
-                </table>
+            <table class="note-table">
+                <thead>
+                    <tr>
+                        <th>Rule Type</th>
+                        <th>Constraint</th>
+                        <th>Operational Consequence</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Primary function group</td>
+                        <td>각 시점마다 주 기능군은 하나만 둔다.</td>
+                        <td>동일 시점에 복수의 중심 기능군이 경쟁하지 않도록 한다.</td>
+                    </tr>
+                    <tr>
+                        <td>Secondary function group</td>
+                        <td>보조 기능군은 최대 하나만 둔다.</td>
+                        <td>반응이 과도하게 복합화되는 것을 막는다.</td>
+                    </tr>
+                    <tr>
+                        <td>Primary pattern</td>
+                        <td>주 기능군에서는 패턴 1개만 선택한다.</td>
+                        <td>해당 시점의 기본 청중 반응은 단일 pattern으로 고정한다.</td>
+                    </tr>
+                    <tr>
+                        <td>Secondary pattern</td>
+                        <td>보조 기능군도 패턴 1개만 약하게 붙인다.</td>
+                        <td>보조 기능군은 full replacement가 아니라 약한 modulation으로만 작동한다.</td>
+                    </tr>
+                    <tr>
+                        <td>Overt action</td>
+                        <td>overt action은 허용된 패턴에서만 사용한다.</td>
+                        <td>모든 반응 시점에 action episode가 남용되지 않도록 제한한다.</td>
+                    </tr>
+                    <tr>
+                        <td>Self-regulation</td>
+                        <td>self-regulation은 별도 interrupt layer로 평가한다.</td>
+                        <td>기본 반응 패턴과 분리된 독립 event로 삽입할 수 있다.</td>
+                    </tr>
+                </tbody>
+            </table>
 
-                <h3 class="note-subheading">Content Cue Types</h3>
-                <p class="note-caption">
-                    발표 내용 단서는 청중이 내용을 수용, 보류, 의심, 부담으로 해석하는 데 관여하는 의미 단서이다.
-                </p>
+            <h3 class="note-subheading">Engine Pipeline Overview</h3>
+            <p class="note-caption">
+                발표 내용 기반 청중 반응 생성 엔진은 STT 텍스트, 누적 문맥, 슬라이드 정보,
+                그리고 발표 순서 정보를 입력으로 받아 발표 단계 추론, appraisal 평가, 기능군 선택,
+                패턴 선택, 채널 채움의 순서로 반응을 생성한다.
+            </p>
 
-                <table class="note-table">
-                    <thead>
-                        <tr>
-                            <th>Cue Type</th>
-                            <th>Operational Definition</th>
-                            <th>Typical Interpretation</th>
-                            <th>Likely Backchannel Tendency</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>High clarity</td>
-                            <td>설명이 명확하고 추적이 쉬우며 논리적 연결이 안정적으로 유지되는 경우.</td>
-                            <td>easy uptake, smooth comprehension</td>
-                            <td>neutral / positive sustained state, nod-type transient</td>
-                        </tr>
-                        <tr>
-                            <td>High novelty</td>
-                            <td>새롭거나 예상 밖의 정보가 제시되어 청중의 주의가 상승하는 경우.</td>
-                            <td>surprise, heightened attention</td>
-                            <td>forward-leaning state, widened or raised-brow response</td>
-                        </tr>
-                        <tr>
-                            <td>Ambiguity</td>
-                            <td>주장의 의미나 관계가 불분명하여 즉각적 해석이 어려운 경우.</td>
-                            <td>questioning, temporary judgment suspension</td>
-                            <td>questioning state, tilt-type transient</td>
-                        </tr>
-                        <tr>
-                            <td>Weak support</td>
-                            <td>주장에 비해 근거 제시가 부족하거나 설득력이 낮게 느껴지는 경우.</td>
-                            <td>reserve, doubt, critical stance</td>
-                            <td>reserved or strained state, shake-type transient</td>
-                        </tr>
-                        <tr>
-                            <td>High cognitive load</td>
-                            <td>정보 밀도가 높거나 복잡하여 따라가기가 부담스러운 경우.</td>
-                            <td>strain, effortful tracking</td>
-                            <td>strained state, brief dip, self-regulatory transient</td>
-                        </tr>
-                    </tbody>
-                </table>
+            <table class="note-table">
+                <thead>
+                    <tr>
+                        <th>Step</th>
+                        <th>Operation</th>
+                        <th>Input</th>
+                        <th>Output</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1</td>
+                        <td>STT chunking</td>
+                        <td>발표 음성</td>
+                        <td>current utterance text chunk, chunk timestamp, accumulated context</td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td>Stage inference</td>
+                        <td>current text + accumulated context + slide / order cue</td>
+                        <td>predicted stage, stage confidence, optional secondary stage</td>
+                    </tr>
+                    <tr>
+                        <td>3</td>
+                        <td>Stage prior loading</td>
+                        <td>predicted stage</td>
+                        <td>stage-specific appraisal objective prior</td>
+                    </tr>
+                    <tr>
+                        <td>4</td>
+                        <td>Appraisal scoring</td>
+                        <td>current utterance + context + appraisal questions</td>
+                        <td>appraisal vector (0–1)</td>
+                    </tr>
+                    <tr>
+                        <td>5</td>
+                        <td>Functional weighting</td>
+                        <td>appraisal vector + stage prior</td>
+                        <td>function-group weight distribution</td>
+                    </tr>
+                    <tr>
+                        <td>6</td>
+                        <td>Function-group selection</td>
+                        <td>function-group weights + compatibility constraints</td>
+                        <td>primary function group + optional secondary function group</td>
+                    </tr>
+                    <tr>
+                        <td>7</td>
+                        <td>Primary pattern selection</td>
+                        <td>stage + appraisal result + content feature + recent response history</td>
+                        <td>primary pattern</td>
+                    </tr>
+                    <tr>
+                        <td>8</td>
+                        <td>Channel realization</td>
+                        <td>selected pattern</td>
+                        <td>body, gaze, core head, facial state, optional head / action / facial detail</td>
+                    </tr>
+                    <tr>
+                        <td>9</td>
+                        <td>Secondary modulation</td>
+                        <td>secondary function group</td>
+                        <td>partial channel modulation without full pattern replacement</td>
+                    </tr>
+                    <tr>
+                        <td>10</td>
+                        <td>Interrupt insertion</td>
+                        <td>self-regulation evaluation</td>
+                        <td>independent self-regulation event if needed</td>
+                    </tr>
+                </tbody>
+            </table>
 
-                <h3 class="note-subheading">Speech Cue Types</h3>
-                <p class="note-caption">
-                    발화 단서는 발표 수행의 안정성, 자신감, 전환점, 처리 어려움을 청중이 읽는 데 관여하는 단서이다.
-                </p>
+            <h3 class="note-subheading">Function Group Selection Rules</h3>
+            <p class="note-caption">
+                기능군 선택은 appraisal vector와 stage prior를 결합해 산출한 가중치를 바탕으로 수행한다.
+                이때 주 기능군은 하나만, 보조 기능군은 최대 하나만 허용한다.
+            </p>
 
-                <table class="note-table">
-                    <thead>
-                        <tr>
-                            <th>Cue Type</th>
-                            <th>Operational Definition</th>
-                            <th>Typical Interpretation</th>
-                            <th>Likely Backchannel Tendency</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>Hesitation</td>
-                            <td>짧은 머뭇거림이나 발화 준비 지연이 드러나는 경우.</td>
-                            <td>uncertainty, local instability</td>
-                            <td>questioning or strained transient</td>
-                        </tr>
-                        <tr>
-                            <td>Pause</td>
-                            <td>의미 단락 사이 또는 강조 전후에 비교적 분명한 멈춤이 나타나는 경우.</td>
-                            <td>transition point, segmentation cue</td>
-                            <td>gaze reset, brief nod readiness, attention stabilization</td>
-                        </tr>
-                        <tr>
-                            <td>Emphasis</td>
-                            <td>특정 단어나 구절이 prosodically 강조되는 경우.</td>
-                            <td>importance cue, focal point</td>
-                            <td>speaker-directed attention increase, nod or widened attention response</td>
-                        </tr>
-                        <tr>
-                            <td>Disfluency</td>
-                            <td>반복, 수정, 끊김 등 유창성 저하가 드러나는 경우.</td>
-                            <td>difficulty, uncertainty, local disruption</td>
-                            <td>strained state reinforcement, brief dip, reduced positive signal</td>
-                        </tr>
-                        <tr>
-                            <td>Completion</td>
-                            <td>문장 또는 설명 단위가 분명하게 마무리되는 경우.</td>
-                            <td>closure, local completion</td>
-                            <td>nod-type transient, reset to baseline attention</td>
-                        </tr>
-                    </tbody>
-                </table>
+            <table class="note-table">
+                <thead>
+                    <tr>
+                        <th>Selection Target</th>
+                        <th>Rule</th>
+                        <th>Threshold / Constraint</th>
+                        <th>Operational Consequence</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Primary function group</td>
+                        <td>가장 높은 가중치를 가진 기능군을 선택한다.</td>
+                        <td>argmax after compatibility filtering</td>
+                        <td>현재 시점의 중심 반응 방향을 결정한다.</td>
+                    </tr>
+                    <tr>
+                        <td>Secondary function group</td>
+                        <td>임계값 이상이며 주 기능군과 양립 가능한 기능군 1개만 선택한다.</td>
+                        <td>weight ≥ secondary threshold</td>
+                        <td>보조 기능군은 약한 modulation source로만 작동한다.</td>
+                    </tr>
+                    <tr>
+                        <td>Incompatible group pair</td>
+                        <td>양립 불가능한 기능군은 동시에 선택하지 않는다.</td>
+                        <td>compatibility table reference</td>
+                        <td>상충되는 반응 태도가 동시에 출력되지 않도록 한다.</td>
+                    </tr>
+                    <tr>
+                        <td>No valid secondary</td>
+                        <td>조건을 만족하는 보조 기능군이 없으면 주 기능군만 유지한다.</td>
+                        <td>no compatible candidate above threshold</td>
+                        <td>불필요한 modulation을 생략한다.</td>
+                    </tr>
+                </tbody>
+            </table>
 
-                <h3 class="note-subheading">Appraisal Mapping</h3>
-                <p class="note-caption">
-                    각 단서는 직접적으로 state를 고르기보다, 먼저 appraisal objective와 evaluative meaning으로 해석된 뒤
-                    백채널 선택에 반영된다.
-                </p>
+            <h3 class="note-subheading">Pattern Realization Schema</h3>
+            <p class="note-caption">
+                선택된 pattern은 채널 수준에서 실현된다. 이때 모든 pattern은 필수 채널을 가져야 하며,
+                선택 채널은 조건 또는 확률에 따라 추가된다.
+            </p>
 
-                <table class="note-table">
-                    <thead>
-                        <tr>
-                            <th>Cue</th>
-                            <th>Appraisal Tendency</th>
-                            <th>Evaluative Meaning</th>
-                            <th>Preferred Response Direction</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>high clarity</td>
-                            <td>comprehensibility ↑</td>
-                            <td>내용이 잘 따라가짐</td>
-                            <td>neutral → positive</td>
-                        </tr>
-                        <tr>
-                            <td>high novelty</td>
-                            <td>unexpectedness ↑</td>
-                            <td>새롭고 주목할 만함</td>
-                            <td>neutral → attentive / positive</td>
-                        </tr>
-                        <tr>
-                            <td>ambiguity</td>
-                            <td>certainty ↓</td>
-                            <td>판단 유보 필요</td>
-                            <td>neutral → questioning</td>
-                        </tr>
-                        <tr>
-                            <td>weak support</td>
-                            <td>credibility ↓</td>
-                            <td>쉽게 수용되지 않음</td>
-                            <td>neutral → reserved</td>
-                        </tr>
-                        <tr>
-                            <td>high cognitive load</td>
-                            <td>processing effort ↑</td>
-                            <td>따라가기 어렵고 부담됨</td>
-                            <td>neutral → strained</td>
-                        </tr>
-                        <tr>
-                            <td>hesitation / disfluency</td>
-                            <td>stability ↓</td>
-                            <td>발화 수행이 흔들림</td>
-                            <td>questioning or strained transient</td>
-                        </tr>
-                        <tr>
-                            <td>emphasis</td>
-                            <td>salience ↑</td>
-                            <td>중요 포인트 제시</td>
-                            <td>speaker attention ↑, nod readiness ↑</td>
-                        </tr>
-                        <tr>
-                            <td>completion / pause</td>
-                            <td>closure ↑</td>
-                            <td>단위 마무리 또는 전환</td>
-                            <td>brief acknowledgment or reset</td>
-                        </tr>
-                    </tbody>
-                </table>
+            <table class="note-table">
+                <thead>
+                    <tr>
+                        <th>Channel Type</th>
+                        <th>Channel</th>
+                        <th>Status</th>
+                        <th>Generation Rule</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Required</td>
+                        <td>body</td>
+                        <td>mandatory</td>
+                        <td>모든 pattern은 기본 posture / orientation specification을 포함해야 한다.</td>
+                    </tr>
+                    <tr>
+                        <td>Required</td>
+                        <td>gaze</td>
+                        <td>mandatory</td>
+                        <td>모든 pattern은 주 시선 target과 dwell behavior를 포함해야 한다.</td>
+                    </tr>
+                    <tr>
+                        <td>Required</td>
+                        <td>core head</td>
+                        <td>mandatory</td>
+                        <td>모든 pattern은 핵심 head configuration 또는 head movement를 포함해야 한다.</td>
+                    </tr>
+                    <tr>
+                        <td>Required</td>
+                        <td>facial state</td>
+                        <td>mandatory</td>
+                        <td>facial state는 해당 pattern의 핵심 표현을 구성한다.</td>
+                    </tr>
+                    <tr>
+                        <td>Optional</td>
+                        <td>optional head</td>
+                        <td>conditional</td>
+                        <td>핵심 head 외에 추가적인 국소 head modulation이 필요할 때만 추가한다.</td>
+                    </tr>
+                    <tr>
+                        <td>Optional</td>
+                        <td>optional action</td>
+                        <td>restricted</td>
+                        <td>허용된 pattern에서만 overt action을 추가할 수 있다.</td>
+                    </tr>
+                    <tr>
+                        <td>Optional</td>
+                        <td>optional facial detail</td>
+                        <td>probabilistic</td>
+                        <td>facial detail은 확률적으로 추가되는 미세 facial variation으로 사용한다.</td>
+                    </tr>
+                </tbody>
+            </table>
 
-                <h3 class="note-subheading">Backchannel Selection Rules</h3>
-                <p class="note-caption">
-                    selection rule은 해석된 appraisal 결과를 어떤 sustained state 또는 transient state로 연결할지를 정리한다.
-                </p>
+            <h3 class="note-subheading">Secondary Modulation Rules</h3>
+            <p class="note-caption">
+                보조 기능군은 독립적인 full pattern을 생성하지 않는다.
+                대신 주 기능군이 선택한 pattern 위에 일부 채널만 제한적으로 modulation한다.
+            </p>
 
-                <table class="note-table">
-                    <thead>
-                        <tr>
-                            <th>Input Condition</th>
-                            <th>Primary Selection</th>
-                            <th>Secondary Selection</th>
-                            <th>Generation Rule</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>high clarity + stable speech</td>
-                            <td>STATE_upright_neutral</td>
-                            <td>STATE_singleNod_neutral</td>
-                            <td>내용이 잘 따라가고 발화가 안정적일 때 baseline attentive state를 유지하고 acknowledgment transient를 허용한다.
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>high novelty + emphasis</td>
-                            <td>STATE_forwardLean_neutral</td>
-                            <td>STATE_singleNod_neutral or widened attention response</td>
-                            <td>주목도 높은 내용이 강조될 때 speaker attention을 높이고 forward-leaning orientation을 우선 선택한다.</td>
-                        </tr>
-                        <tr>
-                            <td>ambiguity + hesitation</td>
-                            <td>STATE_upright_questioning</td>
-                            <td>STATE_briefTilt_questioning</td>
-                            <td>내용 해석이 불분명하고 발화 안정성도 낮을 때 questioning state와 tilt-type transient를 우선 선택한다.</td>
-                        </tr>
-                        <tr>
-                            <td>high cognitive load + disfluency</td>
-                            <td>STATE_forwardLean_strained</td>
-                            <td>STATE_briefDip_strained or STATE_briefSelfTouch</td>
-                            <td>처리 부담이 높고 발화가 흔들릴 때 strained state를 강화하고 effort-related transient를 허용한다.</td>
-                        </tr>
-                        <tr>
-                            <td>weak support + stable delivery</td>
-                            <td>STATE_backward_reserved</td>
-                            <td>STATE_briefShake_negative</td>
-                            <td>발화는 안정적이지만 내용 수용성이 낮을 때 reserved state를 우선 선택한다.</td>
-                        </tr>
-                        <tr>
-                            <td>completion after understandable segment</td>
-                            <td>previous sustained state 유지</td>
-                            <td>STATE_singleNod_neutral</td>
-                            <td>이해 가능한 설명 단위가 마무리될 때 brief acknowledgment를 생성할 수 있다.</td>
-                        </tr>
-                    </tbody>
-                </table>
+            <table class="note-table">
+                <thead>
+                    <tr>
+                        <th>Secondary Function Role</th>
+                        <th>Allowed Modulation</th>
+                        <th>Not Allowed</th>
+                        <th>Operational Consequence</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Affective reaction</td>
+                        <td>facial intensity, gaze energy, slight head responsiveness</td>
+                        <td>full posture replacement</td>
+                        <td>기본 패턴은 유지하되 정서적 반응성만 약하게 높인다.</td>
+                    </tr>
+                    <tr>
+                        <td>Attentive listening</td>
+                        <td>gaze stabilization, posture openness increase</td>
+                        <td>overt action insertion</td>
+                        <td>기본 pattern 위에 listening bias를 약하게 부여한다.</td>
+                    </tr>
+                    <tr>
+                        <td>Evaluative monitoring</td>
+                        <td>brow tension, gaze fixation, reduced positive detail</td>
+                        <td>independent transient override</td>
+                        <td>판단적 주시를 강화하되 전체 패턴은 교체하지 않는다.</td>
+                    </tr>
+                    <tr>
+                        <td>Uptake-following</td>
+                        <td>nod readiness, forward attentional bias</td>
+                        <td>fatigue-like shift</td>
+                        <td>내용 추적 성향만 소폭 보강한다.</td>
+                    </tr>
+                </tbody>
+            </table>
 
-                <h3 class="note-subheading">Priority Rules</h3>
-                <p class="note-caption">
-                    복수 단서가 동시에 나타날 때 어떤 규칙을 우선 적용할지에 대한 우선순위 기준이다.
-                </p>
+            <h3 class="note-subheading">Self-regulation Interrupt Rules</h3>
+            <p class="note-caption">
+                self-regulation은 기본 반응 패턴과 분리된 interrupt layer에서 판단된다.
+                threshold를 넘는 경우에만 독립 event로 삽입되며, 종료 후 previous sustained pattern 또는 strained pattern으로 복귀한다.
+            </p>
 
-                <table class="note-table">
-                    <thead>
-                        <tr>
-                            <th>Conflict Type</th>
-                            <th>Priority Rule</th>
-                            <th>Operational Consequence</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>content cue vs speech cue</td>
-                            <td>기본 sustained state는 content cue를 우선하고, momentary transient는 speech cue를 우선 반영한다.</td>
-                            <td>내용 평가는 state를 정하고, 발화 흔들림은 짧은 modulation을 유발한다.</td>
-                        </tr>
-                        <tr>
-                            <td>positive cue vs strain cue</td>
-                            <td>processing strain이 threshold를 넘으면 positive cue보다 우선한다.</td>
-                            <td>긍정적 내용이어도 따라가기 어렵다면 strained state를 유지한다.</td>
-                        </tr>
-                        <tr>
-                            <td>questioning cue vs reserved cue</td>
-                            <td>불확실성이 중심이면 questioning, 수용 거부가 중심이면 reserved를 우선한다.</td>
-                            <td>의문과 거리두기를 분리한다.</td>
-                        </tr>
-                        <tr>
-                            <td>multiple transient candidates</td>
-                            <td>동일 window에서는 하나의 primary transient만 선택한다.</td>
-                            <td>nod, tilt, shake가 동시에 중첩되지 않도록 한다.</td>
-                        </tr>
-                    </tbody>
-                </table>
+            <table class="note-table">
+                <thead>
+                    <tr>
+                        <th>Condition</th>
+                        <th>Interrupt Event</th>
+                        <th>Insertion Rule</th>
+                        <th>Recovery Rule</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>processing burden spike</td>
+                        <td>ACT_briefSelfTouch</td>
+                        <td>self-regulation threshold 초과 시 삽입</td>
+                        <td>종료 후 previous pattern 또는 strained pattern으로 복귀</td>
+                    </tr>
+                    <tr>
+                        <td>postural discomfort accumulation</td>
+                        <td>ACT_seatAdjustment</td>
+                        <td>지속적 불편 signal 누적 시 삽입</td>
+                        <td>종료 후 기본 listening pattern 복귀</td>
+                    </tr>
+                    <tr>
+                        <td>low-level tension / restlessness</td>
+                        <td>ACT_fidgeting</td>
+                        <td>간헐적 micro self-regulation 필요 시 삽입</td>
+                        <td>종료 후 기존 sustained state 유지</td>
+                    </tr>
+                </tbody>
+            </table>
 
-                <h3 class="note-subheading">Literature Basis</h3>
-                <ul class="note-references">
-                    <li>
-                        <strong>Content-sensitive audience response.</strong> 발표 구조와 내용 단위는 청중의 이해와 appraisal 흐름에 영향을
-                        주며, 발표 move와 내용 전개는
-                        청중이 기대, 이해, 의문, 평가를 조직하는 기준이 된다.
-                    </li>
-                    <li>
-                        <strong>Speech cue interpretation.</strong> hesitation, pause, emphasis, disfluency와 같은 발화 단서는
-                        내용 그 자체와는 별개로
-                        발표 수행의 안정성, 전환점, 중요도를 읽게 하는 signal로 작용할 수 있다.
-                    </li>
-                    <li>
-                        <strong>Backchannel timing.</strong> listener response 연구는 acknowledgment, nod, gaze shift와 같은
-                        짧은 반응이
-                        발화의 국소적 단서와 타이밍에 민감하게 결합될 수 있음을 보여준다.
-                    </li>
-                </ul>
-            </section>
+            <h3 class="note-subheading">Stage Prior Table</h3>
+            발표 단계 prior는 stage inference 결과가 주어졌을 때,
+            appraisal scoring과 function-group weighting에 선행 bias로 작동한다.
+            본 표의 stage category는 Hu and Liu (2018)가 제시한 3MT 발표의 rhetorical move structure를
+            바탕으로 재구성하였다.
+            </p>
 
-            <section class="note-section">
-                <h2>Open Questions</h2>
-                <p>
-                    아직 각 cue type을 실제 시스템에서 어떻게 추출할지, 그리고 cue intensity를 어떤 기준으로 thresholding할지는 더 정교화가 필요하다.
-                    또한 같은 단서라도 발표 구조 단계에 따라 다른 evaluative meaning으로 읽혀야 하는지, 발화 단서가 기본 sustained state를 바꾸는 수준인지
-                    아니면 transient modulation에 머물러야 하는지에 대한 기준도 더 구체화할 필요가 있다.
-                </p>
-            </section>
+            <table class="note-table">
+                <thead>
+                    <tr>
+                        <th>Stage</th>
+                        <th>Primary Appraisal Objective</th>
+                        <th>Secondary Appraisal Objective</th>
+                        <th>Primary Function Prior</th>
+                        <th>Secondary Function Prior</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Orientation</td>
+                        <td>Relevance</td>
+                        <td>Implication</td>
+                        <td>Attentive Listening</td>
+                        <td>Affective Reaction</td>
+                    </tr>
+                    <tr>
+                        <td>Rationale</td>
+                        <td>Relevance</td>
+                        <td>Implication</td>
+                        <td>Attentive Listening</td>
+                        <td>Evaluative Monitoring</td>
+                    </tr>
+                    <tr>
+                        <td>Framework</td>
+                        <td>Normative Significance</td>
+                        <td>Implication</td>
+                        <td>Evaluative Monitoring</td>
+                        <td>Attentive Listening</td>
+                    </tr>
+                    <tr>
+                        <td>Purpose</td>
+                        <td>Relevance</td>
+                        <td>Implication</td>
+                        <td>Attentive Listening</td>
+                        <td>Evaluative Monitoring</td>
+                    </tr>
+                    <tr>
+                        <td>Methods</td>
+                        <td>Coping Potential</td>
+                        <td>Normative Significance / Implication</td>
+                        <td>Evaluative Monitoring</td>
+                        <td>Uptake-Following</td>
+                    </tr>
+                    <tr>
+                        <td>Results</td>
+                        <td>Implication</td>
+                        <td>Relevance</td>
+                        <td>Uptake-Following</td>
+                        <td>Evaluative Monitoring</td>
+                    </tr>
+                    <tr>
+                        <td>Implication</td>
+                        <td>Implication</td>
+                        <td>Normative Significance</td>
+                        <td>Evaluative Monitoring</td>
+                        <td>Affective Reaction</td>
+                    </tr>
+                    <tr>
+                        <td>Termination</td>
+                        <td>Normative Significance</td>
+                        <td>Relevance</td>
+                        <td>Evaluative Monitoring</td>
+                        <td>Affective Reaction</td>
+                    </tr>
+                </tbody>
+            </table>
 
-            <section class="note-section">
-                <h2>Next Step</h2>
-                <p>
-                    다음 단계에서는 발표 구조 단계, 발표 내용 단서, 발화 단서를 통합한 selection table을 작성하고,
-                    각 입력 조건에 대해 어떤 appraisal objective, sustained state, transient state, gaze mode가 연결되는지
-                    최종 규칙표 형태로 정리한다.
-                </p>
-            </section>
+        </section>
 
-            <section class="note-section">
-                <h2>References</h2>
-                <ul class="note-references">
-                    <li>
-                        Bavelas, J. B., Coates, L., &amp; Johnson, T. (2002). Listener responses as a collaborative
-                        process: The role of gaze.
-                        <em>Journal of Communication, 52</em>(3), 566–580.
-                    </li>
-                    <li>
-                        de Kok, I., &amp; Heylen, D. (2012). Analyzing nonverbal listener responses using parallel
-                        recordings of multiple listeners.
-                        <em>Cognitive Processing, 13</em>(Suppl 2), 499–506.
-                    </li>
-                    <li>
-                        Kang, N. (2016). <em>Public speaking in virtual reality: Audience design and speaker
-                            experiences</em>.
-                    </li>
-                    <li>
-                        Ondáš, S., Kiktová, E., Pleva, M., &amp; Juhár, J. (2023). Analysis of backchannel inviting cues
-                        in dyadic speech communication.
-                        <em>Electronics, 12</em>(17), 3705.
-                    </li>
-                    <li>
-                        Tolins, J., &amp; Fox Tree, J. E. (2014). Addressee backchannels steer narrative development.
-                        <em>Journal of Pragmatics, 70</em>, 152–164.
-                    </li>
-                </ul>
-            </section>
+        <section class="note-section">
+            <h2>Open Questions</h2>
+            <p>
+                -
+            </p>
+        </section>
+
+        <section class="note-section">
+            <h2>Next Step</h2>
+            <p>
+                -
+            </p>
+        </section>
+
+        <section class="note-section">
+            <h2>References</h2>
+            <ul class="note-references">
+                <li>
+                    Hu, G., &amp; Liu, Y. (2018). Three minute thesis presentations as an academic genre: A
+                    cross-disciplinary
+                    study.
+                    <em>Journal of English for Academic Purposes, 35</em>, 16–30.
+                    https://doi.org/10.1016/j.jeap.2018.06.004
+                </li>
+                <li>
+                    Scherer, K. R., Schorr, A., &amp; Johnstone, T. (2023). <em>Appraisal processes in emotion:
+                        Theory,
+                        methods, research</em> (1st ed.).
+                </li>
+            </ul>
+        </section>
         </article>
     </main>
 </body>

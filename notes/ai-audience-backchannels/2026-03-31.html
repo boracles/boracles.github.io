@@ -1,0 +1,579 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>[Note Title]</title>
+
+    <link rel="stylesheet" href="https://use.typekit.net/epz5qwi.css" />
+    <link rel="stylesheet" href="../../style.css" />
+</head>
+
+<body class="note-page">
+    <header class="nav">
+        <div class="nav-left">
+            <div class="nav-name">Atelier BORACLES</div>
+            <div class="nav-role">Research-driven XR Experience Studio</div>
+        </div>
+
+        <nav class="nav-right">
+            <a href="../index.html#intro">Intro</a>
+            <a href="../index.html#about">About</a>
+            <a href="../index.html#projects">Work</a>
+            <a href="../index.html#research" class="is-active">Research</a>
+            <a href="../index.html#teaching">Teaching</a>
+            <a href="../index.html#contact">Contact</a>
+        </nav>
+    </header>
+
+    <main class="note-shell">
+        <div class="note-breadcrumb">
+            <a href="index.html">Research Notes</a>
+            <span>/</span>
+            <span>A Design Framework for Evaluative Backchannels in AI Audience Agents
+                for XR Presentation Environments</span>
+        </div>
+
+        <article class="note-article">
+            <header class="note-header">
+                <div class="note-meta">
+                    2026.03.31 · XR Presentation / AI Audience / Animation Clip Production
+                </div>
+                <h1 class="note-title">
+                    Animation Clip Production Framework for Evaluative Audience Backchannels
+                </h1>
+                <p class="note-summary">
+                    AI 청중의 evaluative backchannel 생성을 위해 필요한 animation clip을
+                    sustained state와 transient state의 관점에서 정리하고, 각 clip의 제작 단위,
+                    조합 원리, 재사용 구조, 그리고 제작 우선순위를 포함한 작업적 기준을
+                    정리한다.
+                </p>
+            </header>
+
+            <section class="note-section note-section--highlight">
+                <h2>Research Goal</h2>
+                <p>
+                    AI 청중 백채널 생성을 위한 animation clip 제작 체계를 정교화하기 위해,
+                    sustained state와 transient state를 어떤 clip 단위로 제작할지, 각 clip이
+                    어떤 채널 조합과 temporal profile을 가져야 하는지, 그리고 reusable clip과
+                    state-specific clip을 어떻게 구분할지를 작업적 기준으로 정리한다.
+                </p>
+            </section>
+
+            <section class="note-section note-section--highlight">
+                <h2>Research Question</h2>
+                <p>
+                    RQ1. AI 청중의 evaluative backchannel 생성을 위해 어떤 종류의 animation clip이
+                    최소 단위로 필요하며, 이들은 어떤 범주로 조직될 수 있는가? <br />
+                    RQ2. sustained state와 transient state는 각각 어떤 제작 단위와 채널 조합으로
+                    구현되어야 하는가? <br />
+                    RQ3. clip 제작량을 과도하게 늘리지 않으면서도 다양한 evaluative meaning을
+                    표현하기 위해 어떤 재사용 원리와 layering rule이 필요한가? <br />
+                    RQ4. 실제 프로토타입 구현을 위해 어떤 clip을 우선 제작하고, 어떤 clip은 후속
+                    단계로 미룰 수 있는가?
+                </p>
+            </section>
+
+            <section class="note-section">
+                <h2>Current Ambiguity</h2>
+                <p>
+                    현재까지는 sustained state와 transient state의 작업적 inventory는 정리되어 있으나,
+                    이를 실제 animation clip 제작 단위로 옮길 때 무엇을 독립 clip으로 만들고 무엇을
+                    modulation 또는 overlay로 처리할지에 대한 기준은 아직 더 정교화가 필요하다.
+                    특히 sustained state의 경우 기본 posture clip과 gaze control을 어디까지 분리할지,
+                    transient state의 경우 derived transient를 모두 독립 clip으로 만들 것인지 아니면
+                    reusable micro-clip으로 만들 것인지, 그리고 self-regulation episode를 별도 clip library로
+                    둘 것인지에 대한 결정이 필요하다.
+                </p>
+            </section>
+
+            <section class="note-section">
+                <h2>Animation Clip Production Framework</h2>
+                <p>
+                    본 노트에서는 AI 청중의 evaluative backchannel 생성을 위한 animation clip 제작 체계를
+                    네 기준에서 정리한다.<br>
+                    첫째, clip을 sustained base clip과 transient clip으로 구분한다.<br>
+                    둘째, 각 clip이 어떤 채널 조합을 핵심으로 가지는지 정리한다.<br>
+                    셋째, 독립 제작이 필요한 clip과 재사용 가능한 clip을 구분한다.<br>
+                    넷째, 실제 구현을 위한 제작 우선순위를 정리한다.
+                </p>
+            </section>
+
+            <section class="note-section">
+                <h2>Working Criteria</h2>
+
+                <h3 class="note-subheading">Clip Categories</h3>
+                <p class="note-caption">
+                    Clip Categories는 AI 청중 백채널 생성을 위해 필요한 animation clip의 기본 범주를
+                    정리한 것이다. clip은 유지형 상태를 담당하는 sustained clip과, 짧게 덧입혀지는
+                    transient clip으로 나뉜다.
+                </p>
+
+                <table class="note-table">
+                    <thead>
+                        <tr>
+                            <th>Clip Category</th>
+                            <th>Operational Definition</th>
+                            <th>Typical Example</th>
+                            <th>Production Principle</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Sustained base clip</td>
+                            <td>일정 시간 유지되는 기본 posture / facial state를 구성하는 clip.</td>
+                            <td>STATE_upright_neutral, STATE_forwardLean_strained</td>
+                            <td>기본 state를 형성하는 clip로 제작하며, gaze는 runtime control과 결합 가능하다.</td>
+                        </tr>
+                        <tr>
+                            <td>Derived transient clip</td>
+                            <td>기본 sustained state 위에 짧게 덧입혀지는 반응성 signal clip.</td>
+                            <td>STATE_singleNod_neutral, STATE_briefTilt_questioning</td>
+                            <td>짧은 micro-clip 또는 overlay clip으로 제작한다.</td>
+                        </tr>
+                        <tr>
+                            <td>Episode-based transient clip</td>
+                            <td>행위 자체가 의미 중심이 되는 transient action clip.</td>
+                            <td>STATE_noteTaking, STATE_deviceChecking, STATE_sideConversation</td>
+                            <td>독립 action episode clip으로 제작한다.</td>
+                        </tr>
+                        <tr>
+                            <td>Self-regulation interrupt clip</td>
+                            <td>기본 state와 분리된 interrupt event로 삽입되는 자기조절 clip.</td>
+                            <td>STATE_briefSelfTouch, STATE_fidgeting, STATE_seatAdjustment</td>
+                            <td>interrupt layer에서 호출 가능한 별도 clip library로 둔다.</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3 class="note-subheading">Sustained Clip Production Units</h3>
+                <p class="note-caption">
+                    sustained clip은 기본 청중 상태를 형성하는 제작 단위이다. 이 범주의 clip은
+                    body, core head, facial state를 중심으로 비교적 안정된 상태를 유지해야 한다.
+                </p>
+
+                <table class="note-table">
+                    <thead>
+                        <tr>
+                            <th>Clip ID</th>
+                            <th>Core Channels</th>
+                            <th>Production Focus</th>
+                            <th>Notes</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>STATE_upright_neutral</td>
+                            <td>body + facial</td>
+                            <td>기본 attentive baseline</td>
+                            <td>가장 높은 재사용성을 가지는 base clip.</td>
+                        </tr>
+                        <tr>
+                            <td>STATE_forwardLean_neutral</td>
+                            <td>body + facial</td>
+                            <td>높은 attentiveness</td>
+                            <td>speaker / slides attention 증가 상태의 기본 clip.</td>
+                        </tr>
+                        <tr>
+                            <td>STATE_upright_positive</td>
+                            <td>body + facial</td>
+                            <td>약한 긍정 수용</td>
+                            <td>neutral base에서 mouth / periocular variation이 핵심.</td>
+                        </tr>
+                        <tr>
+                            <td>STATE_forwardLean_positive</td>
+                            <td>body + facial</td>
+                            <td>높은 관심과 긍정 수용</td>
+                            <td>forward attentiveness와 positive affect를 함께 표현한다.</td>
+                        </tr>
+                        <tr>
+                            <td>STATE_upright_questioning</td>
+                            <td>body + head + facial</td>
+                            <td>판단 유보 / 약한 의문</td>
+                            <td>tilt hold가 핵심 channel로 포함된다.</td>
+                        </tr>
+                        <tr>
+                            <td>STATE_forwardLean_questioning</td>
+                            <td>body + head + facial</td>
+                            <td>따라가며 의문을 가지는 상태</td>
+                            <td>forward body와 questioning head cue를 함께 가진다.</td>
+                        </tr>
+                        <tr>
+                            <td>STATE_upright_strained</td>
+                            <td>body + facial</td>
+                            <td>인지적 부담</td>
+                            <td>neutral posture 안에서 strain을 facial tension으로 드러낸다.</td>
+                        </tr>
+                        <tr>
+                            <td>STATE_forwardLean_strained</td>
+                            <td>body + facial</td>
+                            <td>따라가려는 긴장</td>
+                            <td>forward lean과 strain이 함께 핵심이다.</td>
+                        </tr>
+                        <tr>
+                            <td>STATE_backward_reserved</td>
+                            <td>body + facial</td>
+                            <td>거리두기와 보류</td>
+                            <td>backward lean과 arm closure가 핵심 cue다.</td>
+                        </tr>
+                        <tr>
+                            <td>STATE_sideOriented_disengaged</td>
+                            <td>body + head</td>
+                            <td>부분적 disengagement</td>
+                            <td>held turn과 side orientation이 핵심이다.</td>
+                        </tr>
+                        <tr>
+                            <td>STATE_slumped_fatigued</td>
+                            <td>body + facial</td>
+                            <td>피로와 reduced engagement</td>
+                            <td>slumped trunk와 low-energy facial state가 중심이다.</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3 class="note-subheading">Derived Transient Clip Production Units</h3>
+                <p class="note-caption">
+                    derived transient clip은 sustained state 위에 짧게 덧입혀지는 micro response clip이다.
+                    이 범주의 clip은 기본 state를 교체하지 않고 짧은 signal을 추가한다.
+                </p>
+
+                <table class="note-table">
+                    <thead>
+                        <tr>
+                            <th>Clip ID</th>
+                            <th>Core Channel</th>
+                            <th>Production Focus</th>
+                            <th>Reuse Strategy</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>STATE_singleNod_neutral</td>
+                            <td>head</td>
+                            <td>짧은 이해 / acknowledgment</td>
+                            <td>다수 sustained state 위에 재사용 가능</td>
+                        </tr>
+                        <tr>
+                            <td>STATE_repeatedNod_positive</td>
+                            <td>head + facial</td>
+                            <td>적극적 추적 / 동의</td>
+                            <td>positive or uptake-oriented state에 우선 결합</td>
+                        </tr>
+                        <tr>
+                            <td>STATE_briefShake_negative</td>
+                            <td>head + facial</td>
+                            <td>가벼운 불일치 / 비수용</td>
+                            <td>reserved / evaluative state와 결합</td>
+                        </tr>
+                        <tr>
+                            <td>STATE_briefTilt_questioning</td>
+                            <td>head</td>
+                            <td>약한 의문 / 판단 유보</td>
+                            <td>questioning state와 높은 양립성</td>
+                        </tr>
+                        <tr>
+                            <td>STATE_briefDip_strained</td>
+                            <td>head</td>
+                            <td>순간적 처리 부담</td>
+                            <td>strained state modulation으로 재사용</td>
+                        </tr>
+                        <tr>
+                            <td>STATE_briefTurnAway_neutral</td>
+                            <td>head + gaze</td>
+                            <td>짧은 attention shift</td>
+                            <td>neutral / disengaged state에 결합 가능</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3 class="note-subheading">Episode-based Transient Clip Production Units</h3>
+                <p class="note-caption">
+                    episode-based transient clip은 행위 자체가 의미 중심이 되는 독립 action clip이다.
+                    이 범주의 clip은 micro signal이 아니라 하나의 짧은 action sequence로 제작해야 한다.
+                </p>
+
+                <table class="note-table">
+                    <thead>
+                        <tr>
+                            <th>Clip ID</th>
+                            <th>Action Type</th>
+                            <th>Production Focus</th>
+                            <th>Notes</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>STATE_noteTaking</td>
+                            <td>task episode</td>
+                            <td>writing posture + note-focused gaze</td>
+                            <td>지속시간 variation을 고려해 loop 가능한 구조가 필요하다.</td>
+                        </tr>
+                        <tr>
+                            <td>STATE_typing</td>
+                            <td>task episode</td>
+                            <td>device-use posture + downward attention</td>
+                            <td>keyboard / device interaction gesture가 핵심이다.</td>
+                        </tr>
+                        <tr>
+                            <td>STATE_deviceChecking</td>
+                            <td>brief task episode</td>
+                            <td>짧은 attention disengagement</td>
+                            <td>빠른 onset과 빠른 recovery가 중요하다.</td>
+                        </tr>
+                        <tr>
+                            <td>STATE_photographingSlides</td>
+                            <td>recording episode</td>
+                            <td>camera / phone raise + atSlides orientation</td>
+                            <td>slide-oriented posture와 recording gesture가 함께 필요하다.</td>
+                        </tr>
+                        <tr>
+                            <td>STATE_objectHandling</td>
+                            <td>object episode</td>
+                            <td>short manipulation behavior</td>
+                            <td>핵심은 발표와 직접 무관한 손 조작이다.</td>
+                        </tr>
+                        <tr>
+                            <td>STATE_sideConversation</td>
+                            <td>social episode</td>
+                            <td>brief turn + neighbor-oriented interaction</td>
+                            <td>body / head / gaze의 방향 전환이 핵심이다.</td>
+                        </tr>
+                        <tr>
+                            <td>STATE_whispering</td>
+                            <td>social episode</td>
+                            <td>low-amplitude side talk</td>
+                            <td>sideConversation보다 더 낮은 amplitude로 제작한다.</td>
+                        </tr>
+                        <tr>
+                            <td>STATE_yawn</td>
+                            <td>physiological interruption</td>
+                            <td>fatigue-linked interruption</td>
+                            <td>jaw and head timing이 핵심이다.</td>
+                        </tr>
+                        <tr>
+                            <td>STATE_cough</td>
+                            <td>physiological interruption</td>
+                            <td>brief contracted interruption</td>
+                            <td>짧고 국소적인 interruption으로 제작한다.</td>
+                        </tr>
+                        <tr>
+                            <td>STATE_fidgeting</td>
+                            <td>self-regulatory episode</td>
+                            <td>restless micro-adjustment</td>
+                            <td>반복 가능한 variation set이 있으면 좋다.</td>
+                        </tr>
+                        <tr>
+                            <td>STATE_briefSelfTouch</td>
+                            <td>self-regulatory episode</td>
+                            <td>brief self-soothing gesture</td>
+                            <td>face / chin / cheek vicinity touch variation 가능</td>
+                        </tr>
+                        <tr>
+                            <td>STATE_seatAdjustment</td>
+                            <td>self-regulatory episode</td>
+                            <td>repositioning in seat</td>
+                            <td>시선 이탈과 posture reset이 함께 들어간다.</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3 class="note-subheading">Reusable vs State-Specific Clip Rules</h3>
+                <p class="note-caption">
+                    모든 clip을 독립적으로 새로 제작하면 제작량이 과도하게 증가하므로, 재사용 가능한 clip과
+                    특정 state에 종속적인 clip을 구분할 필요가 있다.
+                </p>
+
+                <table class="note-table">
+                    <thead>
+                        <tr>
+                            <th>Clip Type</th>
+                            <th>Reusable Condition</th>
+                            <th>State-Specific Condition</th>
+                            <th>Production Decision</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>head-led transient</td>
+                            <td>body posture를 크게 바꾸지 않고 다수 state에 얹을 수 있을 때</td>
+                            <td>특정 state의 torso / facial tension과 강하게 결합될 때</td>
+                            <td>우선 reusable micro-clip으로 제작한다.</td>
+                        </tr>
+                        <tr>
+                            <td>facial modulation</td>
+                            <td>강도만 다르고 기본 형태가 유사할 때</td>
+                            <td>질적으로 다른 evaluative meaning을 전달할 때</td>
+                            <td>shape variation set으로 묶되 필요 시 state-specific으로 분리한다.</td>
+                        </tr>
+                        <tr>
+                            <td>task / episode clip</td>
+                            <td>거의 없음</td>
+                            <td>행위 자체가 의미 중심일 때</td>
+                            <td>독립 clip으로 제작한다.</td>
+                        </tr>
+                        <tr>
+                            <td>sustained posture clip</td>
+                            <td>gaze를 runtime control로 분리할 수 있을 때</td>
+                            <td>body organization 자체가 다를 때</td>
+                            <td>posture 중심 base clip으로 제작한다.</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3 class="note-subheading">Clip Layering Rules</h3>
+                <p class="note-caption">
+                    clip layering은 sustained base clip 위에 transient clip을 덧입히는 원리를 정리한 것이다.
+                    이 규칙은 clip 제작과 구현의 경계를 동시에 고려한다.
+                </p>
+
+                <table class="note-table">
+                    <thead>
+                        <tr>
+                            <th>Layer</th>
+                            <th>Content</th>
+                            <th>Rule</th>
+                            <th>Production Implication</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Base layer</td>
+                            <td>sustained posture + facial state</td>
+                            <td>항상 하나의 base state만 유지한다.</td>
+                            <td>base clip 간 경계가 분명해야 한다.</td>
+                        </tr>
+                        <tr>
+                            <td>Gaze layer</td>
+                            <td>speaker / slides / alternating / away</td>
+                            <td>가능하면 clip baked가 아니라 runtime control로 분리한다.</td>
+                            <td>base clip 수를 줄일 수 있다.</td>
+                        </tr>
+                        <tr>
+                            <td>Transient layer</td>
+                            <td>nod / tilt / shake / dip / brief turn</td>
+                            <td>base state를 교체하지 않고 짧게 덧입힌다.</td>
+                            <td>micro-clip 재사용성이 높다.</td>
+                        </tr>
+                        <tr>
+                            <td>Interrupt layer</td>
+                            <td>self-regulation / physiological episode</td>
+                            <td>threshold 초과 시에만 독립 event로 삽입한다.</td>
+                            <td>별도 clip library 관리가 필요하다.</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3 class="note-subheading">Production Priority</h3>
+                <p class="note-caption">
+                    실제 프로토타입을 위해서는 모든 clip을 한 번에 제작하기보다 우선순위를 정해 순차적으로 제작하는 편이 효율적이다.
+                </p>
+
+                <table class="note-table">
+                    <thead>
+                        <tr>
+                            <th>Priority Tier</th>
+                            <th>Clip Set</th>
+                            <th>Reason</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Tier 1</td>
+                            <td>STATE_upright_neutral, STATE_forwardLean_neutral, STATE_upright_questioning,
+                                STATE_upright_strained, STATE_backward_reserved</td>
+                            <td>기본 evaluative stance를 구분하는 최소 sustained set이다.</td>
+                        </tr>
+                        <tr>
+                            <td>Tier 1</td>
+                            <td>STATE_singleNod_neutral, STATE_briefTilt_questioning, STATE_briefShake_negative,
+                                STATE_briefDip_strained</td>
+                            <td>핵심 derived transient set으로, 기본 reaction repertoire를 형성한다.</td>
+                        </tr>
+                        <tr>
+                            <td>Tier 2</td>
+                            <td>STATE_forwardLean_positive, STATE_forwardLean_questioning, STATE_forwardLean_strained,
+                                STATE_slumped_fatigued</td>
+                            <td>attention intensity와 fatigue nuance를 확장한다.</td>
+                        </tr>
+                        <tr>
+                            <td>Tier 2</td>
+                            <td>STATE_noteTaking, STATE_deviceChecking, STATE_briefSelfTouch, STATE_fidgeting</td>
+                            <td>과업 행동과 자기조절 interrupt를 추가해 현실감을 높인다.</td>
+                        </tr>
+                        <tr>
+                            <td>Tier 3</td>
+                            <td>STATE_typing, STATE_photographingSlides, STATE_sideConversation, STATE_whispering,
+                                STATE_yawn, STATE_cough, STATE_seatAdjustment</td>
+                            <td>확장적 현실감과 episode 다양성을 위한 clip set이다.</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3 class="note-subheading">Literature Basis</h3>
+                <ul class="note-references">
+                    <li>
+                        <strong>Virtual audience production.</strong> 발표 청중을 위한 가상 에이전트는 단일 motion보다 posture, gaze,
+                        head, facial cue의 조합으로
+                        사회적 태도를 지각하게 한다.
+                    </li>
+                    <li>
+                        <strong>Reusable nonverbal signals.</strong> nod, shake, brief gaze shift와 같은 국소 신호는 다양한
+                        listening state 위에
+                        재사용 가능한 micro-clip으로 다룰 수 있다.
+                    </li>
+                    <li>
+                        <strong>Episode specificity.</strong> note taking, device checking, side conversation과 같은 행동은
+                        행위 자체가 의미 중심이기 때문에 독립 episode clip로 다루는 편이 타당하다.
+                    </li>
+                </ul>
+            </section>
+
+            <section class="note-section">
+                <h2>Open Questions</h2>
+                <p>
+                    아직 각 clip을 실제 제작할 때 body, head, facial을 하나의 baked clip으로 묶을지,
+                    일부 채널을 additive layer로 분리할지에 대한 구체적 제작 파이프라인은 더 정리할 필요가 있다.
+                    또한 derived transient 중 어떤 clip은 완전히 재사용 가능하고 어떤 clip은 특정 sustained state와만
+                    자연스럽게 결합되는지에 대한 세부 검토가 더 필요하다.
+                </p>
+            </section>
+
+            <section class="note-section">
+                <h2>Next Step</h2>
+                <p>
+                    다음 단계에서는 실제 제작할 clip list를 최종 확정하고, 각 clip에 대해 clip ID,
+                    핵심 채널, temporal profile, 제작 방식, 재사용 가능 여부를 정리한 production sheet를 작성한다.
+                </p>
+            </section>
+
+            <section class="note-section">
+                <h2>References</h2>
+                <ul class="note-references">
+                    <li>
+                        Chollet, M., &amp; Scherer, S. (2017). Perception of virtual audiences.
+                        <em>IEEE Computer Graphics and Applications, 37</em>(4), 50–59.
+                    </li>
+                    <li>
+                        Kang, N. (2016). <em>Public speaking in virtual reality: Audience design and speaker
+                            experiences</em>.
+                    </li>
+                    <li>
+                        Poeschl, S., &amp; Doering, N. (2012). Designing virtual audiences for fear of public speaking
+                        training: An observation study on realistic nonverbal behavior.
+                        <em>Annual Review of Cybertherapy and Telemedicine, 181</em>, 218–222.
+                    </li>
+                    <li>
+                        Ristorcelli, M., D’Ambra, A., Pergandi, J.-M., Casanova, R., Ochs, M., Torre, I., Volpe, G.,
+                        &amp; Conati, C. (2024).
+                        Impact of the nonverbal behavior of virtual audience on users’ perception of social attitudes.
+                        <em>Proceedings of the International Conference on Advanced Visual Interfaces, AVI 2024</em>,
+                        1–9.
+                    </li>
+                </ul>
+            </section>
+        </article>
+    </main>
+</body>
+
+</html>
