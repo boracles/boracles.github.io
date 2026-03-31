@@ -1193,41 +1193,68 @@ body {
 
 .teach-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: 18px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 24px;
+  align-items: start;
 }
 
 .teach-card {
+  display: block;
   border-top: 1px solid #333333;
-  padding-top: 10px;
-  padding-right: 4px;
+  padding: 14px 6px 4px 0;
+  text-decoration: none;
+  color: inherit;
   transition:
     background 0.16s ease,
-    border-color 0.16s ease;
+    border-color 0.16s ease,
+    transform 0.16s ease;
 }
 
 .teach-card:hover {
   background: #111111;
   border-color: var(--accent);
+  transform: translateY(-2px);
 }
 
 .teach-title {
-  font-size: 0.96rem;
-  font-weight: 500;
-  margin-bottom: 4px;
+  font-size: 1.28rem;
+  font-weight: 600;
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+  margin-bottom: 10px;
   color: #ffffff;
 }
 
 .teach-meta {
-  font-size: 0.8rem;
-  color: var(--text-soft);
+  font-size: 0.72rem;
+  font-weight: 700;
+  line-height: 1.4;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #8e8e8e;
+  margin-bottom: 4px;
+}
+
+.teach-submeta {
+  font-size: 0.84em;
+  font-weight: 500;
+  line-height: 2.0;
+  color: #e8e8e8;
   margin-bottom: 4px;
 }
 
 .teach-body {
-  font-size: 0.86rem;
+  font-size: 0.94rem;
+  font-weight: 400;
+  line-height: 1.75;
   color: #dddddd;
-  line-height: 1.7;
+}
+
+.teach-card:visited,
+.teach-card:active,
+.teach-card:focus {
+  color: inherit;
+  text-decoration: none;
 }
 
 /* ==========================
@@ -1707,6 +1734,11 @@ body.note-page {
 /* ==========================
    RESPONSIVE
 ========================== */
+@media (max-width: 1100px) {
+  .teach-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
 
 @media (max-width: 900px) {
   .research-notes-grid {
@@ -1891,6 +1923,7 @@ body.note-page {
   .note-section--highlight p {
     font-size: 1rem;
     line-height: 1.82;
+    word-break: keep-all;
   }
 
   .note-section .research-notes-grid {
@@ -1919,6 +1952,12 @@ body.note-page {
   .note-table--channels td:nth-child(3),
   .note-table--channels td:nth-child(4) {
     white-space: normal;
+  }
+}
+
+@media (max-width: 700px) {
+  .teach-grid {
+    grid-template-columns: 1fr;
   }
 }
 
