@@ -1,13 +1,13 @@
 (async function () {
-    const script = document.currentScript;
-    const siteRoot = new URL("../", script.src);
+    const scriptEl = document.currentScript;
+    const siteRoot = new URL("../", scriptEl.src).href;
 
     const noteConfigs = {
-        "note-2026-03-30": {
-            source: new URL("notes/ai-audience-backchannels/2026-03-30.html", siteRoot).href,
-        },
         "note-2026-03-28": {
             source: new URL("notes/ai-audience-backchannels/2026-03-28.html", siteRoot).href,
+        },
+        "note-2026-03-30": {
+            source: new URL("notes/ai-audience-backchannels/2026-03-30.html", siteRoot).href,
         },
         "note-2026-03-31": {
             source: new URL("notes/ai-audience-backchannels/2026-03-31.html", siteRoot).href,
