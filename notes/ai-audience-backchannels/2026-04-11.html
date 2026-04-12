@@ -1,0 +1,300 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Facial Clip Specification for Evaluative Audience Backchannels</title>
+
+    <link rel="stylesheet" href="https://use.typekit.net/epz5qwi.css" />
+    <link rel="stylesheet" href="../../style.css" />
+</head>
+
+<body class="note-page">
+    <header class="nav">
+        <div class="nav-left">
+            <div class="nav-name">Atelier BORACLES</div>
+            <div class="nav-role">Research-driven XR Experience Studio</div>
+        </div>
+
+        <nav class="nav-right">
+            <a href="../index.html#intro">Intro</a>
+            <a href="../index.html#about">About</a>
+            <a href="../index.html#projects">Work</a>
+            <a href="../index.html#research" class="is-active">Research</a>
+            <a href="../index.html#teaching">Teaching</a>
+            <a href="../index.html#contact">Contact</a>
+        </nav>
+    </header>
+
+    <main class="note-shell">
+        <div class="note-topbar">
+            <div class="note-breadcrumb">
+                <a href="index.html">Research Notes</a>
+                <span>/</span>
+                <span>A Design Framework for Evaluative Backchannels in AI Audience Agents
+                    for XR Presentation Environments</span>
+            </div>
+
+            <header class="note-header">
+                <div class="note-meta" data-note-source="meta">
+                    XR Presentation · AI Audience · Facial Clip Specification
+                </div>
+
+                <div data-note-source="date" style="display:none;">
+                    2026.04.11 - 2026.04.12
+                </div>
+
+                <h1 class="note-title" data-note-source="title">
+                    Facial Clip Specification for Evaluative Audience Backchannels
+                </h1>
+
+                <p class="note-summary" data-note-source="summary">
+                    Operational Criteria for Audience Response Units and Control Rules에서 정의한 facial parameter와 response
+                    form을 바탕으로,
+                    AI 청중 에이전트의 evaluative backchannel 생성에 사용될 facial clip 목록과 매핑 기준을 정리한 노트.
+                </p>
+            </header>
+        </div>
+
+        <article class="note-article">
+            <section class="note-section note-section--highlight">
+                <h2>Research Goal</h2>
+                <p>
+                    본 노트에서는 evaluative audience backchannel 생성에 사용될 facial clip의 제작 목록을 정리하고,
+                    각 clip의 사용 맥락과 매핑 기준을 명시한다.
+                </p>
+            </section>
+
+            <section class="note-section note-section--highlight">
+                <h2>Research Question</h2>
+                <p>
+                    RQ1. evaluative audience backchannel 생성에 사용될 facial clip으로 어떤 항목들이 필요한가? <br />
+                    RQ2. 각 facial clip은 어떤 청중 상태와 반응에 대응하도록 매핑될 수 있는가?
+                </p>
+            </section>
+
+            <section class="note-section">
+                <h2>Design Principle</h2>
+                <p>
+                    본 노트에서는 evaluative audience backchannel 생성에 사용될 facial clip을 정리한다.
+                    각 clip은 brow, periocular, mouth, jaw와 같은 facial parameter의 조합으로 구성되며,
+                    이를 통해 각 clip이 어떤 청중 상태와 반응에 대응하는지 함께 정리한다.
+                </p>
+            </section>
+
+            <section class="note-section">
+                <h2>Facial Clip Specification</h2>
+
+                <h3 class="note-subheading">Base Facial Clips</h3>
+                <p class="note-caption">
+                    아래 표는 청중의 기본 청취 상태를 나타내는 facial clip 목록을 정리한 것이다.
+                    각 clip은 brow, periocular, mouth, jaw의 조합으로 구성되며,
+                    어떤 청중 상태에 대응하는지 함께 표시한다.
+                </p>
+
+                <table class="note-table">
+                    <thead>
+                        <tr>
+                            <th>Asset ID</th>
+                            <th>Brow</th>
+                            <th>Periocular</th>
+                            <th>Mouth</th>
+                            <th>Jaw</th>
+                            <th>Mapped States</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>FACE_neutral</td>
+                            <td>neutral</td>
+                            <td>neutral</td>
+                            <td>neutral</td>
+                            <td>closed</td>
+                            <td>STATE_upright_neutral, STATE_forwardLean_neutral, STATE_sideOriented_disengaged</td>
+                        </tr>
+                        <tr>
+                            <td>FACE_positive</td>
+                            <td>neutral</td>
+                            <td>neutral</td>
+                            <td>raised</td>
+                            <td>closed</td>
+                            <td>STATE_upright_positive</td>
+                        </tr>
+                        <tr>
+                            <td>FACE_positive_engaged</td>
+                            <td>neutral</td>
+                            <td>widened</td>
+                            <td>raised</td>
+                            <td>closed</td>
+                            <td>STATE_forwardLean_positive</td>
+                        </tr>
+                        <tr>
+                            <td>FACE_questioning_soft</td>
+                            <td>raised</td>
+                            <td>neutral</td>
+                            <td>neutral</td>
+                            <td>slightly open</td>
+                            <td>STATE_upright_questioning</td>
+                        </tr>
+                        <tr>
+                            <td>FACE_questioning_strained</td>
+                            <td>raised</td>
+                            <td>tightened</td>
+                            <td>neutral</td>
+                            <td>slightly open</td>
+                            <td>STATE_forwardLean_questioning</td>
+                        </tr>
+                        <tr>
+                            <td>FACE_strained</td>
+                            <td>lowered-furrowed</td>
+                            <td>tightened</td>
+                            <td>neutral</td>
+                            <td>closed</td>
+                            <td>STATE_upright_strained</td>
+                        </tr>
+                        <tr>
+                            <td>FACE_strained_engaged</td>
+                            <td>lowered-furrowed</td>
+                            <td>tightened</td>
+                            <td>neutral</td>
+                            <td>slightly open</td>
+                            <td>STATE_forwardLean_strained</td>
+                        </tr>
+                        <tr>
+                            <td>FACE_reserved</td>
+                            <td>neutral</td>
+                            <td>tightened</td>
+                            <td>lowered</td>
+                            <td>closed</td>
+                            <td>STATE_backward_reserved</td>
+                        </tr>
+                        <tr>
+                            <td>FACE_fatigued</td>
+                            <td>neutral</td>
+                            <td>neutral/tightened</td>
+                            <td>neutral</td>
+                            <td>slightly open</td>
+                            <td>STATE_slumped_fatigued</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3 class="note-subheading">Transient Facial Clips</h3>
+                <p class="note-caption">
+                    아래 표는 청중의 기본 얼굴 상태에서 짧게 나타나는 변화 표현을 위한 facial clip 목록을 정리한 것이다.
+                    각 clip은 brow, mouth, jaw의 일시적인 변화를 중심으로 구성되며,
+                    어떤 반응을 표현하는 데 사용되는지 함께 표시한다.
+                </p>
+                <table class="note-table">
+                    <thead>
+                        <tr>
+                            <th>Asset ID</th>
+                            <th>Primary Change</th>
+                            <th>Typical Use</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>FACE_browRaise_brief</td>
+                            <td>brief brow raise</td>
+                            <td>brief questioning, attention lift, mild surprise</td>
+                        </tr>
+                        <tr>
+                            <td>FACE_browFurrow_brief</td>
+                            <td>brief brow furrow</td>
+                            <td>momentary difficulty, evaluative tension</td>
+                        </tr>
+                        <tr>
+                            <td>FACE_mouthRaise_brief</td>
+                            <td>brief mouth raise</td>
+                            <td>brief positive uptake, repeated nod positive</td>
+                        </tr>
+                        <tr>
+                            <td>FACE_mouthLower_brief</td>
+                            <td>brief mouth lowering</td>
+                            <td>brief negative reaction, mild disapproval</td>
+                        </tr>
+                        <tr>
+                            <td>FACE_jawOpen_brief</td>
+                            <td>brief slight jaw opening</td>
+                            <td>questioning, hesitation, low-level surprise</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3 class="note-subheading">Episode-Specific Facial Clips</h3>
+                <p class="note-caption">
+                    아래 표는 note-taking, whispering, yawn, cough와 같이
+                    특정 행위나 episode에 직접 대응하는 facial clip 목록을 정리한 것이다.
+                    각 clip은 일반적인 기본 상태나 짧은 변화 표현과 구분되는 별도의 facial clip으로 제작하며,
+                    어떤 상태에 대응하는지 함께 표시한다.
+                </p>
+
+                <table class="note-table">
+                    <thead>
+                        <tr>
+                            <th>Asset ID</th>
+                            <th>Facial Characteristics</th>
+                            <th>Mapped States</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>FACE_noteTaking_concentrated</td>
+                            <td>neutral or mildly concentrated face</td>
+                            <td>STATE_noteTaking</td>
+                        </tr>
+                        <tr>
+                            <td>FACE_whispering</td>
+                            <td>low-intensity mouth movement</td>
+                            <td>STATE_whispering</td>
+                        </tr>
+                        <tr>
+                            <td>FACE_yawn</td>
+                            <td>jaw dropped / mouth opened</td>
+                            <td>STATE_yawn</td>
+                        </tr>
+                        <tr>
+                            <td>FACE_cough</td>
+                            <td>mouth compressed then opened briefly</td>
+                            <td>STATE_cough</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <section class="note-section">
+                <h2>Implementation Note</h2>
+                <p>
+                    본 노트는 evaluative audience backchannel 생성에 사용될 facial clip의 제작 목록을 정리한 것이다.
+                    각 clip은 Reallusion에서 제작한 뒤, Unity에서 청중 에이전트의 상태와 반응에 따라 연결하여 사용한다.
+                </p>
+            </section>
+
+            <section class="note-section">
+                <h2>Final Facial Clip List for Reallusion</h2>
+                <p>
+                    본 노트에서 최종 확정한 Reallusion 제작 대상은 facial clip 18개이다.
+                    이 목록은 facial expression 채널에 해당하는 clip만 포함하며,
+                    nod, shake, tilt, dip, turn과 같은 head movement clip은 포함하지 않는다.
+                    따라서 본 페이지의 제작 범위는 base facial clip 9개, transient facial clip 5개,
+                    episode-specific facial clip 4개로 구성된다.
+                </p>
+            </section>
+
+            <section class="note-section">
+                <h2>Next Step</h2>
+                <p>
+                    다음 단계에서는 본 노트에서 정리한 facial clip 목록을 바탕으로,
+                    각 clip을 Reallusion에서 제작하고,
+                    Unity에서 각 상태와 반응에 맞게 연결하여 적용한다.
+                </p>
+            </section>
+        </article>
+    </main>
+
+    <script src="../../js/research-sync.js"></script>
+</body>
+
+</html>

@@ -622,6 +622,19 @@
           </li>
         </ul>
 
+        <h3 class="note-subheading">Implementation Principle for Runtime Composition</h3>
+        <p class="note-caption">
+          본 시스템은 청중 반응을 매 순간 무에서 새로 생성하는 fully generative motion synthesis를 직접 구현하기보다,
+          사전 제작된 body, head, and facial basis unit과 runtime gaze control, transient overlay rule을 조합하는
+          semi-generative composition 구조를 채택한다.
+        </p>
+        <p class="note-caption">
+          여기서 runtime generation은 완전히 새로운 motion을 매 순간 합성한다는 뜻이 아니라,
+          appraisal 결과와 발표 맥락에 따라 basis unit의 selection, weighting, transition, and overlay를
+          실시간으로 제어한다는 뜻이다. 이를 통해 구현 안정성과 제어 가능성을 유지하면서도,
+          단순한 fixed clip playback보다 더 유연하고 맥락 반응적인 청중 행동 생성을 지향한다.
+        </p>
+
         <h3 class="note-subheading">Response Forms</h3>
 
         <p class="note-caption">
