@@ -3,14 +3,20 @@
     const siteRoot = new URL("../", scriptEl.src).href;
 
     const noteConfigs = {
-        "note-2026-03-28": {
-            source: new URL("notes/ai-audience-backchannels/2026-03-28.html", siteRoot).href,
+        "note-2026-04-13": {
+            source: new URL("notes/ai-audience-backchannels/2026-04-13.html", siteRoot).href,
+        },
+        "note-2026-04-11": {
+            source: new URL("notes/ai-audience-backchannels/2026-04-11.html", siteRoot).href,
+        },
+        "note-2026-03-31": {
+            source: new URL("notes/ai-audience-backchannels/2026-03-31.html", siteRoot).href,
         },
         "note-2026-03-30": {
             source: new URL("notes/ai-audience-backchannels/2026-03-30.html", siteRoot).href,
         },
-        "note-2026-03-31": {
-            source: new URL("notes/ai-audience-backchannels/2026-03-31.html", siteRoot).href,
+        "note-2026-03-28": {
+            source: new URL("notes/ai-audience-backchannels/2026-03-28.html", siteRoot).href,
         },
     };
 
@@ -66,7 +72,10 @@
 
     const targets = Array.from(document.querySelectorAll("[data-note-target]"));
     const noteKeys = [...new Set(
-        targets.map((el) => el.getAttribute("data-note-target").split(".")[0])
+        targets
+            .map((el) => el.getAttribute("data-note-target"))
+            .filter(Boolean)
+            .map((value) => value.split(".")[0])
     )];
 
     for (const noteKey of noteKeys) {

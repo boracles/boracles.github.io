@@ -1,0 +1,330 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Body Clip Specification for Evaluative Audience Backchannels</title>
+
+    <link rel="stylesheet" href="https://use.typekit.net/epz5qwi.css" />
+    <link rel="stylesheet" href="../../style.css" />
+</head>
+
+<body class="note-page">
+    <header class="nav">
+        <div class="nav-left">
+            <div class="nav-name">Atelier BORACLES</div>
+            <div class="nav-role">Research-driven XR Experience Studio</div>
+        </div>
+
+        <nav class="nav-right">
+            <a href="../index.html#intro">Intro</a>
+            <a href="../index.html#about">About</a>
+            <a href="../index.html#projects">Work</a>
+            <a href="../index.html#research" class="is-active">Research</a>
+            <a href="../index.html#teaching">Teaching</a>
+            <a href="../index.html#contact">Contact</a>
+        </nav>
+    </header>
+
+    <main class="note-shell">
+        <div class="note-topbar">
+            <div class="note-breadcrumb">
+                <a href="index.html">Research Notes</a>
+                <span>/</span>
+                <span>A Design Framework for Evaluative Backchannels in AI Audience Agents
+                    for XR Presentation Environments</span>
+            </div>
+
+            <header class="note-header">
+                <div class="note-meta" data-note-source="meta">
+                    XR Presentation · AI Audience · Body Clip Specification
+                </div>
+
+                <div data-note-source="date" style="display:none;">
+                    2026.04.13
+                </div>
+
+                <h1 class="note-title" data-note-source="title">
+                    Body Clip Specification for Evaluative Audience Backchannels
+                </h1>
+
+                <p class="note-summary" data-note-source="summary">
+                    Operational Criteria for Audience Response Units and Control Rules에서 정의한 body posture 및 head
+                    movement parameter와
+                    response form을 바탕으로,
+                    AI 청중 에이전트의 evaluative backchannel 생성에 사용될 body clip 목록과 매핑 기준을 정리한 노트.
+                </p>
+            </header>
+        </div>
+
+        <article class="note-article">
+            <section class="note-section note-section--highlight">
+                <h2>Research Goal</h2>
+                <p>
+                    본 노트에서는 evaluative audience backchannel 생성에 사용될 body clip의 제작 목록을 정리하고,
+                    각 clip의 사용 맥락과 매핑 기준을 명시한다.
+                    여기서 body clip은 body posture와 head movement를 함께 포함하는 제작 단위를 의미한다.
+                </p>
+            </section>
+
+            <section class="note-section note-section--highlight">
+                <h2>Research Question</h2>
+                <p>
+                    RQ1. evaluative audience backchannel 생성에 사용될 body clip으로 어떤 항목들이 필요한가? <br />
+                    RQ2. 각 body clip은 어떤 청중 상태와 반응에 대응하도록 매핑될 수 있는가?
+                </p>
+            </section>
+
+            <section class="note-section">
+                <h2>Design Principle</h2>
+                <p>
+                    본 노트에서는 evaluative audience backchannel 생성에 사용될 body clip을 정리한다.
+                    여기서 body clip은 trunk alignment, lean direction, body orientation, arm placement와 같은 body posture 요소뿐
+                    아니라,
+                    nod, shake, tilt, dip, turn과 같은 head movement를 포함하는 상체 clip을 의미한다.
+                    따라서 본 노트의 제작 단위는 facial clip과 분리된 body-and-head clip이며,
+                    각 clip이 어떤 청중 상태와 반응에 대응하는지 함께 정리한다.
+                </p>
+            </section>
+
+            <section class="note-section">
+                <h2>Body Clip Specification</h2>
+
+                <h3 class="note-subheading">Base Body Clips</h3>
+                <p class="note-caption">
+                    아래 표는 청중의 기본 청취 상태를 나타내는 body clip 목록을 정리한 것이다.
+                    여기서 body clip은 trunk alignment, lean direction, body orientation, arm placement와 같은 body posture 요소뿐
+                    아니라,
+                    head movement를 함께 포함하는 상체 clip을 의미한다.
+                    각 clip이 어떤 청중 상태에 대응하는지 함께 표시한다.
+                </p>
+
+                <table class="note-table">
+                    <thead>
+                        <tr>
+                            <th>Asset ID</th>
+                            <th>Body</th>
+                            <th>Head</th>
+                            <th>Mapped States</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>BODY_upright_neutral</td>
+                            <td>upright + neutral + toward speaker + open</td>
+                            <td>neutral</td>
+                            <td>STATE_upright_neutral, STATE_upright_positive, STATE_upright_strained</td>
+                        </tr>
+                        <tr>
+                            <td>BODY_forwardLean_neutral</td>
+                            <td>upright + forward + toward speaker + open</td>
+                            <td>neutral</td>
+                            <td>STATE_forwardLean_neutral, STATE_forwardLean_positive, STATE_forwardLean_strained</td>
+                        </tr>
+                        <tr>
+                            <td>BODY_upright_questioning</td>
+                            <td>upright + neutral + toward speaker + open</td>
+                            <td>tilt hold</td>
+                            <td>STATE_upright_questioning</td>
+                        </tr>
+                        <tr>
+                            <td>BODY_forwardLean_questioning</td>
+                            <td>upright + forward + toward speaker + open</td>
+                            <td>tilt hold</td>
+                            <td>STATE_forwardLean_questioning</td>
+                        </tr>
+                        <tr>
+                            <td>BODY_backward_reserved</td>
+                            <td>upright + backward + toward speaker + crossed</td>
+                            <td>neutral</td>
+                            <td>STATE_backward_reserved</td>
+                        </tr>
+                        <tr>
+                            <td>BODY_sideOriented_disengaged</td>
+                            <td>upright + neutral + side-oriented + open</td>
+                            <td>held turn</td>
+                            <td>STATE_sideOriented_disengaged</td>
+                        </tr>
+                        <tr>
+                            <td>BODY_slumped_fatigued</td>
+                            <td>slumped + backward + toward speaker + open</td>
+                            <td>neutral</td>
+                            <td>STATE_slumped_fatigued</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3 class="note-subheading">Transient Body Clips</h3>
+                <p class="note-caption">
+                    아래 표는 기본 청취 자세 위에서 짧게 나타나는 body clip 목록을 정리한 것이다.
+                    각 clip은 body posture와 head movement의 짧은 변화를 함께 포함하며,
+                    어떤 transient response form에 대응하는지 함께 표시한다.
+                </p>
+
+                <table class="note-table">
+                    <thead>
+                        <tr>
+                            <th>Asset ID</th>
+                            <th>Body</th>
+                            <th>Head</th>
+                            <th>Mapped States</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>BODY_singleNod_neutral</td>
+                            <td>maintained listening posture</td>
+                            <td>single nod</td>
+                            <td>STATE_singleNod_neutral</td>
+                        </tr>
+                        <tr>
+                            <td>BODY_repeatedNod_positive</td>
+                            <td>maintained listening posture</td>
+                            <td>repeated nod</td>
+                            <td>STATE_repeatedNod_positive</td>
+                        </tr>
+                        <tr>
+                            <td>BODY_briefShake_negative</td>
+                            <td>maintained listening posture</td>
+                            <td>brief shake</td>
+                            <td>STATE_briefShake_negative</td>
+                        </tr>
+                        <tr>
+                            <td>BODY_briefTilt_questioning</td>
+                            <td>maintained listening posture</td>
+                            <td>brief tilt</td>
+                            <td>STATE_briefTilt_questioning</td>
+                        </tr>
+                        <tr>
+                            <td>BODY_briefDip_strained</td>
+                            <td>maintained listening posture</td>
+                            <td>brief downward dip</td>
+                            <td>STATE_briefDip_strained</td>
+                        </tr>
+                        <tr>
+                            <td>BODY_briefTurnAway_neutral</td>
+                            <td>maintained listening posture</td>
+                            <td>brief turn</td>
+                            <td>STATE_briefTurnAway_neutral</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3 class="note-subheading">Episode-Specific Body Clips</h3>
+                <p class="note-caption">
+                    아래 표는 note-taking, typing, device checking, side conversation과 같이
+                    특정 행위나 episode에 직접 대응하는 body clip 목록을 정리한 것이다.
+                    각 clip은 일반적인 기본 청취 자세와 구분되는 별도의 body clip으로 제작하며,
+                    어떤 상태에 대응하는지 함께 표시한다.
+                </p>
+
+                <table class="note-table">
+                    <thead>
+                        <tr>
+                            <th>Asset ID</th>
+                            <th>Body Characteristics</th>
+                            <th>Mapped States</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>BODY_noteTaking</td>
+                            <td>writing-related posture</td>
+                            <td>STATE_noteTaking</td>
+                        </tr>
+                        <tr>
+                            <td>BODY_typing</td>
+                            <td>device-use posture</td>
+                            <td>STATE_typing</td>
+                        </tr>
+                        <tr>
+                            <td>BODY_deviceChecking</td>
+                            <td>brief device-check posture</td>
+                            <td>STATE_deviceChecking</td>
+                        </tr>
+                        <tr>
+                            <td>BODY_photographingSlides</td>
+                            <td>slide-recording posture</td>
+                            <td>STATE_photographingSlides</td>
+                        </tr>
+                        <tr>
+                            <td>BODY_objectHandling</td>
+                            <td>object-manipulation posture</td>
+                            <td>STATE_objectHandling</td>
+                        </tr>
+                        <tr>
+                            <td>BODY_sideConversation</td>
+                            <td>side-oriented interaction posture</td>
+                            <td>STATE_sideConversation</td>
+                        </tr>
+                        <tr>
+                            <td>BODY_whispering</td>
+                            <td>low-amplitude side-interaction posture</td>
+                            <td>STATE_whispering</td>
+                        </tr>
+                        <tr>
+                            <td>BODY_yawn</td>
+                            <td>fatigue-linked interruption posture</td>
+                            <td>STATE_yawn</td>
+                        </tr>
+                        <tr>
+                            <td>BODY_cough</td>
+                            <td>brief contracted interruption posture</td>
+                            <td>STATE_cough</td>
+                        </tr>
+                        <tr>
+                            <td>BODY_fidgeting</td>
+                            <td>micro-adjusting posture</td>
+                            <td>STATE_fidgeting</td>
+                        </tr>
+                        <tr>
+                            <td>BODY_briefSelfTouch</td>
+                            <td>brief self-soothing posture</td>
+                            <td>STATE_briefSelfTouch</td>
+                        </tr>
+                        <tr>
+                            <td>BODY_seatAdjustment</td>
+                            <td>seat-repositioning posture</td>
+                            <td>STATE_seatAdjustment</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <section class="note-section">
+                <h2>Implementation Note</h2>
+                <p>
+                    본 노트는 evaluative audience backchannel 생성에 사용될 body clip의 제작 목록을 정리한 것이다.
+                    각 clip은 Reallusion에서 제작한 뒤, Unity에서 청중 에이전트의 상태와 반응에 따라 연결하여 사용한다.
+                    여기서 body clip은 body posture와 head movement를 함께 포함하며,
+                    facial expression clip은 별도로 분리하여 블렌딩한다.
+                </p>
+            </section>
+
+            <section class="note-section">
+                <h2>Final Body Clip List for Reallusion</h2>
+                <p>
+                    본 노트에서 최종 확정한 Reallusion 제작 대상은 body clip 25개이다.
+                    이 목록은 body posture와 head movement를 함께 포함하는 body clip만을 다루며,
+                    facial expression clip은 포함하지 않는다.
+                    따라서 본 페이지의 제작 범위는 base body clip 7개, transient body clip 6개,
+                    episode-specific body clip 12개로 구성된다.
+                </p>
+            </section>
+
+            <section class="note-section">
+                <h2>Next Step</h2>
+                <p>
+                    다음 단계에서는 본 노트에서 정리한 body clip 목록을 바탕으로,
+                    각 clip을 Reallusion에서 제작하고,
+                    Unity에서 facial clip 및 gaze control과 함께 연결하여 적용한다.
+                </p>
+            </section>
+        </article>
+    </main>
+
+    <script src="../../js/research-sync.js"></script>
+</body>
+
+</html>
