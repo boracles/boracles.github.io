@@ -1,10 +1,11 @@
 import { createFogView, Vec3 } from './fog-view.js';
+import { createQRMarkerTracker, markerPose } from './qr-marker.js';
 
 // The Lost Room 2 · Tea Time, a phone web AR reached from the QR on a tea bag.
 //   tell a story → the voice gathers as particles and the Fog Child is born
 //   → its music is made from that recording → play with it by touch → stay with the tea.
 // Modes: 'xr'     (WebXR immersive-ar, Android Chrome: the Fog Child is placed on a real surface and stays there)
-//        'camera' (no WebXR, e.g. iPhone: camera feed + device orientation, the visitor taps a place)
+//        'camera' (default on phones: the printed QR is the physical placement target)
 //        '3d'     (no camera: the Fog Child alone on a dark background).
 // In every mode only the Fog Child is drawn over the real view.
 // The recording and the music made from it stay in this page's memory; nothing is uploaded or saved.
@@ -351,19 +352,8 @@ function demoVoice() {
 }
 
 // =====================================================================
-// CameraView: camera feed, device orientation, tapping a place
+// CameraView: camera feed, screen/world conversion
 // =====================================================================
-const orient = { q: B.Quaternion.Identity(), has: false };
-const qBackCam = new B.Quaternion(-Math.sqrt(0.5), 0, 0, Math.sqrt(0.5));
-const rad = (degrees) => degrees * Math.PI / 180;
-function onOrientation(e) {
-  if (e.alpha == null) return;
-  orient.q.copyFrom(B.Quaternion.RotationYawPitchRoll(rad(e.alpha), rad(e.beta), -rad(e.gamma))
-    .multiply(qBackCam).multiply(B.Quaternion.RotationAxis(B.Axis.Z, -rad(screen.orientation?.angle ?? window.orientation ?? 0))));
-  orient.has = true;
-}
-const fallbackQ = B.Quaternion.RotationYawPitchRoll(0, -0.65, 0);
-
 // In WebXR the XR camera is active; everywhere else the page's own camera.
 const viewCam = () => scene.activeCamera || camera;
 function screenToWorld(px, py, dist, out) {
@@ -390,6 +380,31 @@ function faceCamera() {
 // WebXR AR: real surfaces through hit-test, the page UI as a DOM overlay
 // =====================================================================
 const xr = { supported: false, helper: null, hitTest: null, hit: null, reticle: null, placing: false };
+let markerStatusTimer = 0;
+const markerTracker = createQRMarkerTracker({ video,
+  onPose(corners,modules,snap) {
+    const projection=camera.getProjectionMatrix(true).m;
+    const pose=markerPose(corners,{width:innerWidth,height:innerHeight,
+      fx:innerWidth*projection[0]/2,fy:innerHeight*projection[5]/2,modules});
+    if (!pose) return false;
+    const p=new B.Vector3(...pose.position);
+    const matrix=B.Matrix.FromValues(...pose.x,0,...pose.y,0,...pose.z,0,0,0,0,1);
+    const q=B.Quaternion.FromRotationMatrix(matrix);
+    if (!anchor.rotationQuaternion) anchor.rotationQuaternion=B.Quaternion.Identity();
+    if (snap) { anchor.position.copyFrom(p);anchor.rotationQuaternion.copyFrom(q); }
+    else { B.Vector3.LerpToRef(anchor.position,p,.6,anchor.position);B.Quaternion.SlerpToRef(anchor.rotationQuaternion,q,.5,anchor.rotationQuaternion); }
+    return true;
+  },
+  onVisibility(visible,locked) {
+    clearTimeout(markerStatusTimer);
+    const status=$('marker-status');
+    anchor.setEnabled(visible && !session.ended);
+    if (session.ended) { status.classList.remove('on');return; }
+    status.textContent=visible?'QR 위치를 찾았어요.':locked?'티백 뒷면의 QR을 다시 비춰 주세요.':'티백 뒷면의 QR 전체를 비춰 주세요.';
+    status.classList.add('on');
+    if (visible) markerStatusTimer=setTimeout(()=>status.classList.remove('on'),1800);
+  }
+});
 async function checkXR() {
   try { xr.supported = !!navigator.xr && await navigator.xr.isSessionSupported('immersive-ar'); } catch { xr.supported = false; }
   return xr.supported;
@@ -585,12 +600,9 @@ async function placeFogChild() {
     anchor.setEnabled(true);
     return;
   }
-  say('안개 아이가 나타날 자리를 눌러 주세요.', '화면 속 찻잔 바로 위를 누르면 됩니다.');
-  const e = await new Promise((r) => touchLayer.addEventListener('pointerdown', r, { once: true }));
-  screenToWorld(e.clientX, e.clientY, 0.35, anchor.position);
-  anchor.position.y -= 0.06; // the tap marks the Fog Child, the tea surface sits a little below
-  faceCamera();
-  anchor.setEnabled(true);
+  say('티백 뒷면의 QR을 비춰 주세요.', '포장을 탁자에 펼치고 QR 전체가 보이게 해 주세요. 그 자리에서 안개 아이가 태어납니다.');
+  markerTracker.start();
+  if (!await markerTracker.waitForFirst() || session.ended) return;
   play('WaterDrop', { vol: 0.6 });
 }
 
@@ -716,6 +728,10 @@ async function stay() {
 function endSession({ show = true } = {}) {
   if (session.ended) return;
   session.ended = true;
+  markerTracker.stop();
+  clearTimeout(markerStatusTimer);
+  $('marker-status').classList.remove('on');
+  anchor.setEnabled(false);
   touchPlay.enabled = false;
   if (mic.stream) closeMic();
   mic.chunks = []; mic.samples = 0;
@@ -725,7 +741,6 @@ function endSession({ show = true } = {}) {
   video.srcObject = null;
   if (xr.helper?.state === B.WebXRState.IN_XR) xr.helper.exitXRAsync().catch(() => {});
   ambientEl.pause();
-  removeEventListener('deviceorientation', onOrientation);
   clearOffer();
   showRec(false);
   $('hud').classList.remove('on');
@@ -773,7 +788,8 @@ const view = { yaw: 0.5, pitch: 0.55 };
 function applyView() {
   if (mode === 'camera') {
     camera.position.set(0, 0, 0);
-    camera.rotationQuaternion.copyFrom(orient.has ? orient.q : fallbackQ);
+    // QR pose is recovered relative to the current camera frame, including its rotation.
+    camera.rotationQuaternion.set(0,0,0,1);
   } else if (mode === '3d') {
     const dist = Math.max(0.36, 0.15 / (Math.tan(camera.fov / 2) * (innerWidth / innerHeight)));
     const target = new Vec3(0, 0.0, 0);
@@ -788,7 +804,6 @@ async function startCamera() {
   await video.play().catch(() => {});
   mode = 'camera';
   document.body.className = 'mode-camera';
-  addEventListener('deviceorientation', onOrientation);
 }
 
 function start3D() {
@@ -800,7 +815,9 @@ const camSupported = !!navigator.mediaDevices?.getUserMedia && window.isSecureCo
 const startBtn = $('start');
 
 async function boot() {
-  const kind = params.get('mode') || ((await checkXR()) ? 'xr' : camSupported ? 'camera' : '3d');
+  // Use the QR on both Android and iPhone. WebXR does not expose camera pixels
+  // consistently; its older tap-to-place path remains an explicit ?mode=xr option.
+  const kind = params.get('mode') || (camSupported ? 'camera' : '3d');
   startBtn.dataset.mode = kind;
   let ready = false;
   const enable = () => {
@@ -819,12 +836,9 @@ async function boot() {
 }
 
 async function begin(kind) {
-  // Inside the click: audio unlock and the iOS motion permission need the gesture.
+  // Unlock audio inside the start gesture. QR tracking needs no motion permission.
   audio.ctx.resume();
   startAmbient();
-  if (kind !== '3d' && typeof globalThis.DeviceOrientationEvent?.requestPermission === 'function') {
-    DeviceOrientationEvent.requestPermission().catch(() => {});
-  }
   $('intro').classList.add('hidden');
   $('hud').classList.add('on');
   if (kind === 'xr') {
@@ -875,4 +889,4 @@ engine.runRenderLoop(() => {
 
 boot();
 
-if (params.has('debug')) window.__tt = { xr, BABYLON: B, engine, scene, camera, anchor, fog, fogState, fogUniforms, music, touchPlay, session, play$ };
+if (params.has('debug')) window.__tt = { xr, markerTracker, BABYLON: B, engine, scene, camera, anchor, fog, fogState, fogUniforms, music, touchPlay, session, play$ };

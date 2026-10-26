@@ -10,7 +10,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="style.css?v=20261026-qr-marker-1">
 </head>
 <body>
 <video id="camera-feed" playsinline muted autoplay></video>
@@ -26,6 +26,7 @@
       <p class="sub">Tea Time</p>
       <div class="tealeaf" aria-hidden="true"></div>
       <p class="lede">차를 우려 찻잔을 앞에 두세요.<br>들려준 이야기에서 안개 아이가 태어나고,<br>그 음악과 함께 차를 마십니다.</p>
+      <p class="fine">티백 포장을 탁자에 펼쳐 주세요.<br>시작한 뒤 뒷면의 QR을 다시 비추면 그 자리에서 안개 아이가 태어납니다.</p>
       <button id="start" class="btn btn-primary" disabled>준비하는 중…</button>
       <div id="load-status" aria-live="polite"></div>
       <p class="fine">소리를 켜 주세요. 카메라는 찻잔을 비추는 데, 마이크는 녹음하는 동안에만 씁니다.<br>녹음과 음악은 이 브라우저 안에서만 처리하며, 서버로 보내거나 파일로 저장하지 않습니다.</p>
@@ -43,6 +44,8 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg>
       </button>
     </div>
+
+    <div id="marker-status" role="status" aria-live="polite"></div>
 
     <div id="rec" aria-live="polite"><i class="dot"></i><span class="label">녹음 중</span><span class="time">0:00</span><span class="note"></span></div>
 
@@ -63,6 +66,7 @@
 <!-- Pin the renderer and glTF loader to the same version. -->
 <script src="https://cdn.jsdelivr.net/npm/babylonjs@9.31.0/babylon.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/babylonjs-loaders@9.31.0/babylonjs.loaders.min.js"></script>
-<script type="module" src="app.js"></script>
+<script src="assets/vendor/jsQR.js"></script>
+<script type="module" src="app.js?v=20261026-qr-marker-1"></script>
 </body>
 </html>

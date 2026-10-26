@@ -6,5 +6,7 @@
   "path": "TheLostRoom/",
   "deployed_on": "2026-10-26",
   "qrSizeMM": 34,
-  "qrRole": "entry URL and Fog Child placement marker"
+  "qrRole": "entry URL and Fog Child placement marker",
+  "version": "20261026-qr-marker-1",
+  "tracking": "QR corners / local camera / 34mm / visible marker required"
 }
