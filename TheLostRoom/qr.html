@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>티타임 티백 태그</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=Noto+Sans+KR:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root { --ink: #0b1020; --paper: #efe6d2; --dim: rgba(239,230,210,.7); --line: rgba(239,230,210,.18); }
+  * { box-sizing: border-box; }
+  body { margin: 0; min-height: 100vh; background: radial-gradient(100% 60% at 50% 0%, rgba(59,99,255,.22), transparent 70%), var(--ink); color: var(--paper); font-family: "Noto Sans KR", system-ui, sans-serif; }
+  main { max-width: 1040px; margin: 0 auto; padding: 32px 16px 56px; display: grid; gap: 28px; grid-template-columns: minmax(0, 1fr); }
+  @media (min-width: 880px) { main { grid-template-columns: 320px 1fr; align-items: start; } }
+  .panel { border: 1px solid var(--line); border-radius: 18px; padding: 20px; background: rgba(255,255,255,.03); }
+  h1 { font: 700 21px "Gowun Batang", serif; margin: 0 0 8px; }
+  .panel p { font-size: 13.5px; line-height: 1.75; color: var(--dim); margin: 0 0 14px; word-break: keep-all; }
+  .url { font: 12px/1.5 ui-monospace, Menlo, monospace; padding: 10px 12px; border-radius: 10px; background: #070b16; border: 1px solid var(--line); word-break: break-all; }
+  .warn { margin-top: 8px; font-size: 12px; color: #ffb45c; min-height: 1.2em; }
+  .btns { display: grid; gap: 8px; margin-top: 14px; }
+  button { border: 0; border-radius: 999px; padding: 12px; font: 500 14px "Noto Sans KR", sans-serif; cursor: pointer; background: var(--paper); color: var(--ink); }
+  button.ghost { background: transparent; color: var(--paper); border: 1px solid var(--line); }
+
+  /* A4 sheet of 4 x 5 tea bag tags, 45 x 55 mm each */
+  .sheet { background: #fff; width: 100%; max-width: 640px; margin: 0 auto; aspect-ratio: 210 / 297; padding: 3.5% 3.6%; display: grid; grid-template-columns: repeat(4, 1fr); grid-auto-rows: 1fr; box-shadow: 0 30px 80px rgba(0,0,0,.5); border-radius: 4px; }
+  .tag { border: 1px dashed #c9c2b2; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 6% 8%; color: #fff; text-align: center; background: #1f45e8; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .tag .hole { width: 7%; aspect-ratio: 1; border-radius: 50%; background: #fff; margin-bottom: 4%; }
+  .tag .name { font: 700 clamp(9px, 2.2vw, 15px) "Gowun Batang", serif; letter-spacing: .02em; }
+  .tag .en { font: 400 clamp(5px, 1vw, 7px) "Gowun Batang", serif; color: rgba(255,255,255,.8); letter-spacing: .12em; text-transform: uppercase; margin-bottom: 5%; }
+  .tag .qr { width: 74%; aspect-ratio: 1; background: #fff; padding: 4%; border-radius: 4px; }
+  .tag .qr svg { width: 100%; height: 100%; display: block; }
+  .tag .how { font: 400 clamp(5px, 1.05vw, 7.5px)/1.45 "Noto Sans KR", sans-serif; color: #fff; margin-top: 5%; word-break: keep-all; }
+
+  @media print {
+    @page { size: A4; margin: 0; }
+    body { background: #fff; }
+    main { display: block; padding: 0; max-width: none; }
+    .panel { display: none; }
+    .sheet { width: 210mm; height: 297mm; max-width: none; aspect-ratio: auto; padding: 11mm 15mm; grid-template-columns: repeat(4, 45mm); grid-template-rows: repeat(5, 55mm); box-shadow: none; border-radius: 0; }
+    .tag .name { font-size: 13pt; }
+    .tag .en { font-size: 5.5pt; }
+    .tag .how { font-size: 6pt; }
+  }
+</style>
+</head>
+<body>
+<main>
+  <section class="panel">
+    <h1>티백 태그 QR</h1>
+    <p>이 사이트가 올라간 주소로 QR을 자동으로 만듭니다. 모든 태그가 같은 QR입니다. A4 한 장에 45×55mm 태그 20개가 들어갑니다. 점선을 따라 자르고, 위쪽 구멍에 티백 실을 묶으세요.</p><p>‘배경 그래픽 인쇄’를 켜야 파란색이 나옵니다.</p>
+    <div class="url" id="url-text"></div>
+    <div class="warn" id="warn"></div>
+    <div class="btns">
+      <button id="print">태그 인쇄 (A4)</button>
+      <button id="dl-png" class="ghost">QR 이미지 저장 (PNG)</button>
+      <button id="dl-svg" class="ghost">QR 벡터 저장 (SVG)</button>
+    </div>
+  </section>
+  <section class="sheet" id="sheet" aria-label="인쇄용 티백 태그"></section>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js"></script>
+<script>
+  // The experience lives next to this page. ?url= can override it if the tags must point elsewhere.
+  const url = new URLSearchParams(location.search).get('url') || new URL('./', location.href).href;
+  document.getElementById('url-text').textContent = url;
+
+  const qr = qrcode(0, 'M');
+  qr.addData(url);
+  qr.make();
+  const n = qr.getModuleCount();
+  let path = '';
+  for (let r = 0; r < n; r++) for (let c = 0; c < n; c++) if (qr.isDark(r, c)) path += `M${c} ${r}h1v1h-1z`;
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="-4 -4 ${n + 8} ${n + 8}" shape-rendering="crispEdges"><rect x="-4" y="-4" width="${n + 8}" height="${n + 8}" fill="#fff"/><path d="${path}" fill="#141a33"/></svg>`;
+
+  const tag = `
+    <div class="tag">
+      <div class="hole"></div>
+      <div class="name">티타임</div>
+      <div class="en">Tea Time · The Lost Room 2</div>
+      <div class="qr">${svg}</div>
+      <div class="how">차를 우린 뒤 QR을 비춰 주세요<br>소리를 켜고 찻잔을 앞에 두세요</div>
+    </div>`;
+  document.getElementById('sheet').innerHTML = tag.repeat(20);
+
+  const host = new URL(url).hostname;
+  const local = ['localhost', '127.0.0.1', '[::1]'].includes(host);
+  document.getElementById('warn').textContent = local
+    ? '지금 주소는 이 컴퓨터에서만 열립니다. 사이트를 배포한 뒤 배포 주소에서 이 페이지를 열어 인쇄하세요.'
+    : !url.startsWith('https:') ? 'https 주소가 아니면 휴대폰 카메라와 마이크가 열리지 않습니다.' : '';
+
+  function download(name, blob) {
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = name;
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+  }
+  document.getElementById('dl-svg').onclick = () => download('tea-time-qr.svg', new Blob([svg], { type: 'image/svg+xml' }));
+  document.getElementById('dl-png').onclick = () => {
+    const img = new Image();
+    img.onload = () => {
+      const c = document.createElement('canvas');
+      c.width = c.height = (n + 8) * 40;
+      const g = c.getContext('2d');
+      g.imageSmoothingEnabled = false;
+      g.drawImage(img, 0, 0, c.width, c.height);
+      c.toBlob((b) => download('tea-time-qr.png', b), 'image/png');
+    };
+    img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+  };
+  document.getElementById('print').onclick = () => print();
+</script>
+</body>
+</html>
