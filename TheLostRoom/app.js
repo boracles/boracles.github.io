@@ -114,6 +114,46 @@ function makeImpulse(seconds = 3.2) {
 const NOTES = [220, 277.18, 329.63, 415.3, 493.88];
 const VOICED_MIN = 0.6; // seconds of voice needed to call the result "music from your voice"
 
+// A soft, falling water note uses the same pitch palette as the voice music.
+// It shares the child's spatial/mute path and never repeats while a finger is held.
+const touchSound={active:new Set(),count:0,lastAt:-Infinity};
+function stopTouchSounds(fade=.012) {
+  const now=audio.ctx.currentTime;
+  for(const voice of touchSound.active){
+    voice.envelope.gain.cancelScheduledValues(now);
+    voice.envelope.gain.setValueAtTime(Math.max(.0001,voice.envelope.gain.value),now);
+    if(fade)voice.envelope.gain.exponentialRampToValueAtTime(.0001,now+fade);
+    else voice.envelope.gain.setValueAtTime(0,now);
+    for(const oscillator of voice.oscillators)try{oscillator.stop(now+fade+.002);}catch{}
+  }
+}
+function playTouchSound() {
+  const c=audio.ctx,now=c.currentTime;
+  if(audio.muted||document.hidden||session.ended||now-touchSound.lastAt<.12)return;
+  c.resume().catch(()=>{});
+  if(touchSound.active.size>=2)stopTouchSounds(.01);
+  const base=NOTES[[0,2,1,4][touchSound.count%4]]*2;
+  const envelope=c.createGain(),filter=c.createBiquadFilter();
+  filter.type='lowpass';filter.frequency.value=2200;filter.Q.value=.3;
+  envelope.gain.setValueAtTime(.0001,now);
+  envelope.gain.linearRampToValueAtTime(.09,now+.014);
+  envelope.gain.exponentialRampToValueAtTime(.0001,now+.34);
+  envelope.connect(filter).connect(audio.master);
+  const fundamental=c.createOscillator(),overtone=c.createOscillator(),overtoneGain=c.createGain();
+  fundamental.type=overtone.type='sine';overtoneGain.gain.value=.16;
+  fundamental.frequency.setValueAtTime(base*1.035,now);
+  fundamental.frequency.exponentialRampToValueAtTime(base,now+.10);
+  overtone.frequency.setValueAtTime(base*2,now);
+  fundamental.connect(envelope);overtone.connect(overtoneGain).connect(envelope);
+  const voice={envelope,oscillators:[fundamental,overtone]};touchSound.active.add(voice);
+  fundamental.onended=()=>{
+    fundamental.disconnect();overtone.disconnect();overtoneGain.disconnect();envelope.disconnect();filter.disconnect();
+    touchSound.active.delete(voice);
+  };
+  fundamental.start(now);overtone.start(now);fundamental.stop(now+.36);overtone.stop(now+.36);
+  touchSound.lastAt=now;touchSound.count++;fogState.touch=.65;
+}
+
 async function renderLayer(voice, { rate, reverse, gain, delay }) {
   const sr = audio.ctx.sampleRate;
   const dur = Math.min(48, voice.duration / rate + delay + 4.5);
@@ -396,7 +436,9 @@ function fogScreen() {
 }
 function canHold() { return started&&!session.ended&&anchor.isEnabled()&&(!markerTracker.state.active||markerTracker.state.visible); }
 async function beginHold(pointerId) {
-  if(!canHold()||whisper.phase!=='idle')return;
+  if(!canHold()||['arming','recording'].includes(whisper.phase))return;
+  playTouchSound();
+  if(whisper.phase!=='idle')return;
   whisper.pointerId=pointerId;whisper.phase='arming';whisper.voiced=0;whisper.elapsed=0;
   const token=++whisper.token;
   audio.ctx.resume().catch(()=>{});
@@ -411,6 +453,8 @@ async function beginHold(pointerId) {
     whisper.pointerId=null;whisper.phase='idle';
     say('micPermission');return;
   }
+  // Fade the touch response as the microphone opens; echo cancellation is also enabled.
+  stopTouchSounds();
   whisper.phase='recording';session.recording=true;demoClock=0;
   say('recording');showRec(true);
 }
@@ -450,8 +494,7 @@ touchLayer.addEventListener('contextmenu',e=>e.preventDefault());
 touchLayer.addEventListener('pointerdown',e=>{
   if(e.button!==0||!canHold())return;
   const f=fogScreen();if(Math.hypot(e.clientX-f.x,e.clientY-f.y)>f.r)return;
-  if(whisper.phase!=='idle')return;
-  e.preventDefault();try{touchLayer.setPointerCapture(e.pointerId);}catch{}
+  e.preventDefault();if(whisper.phase==='idle')try{touchLayer.setPointerCapture(e.pointerId);}catch{}
   beginHold(e.pointerId);
 });
 touchLayer.addEventListener('pointerup',e=>{if(e.pointerId===whisper.pointerId)finishHold();});
@@ -475,6 +518,7 @@ function endSession() {
   if(session.ended)return;
   session.ended=true;whisper.token++;whisper.phase='idle';whisper.pointerId=null;
   session.recording=false;mic.paused=true;closeMic(true);stopMusic();markerTracker.stop();
+  stopTouchSounds(0);
   ambient.element.pause();ambient.element.currentTime=0;
   tweens.clear();clearTimeout(captionTimer);clearTimeout(markerStatusTimer);
   video.srcObject?.getTracks().forEach(t=>t.stop());video.srcObject=null;
@@ -493,7 +537,7 @@ async function spawnFogChild() {
 }
 document.addEventListener('visibilitychange',()=>{
   if(!started||session.ended)return;
-  if(document.hidden){finishHold(true);audio.ctx.suspend().catch(()=>{});ambient.element.pause();}
+  if(document.hidden){finishHold(true);stopTouchSounds(0);audio.ctx.suspend().catch(()=>{});ambient.element.pause();}
   else {audio.ctx.resume().catch(()=>{});ambient.element.play().catch(()=>{});}
 });
 
@@ -594,4 +638,4 @@ engine.runRenderLoop(() => {
 for(const select of document.querySelectorAll('.language-picker'))select.addEventListener('change',()=>applyLanguage(select.value,true));
 applyLanguage(language);boot();
 
-if (params.has('debug')) window.__tt = { markerTracker, BABYLON:B, engine, scene, camera, anchor, fog, fogState, fogUniforms, music, mic, whisper, fogScreen, session, ambient, spatial, audio };
+if (params.has('debug')) window.__tt = { markerTracker, BABYLON:B, engine, scene, camera, anchor, fog, fogState, fogUniforms, music, mic, whisper, fogScreen, session, ambient, spatial, audio, touchSound };

@@ -7,7 +7,7 @@
   "deployed_on": "2026-10-26",
   "qrSizeMM": 34,
   "qrRole": "entry URL and Fog Child placement marker",
-  "version": "20261026-hold-voice-spatial-1",
+  "version": "20261026-touch-sound-1",
   "tracking": "QR corners / local camera / 34mm / visible marker required",
   "interaction": "QR spawn / hold child to speak / release for voice music",
   "languages": [
@@ -15,5 +15,6 @@
     "en",
     "ja"
   ],
-  "audio": "HRTF positional / camera listener / inverse distance / ambient ducking"
+  "audio": "HRTF positional / camera listener / inverse distance / ambient ducking",
+  "touchFeedback": "Short water-like tones from the music pitch palette / spatial / fades when recording opens"
 }
