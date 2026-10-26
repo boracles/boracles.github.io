@@ -1,17 +1,26 @@
-import { createFogView, Vec3 } from './fog-view.js';
+import { createFogView, Vec3 } from './fog-view.js?v=20261026-hold-voice-spatial-1';
 import { createQRMarkerTracker, markerPose } from './qr-marker.js';
+import { messages, chooseLanguage } from './strings.js';
 
-// The Lost Room 2 · Tea Time, a phone web AR reached from the QR on a tea bag.
-//   tell a story → the voice gathers as particles and the Fog Child is born
-//   → its music is made from that recording → play with it by touch → stay with the tea.
-// Modes: 'xr'     (WebXR immersive-ar, Android Chrome: the Fog Child is placed on a real surface and stays there)
-//        'camera' (default on phones: the printed QR is the physical placement target)
-//        '3d'     (no camera: the Fog Child alone on a dark background).
-// In every mode only the Fog Child is drawn over the real view.
-// The recording and the music made from it stay in this page's memory; nothing is uploaded or saved.
-// Structure: WebAR/티타임_시스템구조.txt
+// The Lost Room 2: QR → Fog Child → hold the child while speaking → release for music.
+// Camera and voice processing stay in this browser; nothing is uploaded.
+// ?mode=3d is a camera-free development preview, not the default experience.
 
 const params = new URLSearchParams(location.search);
+let savedLanguage;try{savedLanguage=localStorage.getItem('lostroom-language');}catch{}
+let language=chooseLanguage({saved:savedLanguage,requested:params.get('lang'),languages:navigator.languages||[navigator.language]});
+const t=key=>messages[language][key]||messages.en[key]||key;
+function applyLanguage(value,save=false) {
+  if(!messages[value])return;
+  language=value;document.documentElement.lang=value;document.title=t('pageTitle');
+  if(save)try{localStorage.setItem('lostroom-language',value);}catch{}
+  for(const node of document.querySelectorAll('[data-i18n]'))node.textContent=t(node.dataset.i18n);
+  for(const select of document.querySelectorAll('.language-picker')){select.value=value;select.setAttribute('aria-label',t('language'));}
+  $('touch').setAttribute('aria-label',t('holdLabel'));
+  $('btn-exit').setAttribute('aria-label',t('exit'));
+  $('btn-sound').setAttribute('aria-label',t(audio.muted?'unmute':'mute'));
+  if(captionKey)captionEl.querySelector('.ko').textContent=t(captionKey);
+}
 const FAST = params.has('fast');
 const DEMO = params.has('demo'); // a synthetic voice instead of the microphone, for testing
 const T = (ms) => (FAST ? ms * 0.25 : ms);
@@ -24,7 +33,6 @@ const video = $('camera-feed');
 const TAU = Math.PI * 2;
 const lerp = (a, b, t) => a + (b - a) * t;
 const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
-const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
 const tweens = new Set();
 const ease = {
@@ -39,7 +47,6 @@ function tween(ms, fn, e = ease.inOut) {
 const updaters = new Set();
 
 const time = { value: 0 };
-const tmpV = new Vec3();
 const { B, engine, scene, camera, anchor, fog, fogState, fogUniforms, inflowUniforms,
   iceCore, loadModels, buildIce } = createFogView(canvas, { updaters, time, lerp, clamp });
 
@@ -50,56 +57,43 @@ const AudioCtx = window.AudioContext || window.webkitAudioContext;
 const audio = { ctx: new AudioCtx(), buffers: {}, muted: params.has('muted') };
 audio.master = audio.ctx.createGain();
 audio.master.gain.value = audio.muted ? 0 : 1;
-audio.master.connect(audio.ctx.destination);
-const SFX = ['Appear', 'FogChild', 'TextAppear', 'WaterDrop'];
-
-async function loadAudio(onProgress) {
-  let done = 0;
-  await Promise.all(SFX.map(async (name) => {
-    try {
-      const data = await (await fetch(`assets/audio/${name}.wav`)).arrayBuffer();
-      audio.buffers[name] = await new Promise((ok, fail) => audio.ctx.decodeAudioData(data, ok, fail));
-    } catch (err) {
-      console.warn('sound not loaded', name, err);
-    }
-    onProgress(++done / SFX.length);
-  }));
+// Web Audio and the Babylon scene both use metres and right-handed coordinates.
+// The emitter follows the actual child, while the listener follows the camera.
+const spatial={panner:audio.ctx.createPanner(),presence:audio.ctx.createGain(),meter:audio.ctx.createAnalyser(),distance:0,visible:false};
+spatial.panner.panningModel='HRTF';spatial.panner.distanceModel='inverse';
+spatial.panner.refDistance=.18;spatial.panner.maxDistance=3;spatial.panner.rolloffFactor=1.25;
+spatial.presence.gain.value=0;spatial.meter.fftSize=1024;
+audio.master.connect(spatial.panner).connect(spatial.presence).connect(spatial.meter).connect(audio.ctx.destination);
+const soundPosition=new B.Vector3(),soundForward=new B.Vector3(),soundUp=new B.Vector3(),soundForwardAxis=new B.Vector3(0,0,-1);
+function setAudioVector(node,prefix,v) {
+  const now=audio.ctx.currentTime;
+  if(node[prefix+'X'])for(const [axis,value] of [['X',v.x],['Y',v.y],['Z',v.z]])node[prefix+axis].setTargetAtTime(value,now,.08);
+  else if(prefix==='position')node.setPosition(v.x,v.y,v.z);
 }
-
-function play(name, { vol = 1, loop = false, rate = 1 } = {}) {
-  const buf = audio.buffers[name];
-  if (!buf) return { gain: null, stop() {} };
-  const src = audio.ctx.createBufferSource();
-  src.buffer = buf; src.loop = loop; src.playbackRate.value = rate;
-  const g = audio.ctx.createGain();
-  g.gain.value = vol;
-  src.connect(g).connect(audio.master);
-  src.start();
-  return {
-    gain: g,
-    stop(fadeMs = 400) {
-      const t = audio.ctx.currentTime;
-      g.gain.setTargetAtTime(0, t, fadeMs / 3000);
-      try { src.stop(t + fadeMs / 1000 + 0.1); } catch {}
-    },
-  };
-}
-
-const ambientEl = new Audio('assets/audio/Ambient.mp3');
-ambientEl.loop = true;
-ambientEl.preload = 'auto';
-let ambientGain = null;
+updaters.add(()=>{
+  if(!started)return;
+  fog.computeWorldMatrix(true);soundPosition.copyFrom(fog.getAbsolutePosition());
+  const listener=audio.ctx.listener,position=camera.globalPosition;
+  soundForward.copyFrom(camera.getDirection(soundForwardAxis));soundUp.copyFrom(camera.getDirection(B.Axis.Y));
+  setAudioVector(spatial.panner,'position',soundPosition);setAudioVector(listener,'position',position);
+  if(listener.forwardX){setAudioVector(listener,'forward',soundForward);setAudioVector(listener,'up',soundUp);}
+  else listener.setOrientation(soundForward.x,soundForward.y,soundForward.z,soundUp.x,soundUp.y,soundUp.z);
+  spatial.distance=B.Vector3.Distance(position,soundPosition);
+  const visible=!session.ended&&anchor.isEnabled();
+  if(visible!==spatial.visible){spatial.visible=visible;spatial.presence.gain.setTargetAtTime(visible?1:0,audio.ctx.currentTime,.15);}
+});
+const ambient={element:new Audio('assets/audio/Ambient.mp3'),gain:null,target:0};
+ambient.element.loop=true;ambient.element.preload='none';
 function startAmbient() {
-  if (!ambientGain) {
-    ambientGain = audio.ctx.createGain();
-    ambientGain.gain.value = 0;
-    audio.ctx.createMediaElementSource(ambientEl).connect(ambientGain).connect(audio.master);
-  }
-  ambientEl.play().catch(() => {});
-  setAmbient(0.3, 4);
+  if(!ambient.gain){ambient.gain=audio.ctx.createGain();ambient.gain.gain.value=0;audio.ctx.createMediaElementSource(ambient.element).connect(ambient.gain).connect(audio.master);}
+  ambient.element.play().catch(()=>{});
 }
-function setAmbient(v, seconds = 2) { ambientGain?.gain.setTargetAtTime(v, audio.ctx.currentTime, seconds / 3); }
-
+updaters.add(()=>{
+  if(!ambient.gain)return;
+  const speaking=['arming','recording'].includes(whisper.phase);
+  const target=session.ended?0:speaking ? .004 : music.on ? .045 : .14;
+  if(target!==ambient.target){ambient.target=target;ambient.gain.gain.setTargetAtTime(target,audio.ctx.currentTime,speaking ? .08 : .9);}
+});
 function makeImpulse(seconds = 3.2) {
   const c = audio.ctx;
   const len = Math.floor(c.sampleRate * seconds);
@@ -185,17 +179,6 @@ function loopLayer(buffer, dest, overlap = 3) {
 
 const music = { on: false, voiced: false, layers: [], loops: [], oscs: [], nodes: null, analyser: null };
 
-async function prepareMusic(story) {
-  music.voiced = !!story.buffer && story.voiced >= VOICED_MIN;
-  music.layers = [];
-  if (!music.voiced) return true;
-  music.layers = await Promise.all([
-    renderLayer(story.buffer, { rate: 0.62, reverse: false, gain: 1.6, delay: 0.4 }),
-    renderLayer(story.buffer, { rate: 0.5, reverse: true, gain: 0.9, delay: 1.2 }),
-  ]);
-  return music.layers.every((b) => b && b.length > 0);
-}
-
 function startMusic() {
   const c = audio.ctx;
   const now = c.currentTime;
@@ -221,16 +204,9 @@ function startMusic() {
     const o = c.createOscillator(); o.type = 'sine'; o.frequency.value = f;
     o.connect(n.pad.g); o.start(now); music.oscs.push(o);
   }
-  // Without a voice the Fog Child keeps its own hum; this is not called music from the visitor's voice.
-  if (!music.voiced && audio.buffers.FogChild) {
-    const s = c.createBufferSource(); s.buffer = audio.buffers.FogChild; s.loop = true;
-    const g = c.createGain(); g.gain.value = 0.5; s.connect(g).connect(n.tone); s.start(now);
-    music.oscs.push(s);
-  }
   n.out.gain.setTargetAtTime(1, now, 0.6);
   music.nodes = n;
   music.on = true;
-  setAmbient(0.12, 3);
 }
 
 function stopMusic() {
@@ -261,13 +237,13 @@ updaters.add((dt) => {
   n.dry.gain.setTargetAtTime(0.8 - wide * 0.3 + close * 0.15, t, 0.15);
   // A touch opens the tone for a moment; gathering and staying darken it.
   n.tone.frequency.setTargetAtTime(clamp(3200 + touch * 3800 - close * 1600 - stay * 1200 + wide * 600, 500, 9000), t, 0.06);
-  n.out.gain.setTargetAtTime(stay ? 0.75 : 1, t, 1);
+  n.out.gain.setTargetAtTime(['arming','recording'].includes(whisper.phase) ? 0 : 1, t, .12);
 });
 
 // The Fog Child moves with its music.
 const anaBuf = new Float32Array(1024);
 updaters.add(() => {
-  if (!music.analyser) return;
+  if (!music.analyser || whisper.phase === 'recording') return;
   music.analyser.getFloatTimeDomainData(anaBuf);
   let rms = 0;
   for (let i = 0; i < anaBuf.length; i++) rms += anaBuf[i] * anaBuf[i];
@@ -279,44 +255,44 @@ updaters.add(() => {
 // =====================================================================
 const MAX_TALK = 60;
 const mic = { stream: null, src: null, analyser: null, proc: null, td: null, chunks: [], samples: 0, paused: false, full: false };
-async function openMic() {
-  if (DEMO) return true;
+async function openMic(isCurrent) {
+  if (DEMO) { mic.paused=false; return 'opened'; }
+  let stream;
   try {
-    mic.stream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true } });
-  } catch (err) {
-    console.warn('microphone unavailable', err);
-    return false;
+    stream=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true,autoGainControl:true}});
+    // A permission dialog may outlast the touch. Never begin recording after release.
+    if (!isCurrent()) { stream.getTracks().forEach(t=>t.stop());return 'released'; }
+    mic.stream=stream;
+    const c=audio.ctx;
+    mic.src=c.createMediaStreamSource(stream);mic.analyser=c.createAnalyser();mic.analyser.fftSize=2048;
+    mic.td=new Float32Array(mic.analyser.fftSize);mic.proc=c.createScriptProcessor(4096,1,1);
+    mic.sink=c.createGain();mic.sink.gain.value=0;
+    mic.src.connect(mic.analyser);mic.src.connect(mic.proc);mic.proc.connect(mic.sink).connect(c.destination);
+    mic.chunks=[];mic.samples=0;mic.paused=false;mic.full=false;
+    mic.proc.onaudioprocess=e=>{
+      if (mic.paused || !isCurrent()) return;
+      const remaining=Math.floor(c.sampleRate*MAX_TALK)-mic.samples;
+      if (remaining<=0) { mic.full=true;return; }
+      const d=new Float32Array(e.inputBuffer.getChannelData(0).subarray(0,remaining));
+      mic.chunks.push(d);mic.samples+=d.length;
+      if (mic.samples>=c.sampleRate*MAX_TALK) mic.full=true;
+    };
+    return 'opened';
+  } catch (error) {
+    stream?.getTracks().forEach(t=>t.stop());
+    if(isCurrent())closeMic(true);
+    console.warn('microphone unavailable',error);return 'denied';
   }
-  const c = audio.ctx;
-  mic.src = c.createMediaStreamSource(mic.stream);
-  mic.analyser = c.createAnalyser();
-  mic.analyser.fftSize = 2048;
-  mic.td = new Float32Array(mic.analyser.fftSize);
-  mic.proc = c.createScriptProcessor(4096, 1, 1);
-  const sink = c.createGain();
-  sink.gain.value = 0;
-  mic.src.connect(mic.analyser);
-  mic.src.connect(mic.proc);
-  mic.proc.connect(sink).connect(c.destination);
-  mic.chunks = []; mic.samples = 0; mic.paused = false; mic.full = false;
-  mic.proc.onaudioprocess = (e) => {
-    if (mic.paused) return;
-    if (mic.samples > c.sampleRate * MAX_TALK) { mic.full = true; return; }
-    const d = new Float32Array(e.inputBuffer.getChannelData(0));
-    mic.chunks.push(d);
-    mic.samples += d.length;
-  };
-  return true;
 }
-function closeMic() {
+function closeMic(discard = false) {
   mic.stream?.getTracks().forEach((t) => t.stop());
-  try { mic.src?.disconnect(); mic.proc?.disconnect(); } catch {}
+  try { mic.src?.disconnect(); mic.proc?.disconnect(); mic.sink?.disconnect(); } catch {}
   if (mic.proc) mic.proc.onaudioprocess = null;
-  mic.analyser = null; mic.src = null; mic.proc = null; mic.stream = null;
+  mic.analyser = null; mic.src = null; mic.proc = null; mic.stream = null; mic.sink = null;
   const c = audio.ctx;
   let buffer = null;
-  if (DEMO) buffer = demoVoice();
-  else if (mic.samples) {
+  if (DEMO && !discard) buffer = demoVoice();
+  else if (mic.samples && !discard) {
     buffer = c.createBuffer(1, mic.samples, c.sampleRate);
     const data = buffer.getChannelData(0);
     let o = 0;
@@ -356,14 +332,6 @@ function demoVoice() {
 // =====================================================================
 // In WebXR the XR camera is active; everywhere else the page's own camera.
 const viewCam = () => scene.activeCamera || camera;
-function screenToWorld(px, py, dist, out) {
-  const c = viewCam();
-  const near = B.Vector3.Unproject(new B.Vector3(px, py, 0), innerWidth, innerHeight,
-    B.Matrix.IdentityReadOnly, c.getViewMatrix(), c.getProjectionMatrix());
-  const far = B.Vector3.Unproject(new B.Vector3(px, py, 1), innerWidth, innerHeight,
-    B.Matrix.IdentityReadOnly, c.getViewMatrix(), c.getProjectionMatrix());
-  return out.copy(c.globalPosition).addScaledVector(far.subtract(near).normalize(), dist);
-}
 function worldToScreen(v, out = { x: 0, y: 0 }) {
   const c = viewCam();
   const p = B.Vector3.Project(v, B.Matrix.IdentityReadOnly,
@@ -371,15 +339,6 @@ function worldToScreen(v, out = { x: 0, y: 0 }) {
   out.x = p.x; out.y = p.y;
   return out;
 }
-function faceCamera() {
-  const c = viewCam().globalPosition;
-  anchor.rotation.set(0, Math.atan2(c.x - anchor.position.x, c.z - anchor.position.z), 0);
-}
-
-// =====================================================================
-// WebXR AR: real surfaces through hit-test, the page UI as a DOM overlay
-// =====================================================================
-const xr = { supported: false, helper: null, hitTest: null, hit: null, reticle: null, placing: false };
 let markerStatusTimer = 0;
 const markerTracker = createQRMarkerTracker({ video,
   onPose(corners,modules,snap) {
@@ -399,384 +358,143 @@ const markerTracker = createQRMarkerTracker({ video,
     clearTimeout(markerStatusTimer);
     const status=$('marker-status');
     anchor.setEnabled(visible && !session.ended);
+    if (!visible) finishHold(true);
     if (session.ended) { status.classList.remove('on');return; }
-    status.textContent=visible?'QR 위치를 찾았어요.':locked?'티백 뒷면의 QR을 다시 비춰 주세요.':'티백 뒷면의 QR 전체를 비춰 주세요.';
+    status.dataset.i18n=visible?'qrFound':locked?'qrAgain':'qrFull';status.textContent=t(status.dataset.i18n);
     status.classList.add('on');
     if (visible) markerStatusTimer=setTimeout(()=>status.classList.remove('on'),1800);
   }
 });
-async function checkXR() {
-  try { xr.supported = !!navigator.xr && await navigator.xr.isSessionSupported('immersive-ar'); } catch { xr.supported = false; }
-  return xr.supported;
-}
-function buildReticle() {
-  const ring = B.MeshBuilder.CreateTorus('place-ring', { diameter: 0.07, thickness: 0.003, tessellation: 48 }, scene);
-  const mat = new B.StandardMaterial('place-ring-material', scene);
-  mat.disableLighting = true; mat.emissiveColor = B.Color3.FromHexString('#dfe6ff'); mat.alpha = 0.85;
-  ring.material = mat; ring.isPickable = false; ring.renderingGroupId = 1;
-  ring.rotationQuaternion = B.Quaternion.Identity();
-  ring.setEnabled(false);
-  return ring;
-}
-async function startXR() {
-  const helper = await B.WebXRExperienceHelper.CreateAsync(scene);
-  const fm = helper.featuresManager;
-  xr.hitTest = fm.enableFeature(B.WebXRFeatureName.HIT_TEST, 'latest', {}, true, true);
-  try { fm.enableFeature(B.WebXRFeatureName.DOM_OVERLAY, 'latest', { element: '#ui' }, true, false); } catch (err) { console.warn('dom overlay unavailable', err); }
-  xr.hitTest.onHitTestResultObservable.add((results) => {
-    xr.hit = results.length ? results[0] : null;
-    if (!xr.reticle) return;
-    xr.reticle.setEnabled(xr.placing && !!xr.hit);
-    if (xr.placing && xr.hit) xr.hit.transformationMatrix.decompose(undefined, xr.reticle.rotationQuaternion, xr.reticle.position);
-  });
-  helper.sessionManager.onXRSessionEnded.add(() => { if (!session.ended) endSession(); });
-  xr.reticle = buildReticle();
-  try { await helper.enterXRAsync('immersive-ar', 'local-floor'); }
-  catch { await helper.enterXRAsync('immersive-ar', 'local'); }
-  xr.helper = helper;
-  mode = 'xr';
-  document.body.className = 'mode-xr';
-}
-
+// Hold the Fog Child to speak. Releasing the same pointer makes its music.
 // =====================================================================
-// TouchPlay: touch, drag, two-finger spread and gather → shape and music
-// =====================================================================
-const pointers = new Map();
-// A full-screen layer under the buttons takes the touches. In WebXR it sits in the DOM overlay,
-// where the canvas no longer receives pointer events.
-const touchLayer = $('touch');
-const touchPlay = { enabled: false, dragging: false, pinch0: 0, spread0: 1, counts: { touch: 0, drag: 0, spread: 0, gather: 0 }, onChange: null };
-const fogWorld = new Vec3();
-const edgeWorld = new Vec3();
-function fogScreen() {
-  fog.computeWorldMatrix(true); fogWorld.copy(fog.getAbsolutePosition());
-  const c = worldToScreen(fogWorld, {});
-  edgeWorld.copy(fogWorld).addScaledVector(viewCam().getDirection(B.Axis.Y), fogUniforms.uScale.value * fogState.spread * 1.1);
-  const e = worldToScreen(edgeWorld, {});
-  return { x: c.x, y: c.y, r: Math.max(56, Math.hypot(e.x - c.x, e.y - c.y) * 1.3) };
-}
-function bump(kind) {
-  touchPlay.counts[kind]++;
-  touchPlay.onChange?.(kind);
-}
-touchLayer.addEventListener('pointerdown', (e) => {
-  pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
-  try { touchLayer.setPointerCapture(e.pointerId); } catch {}
-  if (!touchPlay.enabled) return;
-  if (pointers.size === 1) {
-    const f = fogScreen();
-    if (Math.hypot(e.clientX - f.x, e.clientY - f.y) < f.r) {
-      // Shake the side that was touched.
-      const dx = e.clientX - f.x, dy = e.clientY - f.y;
-      fogUniforms.uTouchDir.value.set(dx, -dy, 0.4).normalize();
-      fogState.touch = 1;
-      touchPlay.dragging = true;
-      touchPlay.moved = 0;
-      bump('touch');
-    }
-  } else if (pointers.size === 2) {
-    const [a, b] = [...pointers.values()];
-    touchPlay.dragging = false;
-    touchPlay.pinch0 = Math.hypot(a.x - b.x, a.y - b.y);
-    touchPlay.spread0 = fogState.spreadTarget;
-    touchPlay.pinchFrom = fogState.spreadTarget;
-  }
-});
-touchLayer.addEventListener('pointermove', (e) => {
-  const p = pointers.get(e.pointerId);
-  if (!p) return;
-  const dx = e.clientX - p.x, dy = e.clientY - p.y;
-  p.x = e.clientX; p.y = e.clientY;
-  if (!touchPlay.enabled) return;
-  if (pointers.size === 1 && touchPlay.dragging) {
-    // Carry the Fog Child across the screen at its current depth, within reach of the cup.
-    fog.computeWorldMatrix(true); fogWorld.copy(fog.getAbsolutePosition());
-    const dist = viewCam().globalPosition.subtract(fogWorld).length();
-    screenToWorld(e.clientX, e.clientY, dist, tmpV);
-    const local = B.Vector3.TransformCoordinates(tmpV, anchor.computeWorldMatrix(true).clone().invert());
-    const xz = Math.hypot(local.x, local.z);
-    if (xz > 0.22) { local.x *= 0.22 / xz; local.z *= 0.22 / xz; }
-    local.y = clamp(local.y, 0.03, 0.22);
-    fogState.home.copy(local);
-    touchPlay.moved += Math.hypot(dx, dy);
-    play$.pan = clamp(((e.clientX / innerWidth) * 2 - 1) * 1.1, -1, 1);
-  } else if (pointers.size === 2 && touchPlay.pinch0 > 0) {
-    const [a, b] = [...pointers.values()];
-    const d = Math.hypot(a.x - b.x, a.y - b.y);
-    fogState.spreadTarget = clamp(touchPlay.spread0 * (d / touchPlay.pinch0), 0.45, 2.8);
-  }
-});
-const endPointer = (e) => {
-  if (!pointers.has(e.pointerId)) return;
-  pointers.delete(e.pointerId);
-  if (!touchPlay.enabled) return;
-  if (touchPlay.dragging && pointers.size === 0) {
-    touchPlay.dragging = false;
-    if (touchPlay.moved > 40) bump('drag');
-  }
-  if (pointers.size < 2 && touchPlay.pinch0 > 0) {
-    const from = touchPlay.pinchFrom, to = fogState.spreadTarget;
-    if (to > from * 1.25) bump('spread');
-    else if (to < from * 0.8) bump('gather');
-    touchPlay.pinch0 = 0;
-  }
-};
-touchLayer.addEventListener('pointerup', endPointer);
-touchLayer.addEventListener('pointercancel', endPointer);
-// Left alone, the Fog Child slowly returns to its resting size. Gathering is never read as an ending.
-updaters.add((dt) => {
-  if (pointers.size < 2) fogState.spreadTarget += (1 - fogState.spreadTarget) * Math.min(1, dt * 0.12);
-});
-
-// =====================================================================
-// UI
-// =====================================================================
-const captionEl = $('caption');
-let captionTimer = 0;
-function say(main, hint = '') {
+const touchLayer=$('touch');
+const session={ended:false,recording:false};
+const whisper={phase:'idle',pointerId:null,token:0,voiced:0,elapsed:0,generation:0};
+const captionEl=$('caption');
+let captionTimer=0;
+let captionKey=null;
+function say(key,fade=false) {
   clearTimeout(captionTimer);
-  captionEl.classList.remove('on');
-  const swap = () => {
-    captionEl.querySelector('.ko').textContent = main;
-    captionEl.querySelector('.hint').textContent = hint;
-    captionEl.classList.toggle('no-main', !main);
-    captionEl.classList.add('on');
-    requestAnimationFrame(() => document.documentElement.style.setProperty('--cap-h', `${captionEl.offsetHeight}px`));
-  };
-  if (captionEl.querySelector('.ko').textContent || captionEl.querySelector('.hint').textContent) captionTimer = setTimeout(swap, 420);
-  else swap();
+  captionKey=key;captionEl.querySelector('.ko').textContent=key?t(key):'';
+  captionEl.querySelector('.hint').textContent='';
+  captionEl.classList.toggle('on',!!key);
+  if(fade)captionTimer=setTimeout(()=>{if(whisper.phase==='idle')captionEl.classList.remove('on');},6000);
 }
-function offer(buttons) {
-  const box = $('actions');
-  box.innerHTML = '';
-  document.body.classList.toggle('has-actions', buttons.length > 0);
-  for (const b of buttons) {
-    const el = document.createElement('button');
-    el.className = `btn ${b.primary ? 'btn-primary' : 'btn-ghost'}`;
-    el.textContent = b.label;
-    el.onclick = b.onClick;
-    box.appendChild(el);
-  }
+const recEl=$('rec');
+function showRec(on) {
+  recEl.classList.toggle('on',on);
+  const seconds=Math.min(MAX_TALK,Math.floor(whisper.elapsed));
+  recEl.querySelector('.time').textContent=`${Math.floor(seconds/60)}:${String(seconds%60).padStart(2,'0')}`;
 }
-const clearOffer = () => offer([]);
-// Resolves with the value of the button pressed.
-function choose(buttons) {
-  return new Promise((resolve) => offer(buttons.map((b) => ({ ...b, onClick: () => { clearOffer(); resolve(b.value); } }))));
+const fogWorld=new Vec3(),edgeWorld=new Vec3();
+function fogScreen() {
+  fog.computeWorldMatrix(true);fogWorld.copy(fog.getAbsolutePosition());
+  const c=worldToScreen(fogWorld,{});
+  edgeWorld.copy(fogWorld).addScaledVector(camera.getDirection(B.Axis.Y),fogUniforms.uScale.value*1.1);
+  const e=worldToScreen(edgeWorld,{});
+  return {x:c.x,y:c.y,r:Math.max(48,Math.min(150,Math.hypot(e.x-c.x,e.y-c.y)*1.2))};
 }
-function fmt(sec) { sec = Math.max(0, Math.floor(sec)); return `${Math.floor(sec / 60)}:${String(sec % 60).padStart(2, '0')}`; }
-const recEl = $('rec');
-function showRec(on, sec = 0, note = '') {
-  recEl.classList.toggle('on', on);
-  recEl.querySelector('.time').textContent = fmt(sec);
-  recEl.querySelector('.note').textContent = note;
-}
-
-// =====================================================================
-// TeaTimeFlow
-// =====================================================================
-const session = { story: null, ended: false, recording: false, interrupted: false };
-
-async function placeFogChild() {
-  if (mode === 'xr') {
-    // A ring follows the real surface the phone points at; a tap puts the Fog Child there.
-    xr.placing = true;
-    say('찻잔이 놓인 탁자를 비춰 주세요.', '원이 나타나면, 찻잔 옆 원이 있는 자리를 눌러 주세요.');
-    while (!session.ended) {
-      await new Promise((r) => touchLayer.addEventListener('pointerdown', r, { once: true }));
-      if (xr.hit) break;
-      say('탁자 면을 찾는 중이에요.', '휴대폰을 천천히 움직여 탁자 면을 비춰 주세요.');
-    }
-    xr.placing = false;
-    xr.reticle?.setEnabled(false);
-    if (session.ended) return;
-    xr.hit.transformationMatrix.decompose(undefined, undefined, anchor.position);
-    faceCamera();
-    anchor.setEnabled(true);
-    play('WaterDrop', { vol: 0.6 });
+function canHold() { return started&&!session.ended&&anchor.isEnabled()&&(!markerTracker.state.active||markerTracker.state.visible); }
+async function beginHold(pointerId) {
+  if(!canHold()||whisper.phase!=='idle')return;
+  whisper.pointerId=pointerId;whisper.phase='arming';whisper.voiced=0;whisper.elapsed=0;
+  const token=++whisper.token;
+  audio.ctx.resume().catch(()=>{});
+  say('hold');
+  const current=()=>token===whisper.token&&whisper.pointerId===pointerId&&!session.ended&&!document.hidden;
+  const result=await openMic(current);
+  if(!current()) {
+    if(result==='released'&&!session.ended&&whisper.phase==='idle')say('micReady');
     return;
   }
-  if (mode !== 'camera') {
-    anchor.position.set(0, 0, 0);
-    anchor.setEnabled(true);
-    return;
+  if(result!=='opened') {
+    whisper.pointerId=null;whisper.phase='idle';
+    say('micPermission');return;
   }
-  say('티백 뒷면의 QR을 비춰 주세요.', '포장을 탁자에 펼치고 QR 전체가 보이게 해 주세요. 그 자리에서 안개 아이가 태어납니다.');
-  markerTracker.start();
-  if (!await markerTracker.waitForFirst() || session.ended) return;
-  play('WaterDrop', { vol: 0.6 });
+  whisper.phase='recording';session.recording=true;demoClock=0;
+  say('recording');showRec(true);
 }
-
-// Recording is started and finished by the visitor. Silence never ends it.
-async function tell() {
-  while (true) {
-    // Draft prompt from Docs/LostRoom_UXWriting_2026-10-14.txt; the Tea Time opening line is not final.
-    say('지금 떠오르는 장면 하나를 골라주세요. 그때 어디에 있었고, 어떤 마음이었나요?',
-      '‘녹음 시작’을 누르고 이야기한 뒤 ‘녹음 멈춤’을 누르세요. 최대 1분 녹음합니다.');
-    const go = await choose([{ label: '녹음 시작', primary: true, value: 'rec' }, { label: '말 없이 이어가기', value: 'skip' }]);
-    if (go === 'skip') return { buffer: null, voiced: 0 };
-    const ok = await openMic();
-    if (!ok) {
-      say('마이크를 쓸 수 없어요.', '브라우저 설정에서 마이크를 허용한 뒤 다시 시도하거나, 말 없이 이어갈 수 있습니다.');
-      const next = await choose([{ label: '다시 시도', primary: true, value: 'retry' }, { label: '말 없이 이어가기', value: 'skip' }]);
-      if (next === 'skip') return { buffer: null, voiced: 0 };
-      continue;
-    }
-    return record();
+async function finishHold(discard=false) {
+  if(!['arming','recording'].includes(whisper.phase))return;
+  const wasRecording=whisper.phase==='recording',pointerId=whisper.pointerId;
+  whisper.pointerId=null;const token=++whisper.token;mic.paused=true;
+  session.recording=false;showRec(false);inflowUniforms.uAlpha.value=0;fogState.target=0;
+  whisper.phase=wasRecording&&!discard?'rendering':'idle';
+  if(typeof pointerId==='number')try{touchLayer.releasePointerCapture(pointerId);}catch{}
+  const buffer=wasRecording?closeMic(discard):null;
+  if(!wasRecording||discard||session.ended) {
+    whisper.phase='idle';
+    if(!session.ended)say('hold');return;
   }
-}
-
-async function record() {
-  session.recording = true;
-  setAmbient(0.06, 1.5);
-  say('', '말을 마치면 ‘녹음 멈춤’을 누르세요.');
-  let voiced = 0, elapsed = 0, done = false;
-  // The gathering particles grow with how much has been said.
-  fogUniforms.uAlpha.value = 0;
-  fogUniforms.uScale.value = 0.004;
-  const tick = (dt) => {
-    if (mic.paused) { inflowUniforms.uAlpha.value *= 0.9; return; }
-    demoClock += dt;
-    elapsed += dt;
-    const rms = micRms();
-    const level = clamp((rms - 0.006) * 9, 0, 1);
-    if (rms > 0.02) voiced += dt;
-    inflowUniforms.uAlpha.value = 0.12 + level * 1.2;
-    inflowUniforms.uSpeed.value = 0.22 + level * 0.35;
-    const g = clamp(voiced / 8, 0, 1);
-    fogUniforms.uAlpha.value = lerp(fogUniforms.uAlpha.value, 0.15 + g * 0.45 + level * 0.2, Math.min(1, dt * 4));
-    fogUniforms.uScale.value = lerp(fogUniforms.uScale.value, 0.006 + g * 0.012 + level * 0.004, Math.min(1, dt * 3));
-    fogState.target = level;
-    const full = elapsed >= MAX_TALK || mic.full;
-    showRec(true, Math.min(elapsed, MAX_TALK), full ? '1분이 되어 녹음을 멈췄습니다' : '');
-    if (full && !mic.paused) mic.paused = true;
-  };
-  updaters.add(tick);
-  const stopBtn = () => offer([{ label: '녹음 멈춤', primary: true, onClick: () => { done = true; } }]);
-  stopBtn();
-  session.onResume = () => {
-    say('녹음을 잠시 멈췄어요.', '이어서 녹음하거나, 지금까지의 녹음으로 마칠 수 있습니다.');
-    offer([
-      { label: '이어서 녹음', primary: true, onClick: () => { mic.paused = false; say('', '말을 마치면 ‘녹음 멈춤’을 누르세요.'); stopBtn(); } },
-      { label: '녹음 멈춤', onClick: () => { done = true; } },
+  if(!buffer||whisper.voiced<VOICED_MIN) {
+    whisper.phase='idle';say('moreVoice');return;
+  }
+  say('creating');
+  try {
+    const layers=await Promise.all([
+      renderLayer(buffer,{rate:.62,reverse:false,gain:1.6,delay:.4}),
+      renderLayer(buffer,{rate:.5,reverse:true,gain:.9,delay:1.2})
     ]);
-  };
-  while (!done && !session.ended) await sleep(100);
-  session.onResume = null;
-  updaters.delete(tick);
-  clearOffer();
-  showRec(false);
-  session.recording = false;
-  inflowUniforms.uAlpha.value = 0;
-  fogState.target = 0;
-  setAmbient(0.3, 3);
-  return { buffer: closeMic(), voiced: DEMO ? 5 : voiced };
-}
-
-async function birth(story) {
-  say('', story.buffer && story.voiced >= VOICED_MIN ? '목소리를 음악으로 바꾸는 중입니다.' : '');
-  let ok = true;
-  try { ok = await prepareMusic(story); } catch (err) { console.warn('music not made', err); ok = false; }
-  story.buffer = null; // the raw recording is no longer needed once the music layers exist
-  if (!ok) {
-    say('음악으로 바꾸지 못했어요.', '다시 녹음하거나, 말 없이 이어갈 수 있습니다.');
-    const next = await choose([{ label: '다시 녹음', primary: true, value: 'again' }, { label: '말 없이 이어가기', value: 'skip' }]);
-    music.layers = []; music.voiced = false;
-    if (next === 'again') return false;
+    if(session.ended||token!==whisper.token)return;
+    if(!layers.every(b=>b&&b.length))throw new Error('Voice music was empty');
+    stopMusic();music.voiced=true;music.layers=layers;startMusic();whisper.generation++;
+    whisper.phase='idle';
+    say('repeat',true);
+  }catch(error) {
+    if(session.ended||token!==whisper.token)return;
+    console.warn('voice music unavailable',error);whisper.phase='idle';
+    say('musicError');
   }
-  say(music.voiced ? '당신의 목소리에서 안개 아이가 태어납니다.' : '안개 아이가 태어납니다.');
-  play('Appear', { vol: 0.75 });
-  startMusic();
-  const a0 = fogUniforms.uAlpha.value, s0 = Math.max(0.004, fogUniforms.uScale.value);
-  await tween(4200, (k) => {
-    fogUniforms.uAlpha.value = lerp(a0, 1, k);
-    fogUniforms.uScale.value = lerp(s0, 0.034, k);
-    iceCore.userData.show = k;
-  });
-  return true;
 }
+touchLayer.addEventListener('contextmenu',e=>e.preventDefault());
+touchLayer.addEventListener('pointerdown',e=>{
+  if(e.button!==0||!canHold())return;
+  const f=fogScreen();if(Math.hypot(e.clientX-f.x,e.clientY-f.y)>f.r)return;
+  if(whisper.phase!=='idle')return;
+  e.preventDefault();try{touchLayer.setPointerCapture(e.pointerId);}catch{}
+  beginHold(e.pointerId);
+});
+touchLayer.addEventListener('pointerup',e=>{if(e.pointerId===whisper.pointerId)finishHold();});
+for(const type of ['pointercancel','lostpointercapture'])touchLayer.addEventListener(type,e=>{if(e.pointerId===whisper.pointerId)finishHold(true);});
+touchLayer.addEventListener('keydown',e=>{if([' ','Enter'].includes(e.key)&&!e.repeat){e.preventDefault();beginHold('keyboard');}});
+touchLayer.addEventListener('keyup',e=>{if([' ','Enter'].includes(e.key)&&whisper.pointerId==='keyboard'){e.preventDefault();finishHold();}});
+addEventListener('blur',()=>finishHold(true));
+updaters.add(dt=>{
+  if(whisper.phase!=='recording')return;
+  demoClock+=dt;whisper.elapsed+=dt;
+  const rms=micRms(),level=clamp((rms-.006)*9,0,1);
+  if(rms>.02)whisper.voiced+=dt;
+  fogState.target=level;fogState.touch=level;
+  inflowUniforms.uAlpha.value=.06+level*.3;inflowUniforms.uSpeed.value=.22+level*.35;
+  fogUniforms.uScale.value=lerp(fogUniforms.uScale.value,.026+level*.012,Math.min(1,dt*5));
+  showRec(true);
+  if(whisper.elapsed>=MAX_TALK||mic.full)finishHold();
+});
 
-async function playWithFogChild() {
-  touchPlay.enabled = true;
-  say('손가락으로 안개 아이를 만져보세요.', '끌어서 옮기고, 두 손가락으로 벌리거나 모아 보세요.');
-  const t0 = performance.now();
-  let offered = false;
-  await new Promise((resolve) => {
-    const maybeOffer = () => {
-      const c = touchPlay.counts;
-      const tried = (c.touch > 0) + (c.drag > 0) + (c.spread > 0) + (c.gather > 0);
-      if (!offered && (tried >= 3 || performance.now() - t0 > T(40000))) {
-        offered = true;
-        offer([{ label: '차 마시기', primary: true, onClick: () => { clearOffer(); resolve(); } }]);
-      }
-    };
-    touchPlay.onChange = maybeOffer;
-    const iv = setInterval(() => { if (session.ended) { clearInterval(iv); resolve(); } else maybeOffer(); }, 1000);
-  });
-  touchPlay.onChange = null;
+function endSession() {
+  if(session.ended)return;
+  session.ended=true;whisper.token++;whisper.phase='idle';whisper.pointerId=null;
+  session.recording=false;mic.paused=true;closeMic(true);stopMusic();markerTracker.stop();
+  ambient.element.pause();ambient.element.currentTime=0;
+  tweens.clear();clearTimeout(captionTimer);clearTimeout(markerStatusTimer);
+  video.srcObject?.getTracks().forEach(t=>t.stop());video.srcObject=null;
+  inflowUniforms.uAlpha.value=0;anchor.setEnabled(false);showRec(false);
+  $('marker-status').classList.remove('on');$('hud').classList.remove('on');$('end').classList.add('on');
 }
-
-async function stay() {
-  play$.stay = true;
-  say('차를 마시는 동안 음악은 이어집니다.', '다시 만져도 되고, ‘마치기’로 끝낼 수 있습니다.');
-  // The Fog Child settles low over the cup.
-  const from = fogState.home.clone();
-  tween(3000, (k) => { fogState.home.lerpVectors(from, new Vec3(0, 0.06, 0), k); });
-  await choose([{ label: '마치기', value: 'end' }]);
+let started=false;
+async function spawnFogChild() {
+  if(mode==='camera') {
+    say('qrAim');markerTracker.start();
+    if(!await markerTracker.waitForFirst()||session.ended)return;
+  }else{anchor.position.set(0,0,0);anchor.setEnabled(true);}
+  const token=whisper.token;
+  await tween(1200,k=>{if(!session.ended){fogUniforms.uAlpha.value=k;fogUniforms.uScale.value=lerp(.004,.028,k);iceCore.userData.show=k;}});
+  if(!session.ended&&token===whisper.token)say('hold');
 }
-
-// Stops camera, microphone and sound, and lets go of the recording and the music.
-function endSession({ show = true } = {}) {
-  if (session.ended) return;
-  session.ended = true;
-  markerTracker.stop();
-  clearTimeout(markerStatusTimer);
-  $('marker-status').classList.remove('on');
-  anchor.setEnabled(false);
-  touchPlay.enabled = false;
-  if (mic.stream) closeMic();
-  mic.chunks = []; mic.samples = 0;
-  stopMusic();
-  session.story = null;
-  video.srcObject?.getTracks().forEach((t) => t.stop());
-  video.srcObject = null;
-  if (xr.helper?.state === B.WebXRState.IN_XR) xr.helper.exitXRAsync().catch(() => {});
-  ambientEl.pause();
-  clearOffer();
-  showRec(false);
-  $('hud').classList.remove('on');
-  if (show) $('end').classList.add('on');
-}
-
-let started = false;
-async function flow() {
-  if (started) return;
-  started = true;
-  await placeFogChild();
-  while (!session.ended) {
-    session.story = await tell();
-    if (session.ended) return;
-    if (await birth(session.story)) break;
-    fogUniforms.uAlpha.value = 0;
-  }
-  if (session.ended) return;
-  await playWithFogChild();
-  if (session.ended) return;
-  await stay();
-  endSession();
-}
-
-// App switch or screen lock: stop recording and sound, keep the state, never record again on return.
-document.addEventListener('visibilitychange', () => {
-  if (!started || session.ended) return;
-  if (document.hidden) {
-    if (session.recording) { mic.paused = true; session.interrupted = true; }
-    audio.ctx.suspend();
-    ambientEl.pause();
-  } else {
-    audio.ctx.resume();
-    ambientEl.play().catch(() => {});
-    if (session.interrupted) { session.interrupted = false; session.onResume?.(); }
-  }
+document.addEventListener('visibilitychange',()=>{
+  if(!started||session.ended)return;
+  if(document.hidden){finishHold(true);audio.ctx.suspend().catch(()=>{});ambient.element.pause();}
+  else {audio.ctx.resume().catch(()=>{});ambient.element.play().catch(()=>{});}
 });
 
 // =====================================================================
@@ -815,51 +533,37 @@ const camSupported = !!navigator.mediaDevices?.getUserMedia && window.isSecureCo
 const startBtn = $('start');
 
 async function boot() {
-  // Use the QR on both Android and iPhone. WebXR does not expose camera pixels
-  // consistently; its older tap-to-place path remains an explicit ?mode=xr option.
-  const kind = params.get('mode') || (camSupported ? 'camera' : '3d');
-  startBtn.dataset.mode = kind;
-  let ready = false;
-  const enable = () => {
-    if (ready) return;
-    ready = true;
-    startBtn.disabled = false;
-    startBtn.textContent = '시작하기';
-    $('load-status').textContent = '';
-  };
-  setTimeout(enable, 12000);
-  let pa = 0, pm = 0;
-  const progress = () => { if (!ready) $('load-status').textContent = `${Math.round((pa + pm) * 50)}%`; };
-  await Promise.all([loadAudio((p) => { pa = p; progress(); }), loadModels((p) => { pm = p; progress(); })]);
-  buildIce();
-  enable();
+  startBtn.dataset.mode=params.get('mode')==='3d'?'3d':'camera';
+  const ready=()=>{startBtn.disabled=false;startBtn.dataset.i18n='start';startBtn.textContent=t('start');$('load-status').textContent='';};
+  const timeout=setTimeout(ready,12000);
+  try{await loadModels(p=>{$('load-status').textContent=`${Math.round(p*100)}%`;});buildIce();}
+  catch(error){console.warn('model unavailable',error);buildIce();}
+  clearTimeout(timeout);ready();
 }
-
 async function begin(kind) {
-  // Unlock audio inside the start gesture. QR tracking needs no motion permission.
-  audio.ctx.resume();
-  startAmbient();
-  $('intro').classList.add('hidden');
-  $('hud').classList.add('on');
-  if (kind === 'xr') {
-    try { await startXR(); } catch (err) {
-      console.warn('WebXR AR unavailable, using the camera view', err);
-      try { await startCamera(); } catch (e2) { console.warn('camera unavailable', e2); start3D(); }
+  if(started)return;
+  startBtn.disabled=true;audio.ctx.resume().catch(()=>{});startAmbient();
+  try {
+    if(kind==='3d')start3D();
+    else {
+      if(!camSupported)throw new Error('Camera needs a supported HTTPS browser');
+      await startCamera();
     }
-  } else if (kind === 'camera') {
-    try { await startCamera(); } catch (err) { console.warn('camera unavailable', err); start3D(); }
-  } else {
-    start3D();
+    started=true;$('intro').classList.add('hidden');$('hud').classList.add('on');spawnFogChild();
+  }catch(error) {
+    video.srcObject?.getTracks().forEach(t=>t.stop());video.srcObject=null;
+    ambient.element.pause();console.warn('camera unavailable',error);startBtn.disabled=false;startBtn.dataset.i18n='cameraRetry';startBtn.textContent=t('cameraRetry');
+    $('load-status').dataset.i18n='cameraError';$('load-status').textContent=t('cameraError');
   }
-  flow();
 }
 startBtn.addEventListener('click', () => begin(startBtn.dataset.mode));
 
 $('btn-sound').addEventListener('click', () => {
+  audio.ctx.resume().catch(()=>{});
   audio.muted = !audio.muted;
   audio.master.gain.setTargetAtTime(audio.muted ? 0 : 1, audio.ctx.currentTime, 0.05);
   $('snd-wave').style.opacity = audio.muted ? 0.15 : 1;
-  $('btn-sound').setAttribute('aria-label', audio.muted ? '소리 켜기' : '소리 끄기');
+  $('btn-sound').setAttribute('aria-label',t(audio.muted?'unmute':'mute'));
 });
 if (audio.muted) $('snd-wave').style.opacity = 0.15;
 $('btn-exit').addEventListener('click', () => endSession());
@@ -887,6 +591,7 @@ engine.runRenderLoop(() => {
   scene.render();
 });
 
-boot();
+for(const select of document.querySelectorAll('.language-picker'))select.addEventListener('change',()=>applyLanguage(select.value,true));
+applyLanguage(language);boot();
 
-if (params.has('debug')) window.__tt = { xr, markerTracker, BABYLON: B, engine, scene, camera, anchor, fog, fogState, fogUniforms, music, touchPlay, session, play$ };
+if (params.has('debug')) window.__tt = { markerTracker, BABYLON:B, engine, scene, camera, anchor, fog, fogState, fogUniforms, music, mic, whisper, fogScreen, session, ambient, spatial, audio };

@@ -37,10 +37,10 @@ export function createFogView(canvas, { updaters, time, lerp, clamp }) {
   const iceCore = new B.TransformNode('ice-core', scene);
   iceCore.parent = fog; iceCore.userData = { show: 0 };
   const fogUniforms = {
-    uLevel: { value: 0 }, uScale: { value: 0.0001 }, uAlpha: { value: 0 }, uSize: { value: 0.0042 },
+    uLevel: { value: 0 }, uScale: { value: 0.0001 }, uAlpha: { value: 0 }, uSize: { value: 0.0026 },
     uSpread: { value: 1 }, uTouch: { value: 0 }, uTouchDir: { value: new Vec3(0, 1, 0) },
   };
-  const inflowUniforms = { uAlpha: { value: 0 }, uSpeed: { value: 0.3 }, uSize: { value: 0.0034 } };
+  const inflowUniforms = { uAlpha: { value: 0 }, uSpeed: { value: 0.3 }, uSize: { value: 0.0018 } };
   const fogState = { level: 0, target: 0, home: new Vec3(0, 0.08, 0), spread: 1, spreadTarget: 1, touch: 0 };
   const pointSize = `
     vec4 mv = worldView * vec4(p, 1.0);
@@ -93,14 +93,14 @@ export function createFogView(canvas, { updaters, time, lerp, clamp }) {
         p.y *= 1.12;
         float sz = uSize*(.55+.9*fract(aSeed*5.31))*(1.0+uLevel*.5);
         ${pointSize}
-        vCore = 1.0-r; vAlpha = uAlpha*(.14+.4*vCore)/mix(1.0,uSpread,.4);
+        vCore = 1.0-r; vAlpha = uAlpha*(.035+.12*vCore)/mix(1.0,uSpread,.4);
       }`, `
       precision highp float;
       uniform float uLevel, uTouch;
       varying float vAlpha, vCore;
       void main() {
         ${softPoint}
-        vec3 col = mix(vec3(.435,.553,1.0),vec3(.949,.965,1.0),smoothstep(.35,1.0,vCore))*(.85+uLevel*.8+uTouch*.5);
+        vec3 col = mix(vec3(.435,.553,1.0),vec3(.82,.88,1.0),smoothstep(.35,1.0,vCore))*(.85+uLevel*.25+uTouch*.15);
         gl_FragColor = vec4(col,a*vAlpha);
       }`);
   const starts = new Float32Array(800 * 3), inflowSeeds = new Float32Array(800);
