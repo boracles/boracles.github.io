@@ -1,25 +1,21 @@
-import { createFogView, Vec3 } from './fog-view.js?v=20261026-hold-voice-spatial-1';
-import { createQRMarkerTracker, markerPose } from './qr-marker.js';
-import { messages, chooseLanguage } from './strings.js';
+import { createFogView, Vec3 } from './fog-view.js?v=20261028-finish-1';
+import { createQRMarkerTracker, markerPose } from './qr-marker.js?v=20261028-finish-1';
+import { messages, chooseLanguage } from './strings.js?v=20261028-finish-1';
 
 // The Lost Room 2: QR → Fog Child → hold the child while speaking → release for music.
 // Camera and voice processing stay in this browser; nothing is uploaded.
 // ?mode=3d is a camera-free development preview, not the default experience.
 
 const params = new URLSearchParams(location.search);
-let savedLanguage;try{savedLanguage=localStorage.getItem('lostroom-language');}catch{}
-let language=chooseLanguage({saved:savedLanguage,requested:params.get('lang'),languages:navigator.languages||[navigator.language]});
+let language=chooseLanguage({requested:params.get('lang'),languages:navigator.languages||[navigator.language]});
 const t=key=>messages[language][key]||messages.en[key]||key;
-function applyLanguage(value,save=false) {
+// The page follows the phone's language (or ?lang=); there is no picker to show.
+function applyLanguage(value) {
   if(!messages[value])return;
   language=value;document.documentElement.lang=value;document.title=t('pageTitle');
-  if(save)try{localStorage.setItem('lostroom-language',value);}catch{}
   for(const node of document.querySelectorAll('[data-i18n]'))node.textContent=t(node.dataset.i18n);
-  for(const select of document.querySelectorAll('.language-picker')){select.value=value;select.setAttribute('aria-label',t('language'));}
   $('touch').setAttribute('aria-label',t('holdLabel'));
-  $('btn-exit').setAttribute('aria-label',t('exit'));
-  $('btn-sound').setAttribute('aria-label',t(audio.muted?'unmute':'mute'));
-  if(captionKey)captionEl.querySelector('.ko').textContent=t(captionKey);
+  $('music-progress').setAttribute('aria-label',t('musicProgress'));
 }
 const FAST = params.has('fast');
 const DEMO = params.has('demo'); // a synthetic voice instead of the microphone, for testing
@@ -108,9 +104,7 @@ function makeImpulse(seconds = 3.2) {
 // =====================================================================
 // StoryMusic: the Fog Child's music, made from the recording
 // =====================================================================
-// Starts from singBack in the earlier Tears Tea: the voice slowed and lowered, a reversed copy
-// even slower, both low-passed into a long reverb over a quiet drone. The two voice layers are
-// rendered offline once, then looped live so touch can move them apart and back together.
+// The same voice-derived composition as the headset, rendered off the UI thread.
 const NOTES = [220, 277.18, 329.63, 415.3, 493.88];
 const VOICED_MIN = 0.6; // seconds of voice needed to call the result "music from your voice"
 
@@ -154,129 +148,90 @@ function playTouchSound() {
   touchSound.lastAt=now;touchSound.count++;fogState.touch=.65;
 }
 
-async function renderLayer(voice, { rate, reverse, gain, delay }) {
-  const sr = audio.ctx.sampleRate;
-  const dur = Math.min(48, voice.duration / rate + delay + 4.5);
-  const off = new OfflineAudioContext(2, Math.ceil(sr * dur), sr);
-  let buf = voice;
-  if (reverse) {
-    buf = off.createBuffer(1, voice.length, voice.sampleRate);
-    buf.getChannelData(0).set(Float32Array.from(voice.getChannelData(0)).reverse());
-  }
-  const src = off.createBufferSource();
-  src.buffer = buf;
-  src.playbackRate.value = rate;
-  const g = off.createGain(); g.gain.value = gain;
-  const lp = off.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 2400;
-  const conv = off.createConvolver(); conv.buffer = makeImpulse(3.4);
-  const wet = off.createGain(); wet.gain.value = 0.9;
-  const dry = off.createGain(); dry.gain.value = 0.22;
-  // Fades so the loop can overlap itself without clicks.
-  const env = off.createGain();
-  env.gain.setValueAtTime(0, 0);
-  env.gain.linearRampToValueAtTime(1, 1.2);
-  env.gain.setValueAtTime(1, Math.max(1.3, dur - 3));
-  env.gain.linearRampToValueAtTime(0, dur);
-  src.connect(g).connect(lp);
-  lp.connect(dry).connect(env);
-  lp.connect(conv).connect(wet).connect(env);
-  env.connect(off.destination);
-  src.start(delay);
-  const out = await off.startRendering();
-  // Normalise: phone recordings vary a lot in level.
-  let peak = 0;
-  for (let ch = 0; ch < out.numberOfChannels; ch++) {
-    const d = out.getChannelData(ch);
-    for (let i = 0; i < d.length; i += 4) peak = Math.max(peak, Math.abs(d[i]));
-  }
-  if (peak > 0.0001) {
-    const k = Math.min(8, 0.7 / peak);
-    for (let ch = 0; ch < out.numberOfChannels; ch++) { const d = out.getChannelData(ch); for (let i = 0; i < d.length; i++) d[i] *= k; }
-  }
-  return out;
+// The story's piece: the same StoryMusic as the headset, rendered in a worker from the 16 kHz voice.
+// Its loop is seamless (the tail is folded onto the start), so one looping source is enough.
+const STORY_WORKER='story-music.js?v=20261028-finish-1';
+const story={worker:null,cancel:null,version:0};
+async function voiceAt16k(buffer) {
+  const rate=16000,length=Math.max(1,Math.ceil(buffer.duration*rate));
+  const off=new OfflineAudioContext(1,length,rate);
+  const source=off.createBufferSource();source.buffer=buffer;source.connect(off.destination);source.start(0);
+  const out=await off.startRendering();
+  return Float32Array.from(out.getChannelData(0));
+}
+function cancelStory() {
+  story.version++;
+  story.cancel?.();story.cancel=null;
+  story.worker?.terminate();story.worker=null;
+}
+async function composeStory(buffer,onProgress=()=>{}) {
+  cancelStory();
+  const version=story.version;
+  const voice=await voiceAt16k(buffer);
+  if(version!==story.version)throw new DOMException('Music cancelled','AbortError');
+  const worker=new Worker(STORY_WORKER);story.worker=worker;
+  const result=await new Promise((resolve,reject)=>{
+    const timeout=setTimeout(()=>reject(new Error('Music took too long')),45000);
+    const settle=fn=>value=>{clearTimeout(timeout);fn(value);};
+    story.cancel=()=>settle(reject)(new DOMException('Music cancelled','AbortError'));
+    worker.onmessage=e=>{
+      if(typeof e.data.progress==='number'){onProgress(e.data.progress);return;}
+      e.data.error?settle(reject)(new Error(e.data.error)):settle(resolve)(e.data);
+    };
+    worker.onerror=e=>settle(reject)(new Error(e.message||'Story music worker failed'));
+    worker.onmessageerror=()=>settle(reject)(new Error('Music could not be read'));
+    worker.postMessage({voice,melt:true},[voice.buffer]);
+  }).finally(()=>{if(story.worker===worker){story.worker=null;story.cancel=null;}worker.terminate();});
+  if(!(result.samples instanceof Float32Array)||!result.samples.length||!Number.isFinite(result.rate))throw new Error('Music was empty');
+  let peak=0;
+  for(const sample of result.samples){if(!Number.isFinite(sample))throw new Error('Music was invalid');peak=Math.max(peak,Math.abs(sample));}
+  if(peak<.0001)throw new Error('Music was silent');
+  if(result.summary)console.info(result.summary);
+  const music=audio.ctx.createBuffer(1,result.samples.length,result.rate);
+  music.getChannelData(0).set(result.samples);
+  return music;
 }
 
-// Plays a buffer over and over, each pass overlapping the end of the last one.
-function loopLayer(buffer, dest, overlap = 3) {
-  const c = audio.ctx;
-  const live = new Set();
-  let timer = 0, stopped = false;
-  const step = Math.max(2, buffer.duration - overlap);
-  const schedule = (at) => {
-    if (stopped) return;
-    const s = c.createBufferSource();
-    s.buffer = buffer;
-    s.connect(dest);
-    s.start(at);
-    live.add(s);
-    s.onended = () => live.delete(s);
-    const next = at + step;
-    timer = setTimeout(() => schedule(next), Math.max(0, (next - c.currentTime - 1) * 1000));
-  };
-  schedule(c.currentTime + 0.05);
-  return { stop() { stopped = true; clearTimeout(timer); live.forEach((s) => { try { s.stop(); } catch {} }); live.clear(); } };
-}
+const music = { on: false, voiced: false, source: null, nodes: null, analyser: null };
 
-const music = { on: false, voiced: false, layers: [], loops: [], oscs: [], nodes: null, analyser: null };
-
-function startMusic() {
+// Play the rendered piece as one seamless loop.
+function startMusic(buffer) {
+  stopMusic();
   const c = audio.ctx;
   const now = c.currentTime;
   const n = {};
   n.out = c.createGain(); n.out.gain.value = 0;
-  n.tone = c.createBiquadFilter(); n.tone.type = 'lowpass'; n.tone.frequency.value = 3200; n.tone.Q.value = 0.7;
-  n.dry = c.createGain(); n.dry.gain.value = 0.8;
-  n.space = c.createConvolver(); n.space.buffer = makeImpulse(4.2);
-  n.wet = c.createGain(); n.wet.gain.value = 0.25;
+  n.tone = c.createBiquadFilter(); n.tone.type = 'lowpass'; n.tone.frequency.value = 4200; n.tone.Q.value = 0.7;
+  n.dry = c.createGain(); n.dry.gain.value = 0.85;
+  n.space = c.createConvolver(); n.space.buffer = makeImpulse(3.2);
+  n.wet = c.createGain(); n.wet.gain.value = 0.18;
   n.tone.connect(n.dry).connect(n.out);
   n.tone.connect(n.space).connect(n.wet).connect(n.out);
   music.analyser = c.createAnalyser(); music.analyser.fftSize = 1024;
   n.out.connect(music.analyser);
   n.out.connect(audio.master);
-  // Layer A: the slowed voice. Layer B: the reversed voice. Each has its own place left–right.
-  const mk = (pan) => { const g = c.createGain(); const p = c.createStereoPanner(); p.pan.value = pan; g.connect(p).connect(n.tone); return { g, p }; };
-  n.a = mk(0); n.a.g.gain.value = 1;
-  n.b = mk(0); n.b.g.gain.value = 0.55;
-  n.pad = mk(0); n.pad.g.gain.value = music.voiced ? 0.05 : 0.08;
-  music.loops = music.layers.map((buf, i) => loopLayer(buf, i === 0 ? n.a.g : n.b.g));
-  music.oscs = [];
-  for (const f of [NOTES[0] / 2, NOTES[2] / 2, NOTES[1]]) {
-    const o = c.createOscillator(); o.type = 'sine'; o.frequency.value = f;
-    o.connect(n.pad.g); o.start(now); music.oscs.push(o);
-  }
-  n.out.gain.setTargetAtTime(1, now, 0.6);
+  const source = c.createBufferSource();
+  source.buffer = buffer;source.loop = true;source.connect(n.tone);source.start(now + 0.05);
+  music.source = source;
+  n.out.gain.setTargetAtTime(1, now, 0.8);
   music.nodes = n;
   music.on = true;
 }
 
 function stopMusic() {
-  music.loops.forEach((l) => l.stop());
-  music.oscs.forEach((o) => { try { o.stop(); } catch {} });
-  try { music.nodes?.out.disconnect(); } catch {}
-  music.loops = []; music.oscs = []; music.layers = []; music.nodes = null; music.analyser = null; music.on = false;
+  try { music.source?.stop(); } catch {}
+  try { music.source?.disconnect(); } catch {}
+  for(const node of Object.values(music.nodes||{}))try{node.disconnect();}catch{}
+  music.analyser?.disconnect();
+  music.source = null; music.nodes = null; music.analyser = null; music.on = false;
 }
 
-// Touch → music. Shape and sound move together; the music never just gets louder or quieter.
-const play$ = { pan: 0, spread: 1, stay: false };
-updaters.add((dt) => {
+// A touch opens the tone for a moment; the piece falls silent while a new story is told.
+updaters.add(() => {
   const n = music.nodes;
   if (!n) return;
-  const c = audio.ctx, t = c.currentTime;
-  const s = fogState.spread; // 0.45 gathered … 1 resting … 2.8 spread wide
-  const wide = clamp((s - 1) / 1.8, 0, 1);
-  const close = clamp((1 - s) / 0.55, 0, 1);
-  const touch = fogState.touch;
-  const stay = play$.stay ? 1 : 0;
-  // Spreading pulls the layers apart left and right and opens the room; gathering brings them into one place.
-  n.a.p.pan.setTargetAtTime(clamp(play$.pan - wide * 0.7, -1, 1), t, 0.08);
-  n.b.p.pan.setTargetAtTime(clamp(play$.pan + wide * 0.7, -1, 1), t, 0.08);
-  n.pad.p.pan.setTargetAtTime(clamp(play$.pan * 0.5, -1, 1), t, 0.08);
-  n.b.g.gain.setTargetAtTime(0.55 + wide * 0.35 - close * 0.3 + touch * 0.3, t, 0.1);
-  n.pad.g.gain.setTargetAtTime((music.voiced ? 0.05 : 0.08) * (1 + wide * 1.2), t, 0.2);
-  n.wet.gain.setTargetAtTime(0.25 + wide * 0.55 - close * 0.12 + stay * 0.1, t, 0.15);
-  n.dry.gain.setTargetAtTime(0.8 - wide * 0.3 + close * 0.15, t, 0.15);
-  // A touch opens the tone for a moment; gathering and staying darken it.
-  n.tone.frequency.setTargetAtTime(clamp(3200 + touch * 3800 - close * 1600 - stay * 1200 + wide * 600, 500, 9000), t, 0.06);
+  const t = audio.ctx.currentTime;
+  n.tone.frequency.setTargetAtTime(clamp(4200 + fogState.touch * 3000, 500, 9000), t, 0.06);
   n.out.gain.setTargetAtTime(['arming','recording'].includes(whisper.phase) ? 0 : 1, t, .12);
 });
 
@@ -397,9 +352,13 @@ const markerTracker = createQRMarkerTracker({ video,
   onVisibility(visible,locked) {
     clearTimeout(markerStatusTimer);
     const status=$('marker-status');
-    anchor.setEnabled(visible && !session.ended);
-    if (!visible) finishHold(true);
+    // The second scan creates the child. Losing sight of the QR afterward does
+    // not undo that creation or interrupt a story; retain the last camera pose.
+    anchor.setEnabled((visible||locked) && !session.ended && !session.interrupted);
+    $('scan-guide').hidden=locked;
     if (session.ended) { status.classList.remove('on');return; }
+    if(!locked){status.classList.remove('on');return;}
+    if(locked&&!visible){status.classList.remove('on');return;}
     status.dataset.i18n=visible?'qrFound':locked?'qrAgain':'qrFull';status.textContent=t(status.dataset.i18n);
     status.classList.add('on');
     if (visible) markerStatusTimer=setTimeout(()=>status.classList.remove('on'),1800);
@@ -408,7 +367,7 @@ const markerTracker = createQRMarkerTracker({ video,
 // Hold the Fog Child to speak. Releasing the same pointer makes its music.
 // =====================================================================
 const touchLayer=$('touch');
-const session={ended:false,recording:false};
+const session={ended:false,recording:false,interrupted:false};
 const whisper={phase:'idle',pointerId:null,token:0,voiced:0,elapsed:0,generation:0};
 const captionEl=$('caption');
 let captionTimer=0;
@@ -418,7 +377,13 @@ function say(key,fade=false) {
   captionKey=key;captionEl.querySelector('.ko').textContent=key?t(key):'';
   captionEl.querySelector('.hint').textContent='';
   captionEl.classList.toggle('on',!!key);
+  captionEl.classList.toggle('creating',key==='creating');
+  $('music-progress').hidden=key!=='creating';
   if(fade)captionTimer=setTimeout(()=>{if(whisper.phase==='idle')captionEl.classList.remove('on');},6000);
+}
+function setPhase(phase) {
+  whisper.phase=phase;document.body.dataset.phase=phase;
+  touchLayer.setAttribute('aria-busy',String(phase==='rendering'));
 }
 const recEl=$('rec');
 function showRec(on) {
@@ -434,15 +399,15 @@ function fogScreen() {
   const e=worldToScreen(edgeWorld,{});
   return {x:c.x,y:c.y,r:Math.max(48,Math.min(150,Math.hypot(e.x-c.x,e.y-c.y)*1.2))};
 }
-function canHold() { return started&&!session.ended&&anchor.isEnabled()&&(!markerTracker.state.active||markerTracker.state.visible); }
+function canHold() { return started&&!session.ended&&!session.interrupted&&fogUniforms.uAlpha.value>.85&&anchor.isEnabled()&&(!markerTracker.state.active||markerTracker.state.locked); }
 async function beginHold(pointerId) {
   if(!canHold()||['arming','recording'].includes(whisper.phase))return;
   playTouchSound();
   if(whisper.phase!=='idle')return;
-  whisper.pointerId=pointerId;whisper.phase='arming';whisper.voiced=0;whisper.elapsed=0;
+  whisper.pointerId=pointerId;setPhase('arming');whisper.voiced=0;whisper.elapsed=0;
   const token=++whisper.token;
   audio.ctx.resume().catch(()=>{});
-  say('hold');
+  say('micOpening');
   const current=()=>token===whisper.token&&whisper.pointerId===pointerId&&!session.ended&&!document.hidden;
   const result=await openMic(current);
   if(!current()) {
@@ -450,12 +415,12 @@ async function beginHold(pointerId) {
     return;
   }
   if(result!=='opened') {
-    whisper.pointerId=null;whisper.phase='idle';
+    whisper.pointerId=null;setPhase('idle');
     say('micPermission');return;
   }
   // Fade the touch response as the microphone opens; echo cancellation is also enabled.
   stopTouchSounds();
-  whisper.phase='recording';session.recording=true;demoClock=0;
+  setPhase('recording');session.recording=true;demoClock=0;
   say('recording');showRec(true);
 }
 async function finishHold(discard=false) {
@@ -463,30 +428,30 @@ async function finishHold(discard=false) {
   const wasRecording=whisper.phase==='recording',pointerId=whisper.pointerId;
   whisper.pointerId=null;const token=++whisper.token;mic.paused=true;
   session.recording=false;showRec(false);inflowUniforms.uAlpha.value=0;fogState.target=0;
-  whisper.phase=wasRecording&&!discard?'rendering':'idle';
+  setPhase(wasRecording&&!discard?'rendering':'idle');
   if(typeof pointerId==='number')try{touchLayer.releasePointerCapture(pointerId);}catch{}
   const buffer=wasRecording?closeMic(discard):null;
   if(!wasRecording||discard||session.ended) {
-    whisper.phase='idle';
+    setPhase('idle');
     if(!session.ended)say('hold');return;
   }
   if(!buffer||whisper.voiced<VOICED_MIN) {
-    whisper.phase='idle';say('moreVoice');return;
+    setPhase('idle');say('moreVoice');return;
   }
   say('creating');
+  $('music-progress').value=0;
   try {
-    const layers=await Promise.all([
-      renderLayer(buffer,{rate:.62,reverse:false,gain:1.6,delay:.4}),
-      renderLayer(buffer,{rate:.5,reverse:true,gain:.9,delay:1.2})
-    ]);
+    const piece=await composeStory(buffer,progress=>{
+      if(token===whisper.token)$('music-progress').value=progress;
+    });
     if(session.ended||token!==whisper.token)return;
-    if(!layers.every(b=>b&&b.length))throw new Error('Voice music was empty');
-    stopMusic();music.voiced=true;music.layers=layers;startMusic();whisper.generation++;
-    whisper.phase='idle';
+    if(!piece||!piece.length)throw new Error('Voice music was empty');
+    music.voiced=true;startMusic(piece);whisper.generation++;
+    setPhase('idle');fogState.touch=1;
     say('repeat',true);
   }catch(error) {
     if(session.ended||token!==whisper.token)return;
-    console.warn('voice music unavailable',error);whisper.phase='idle';
+    console.warn('voice music unavailable',error);setPhase('idle');
     say('musicError');
   }
 }
@@ -502,6 +467,18 @@ for(const type of ['pointercancel','lostpointercapture'])touchLayer.addEventList
 touchLayer.addEventListener('keydown',e=>{if([' ','Enter'].includes(e.key)&&!e.repeat){e.preventDefault();beginHold('keyboard');}});
 touchLayer.addEventListener('keyup',e=>{if([' ','Enter'].includes(e.key)&&whisper.pointerId==='keyboard'){e.preventDefault();finishHold();}});
 addEventListener('blur',()=>finishHold(true));
+const cue=$('child-cue');
+updaters.add(()=>{
+  const enabled=canHold();
+  touchLayer.tabIndex=enabled?0:-1;
+  touchLayer.setAttribute('aria-disabled',String(!enabled||whisper.phase==='rendering'));
+  cue.hidden=!enabled;
+  if(!enabled)return;
+  const f=fogScreen(),size=Math.max(80,f.r*1.65);
+  cue.style.transform=`translate(${f.x-size/2}px,${f.y-size/2}px)`;
+  cue.style.width=cue.style.height=`${size}px`;
+  cue.style.setProperty('--level',fogState.level);
+});
 updaters.add(dt=>{
   if(whisper.phase!=='recording')return;
   demoClock+=dt;whisper.elapsed+=dt;
@@ -514,21 +491,23 @@ updaters.add(dt=>{
   if(whisper.elapsed>=MAX_TALK||mic.full)finishHold();
 });
 
+// Closing or navigating away releases every media resource, including on bfcache entry.
 function endSession() {
-  if(session.ended)return;
-  session.ended=true;whisper.token++;whisper.phase='idle';whisper.pointerId=null;
-  session.recording=false;mic.paused=true;closeMic(true);stopMusic();markerTracker.stop();
-  stopTouchSounds(0);
-  ambient.element.pause();ambient.element.currentTime=0;
-  tweens.clear();clearTimeout(captionTimer);clearTimeout(markerStatusTimer);
+  session.ended=true;session.recording=false;whisper.pointerId=null;whisper.token++;
+  cancelStory();closeMic(true);stopMusic();stopTouchSounds(0);markerTracker.stop();
+  ambient.element.pause();ambient.element.removeAttribute('src');ambient.element.load();
   video.srcObject?.getTracks().forEach(t=>t.stop());video.srcObject=null;
-  inflowUniforms.uAlpha.value=0;anchor.setEnabled(false);showRec(false);
-  $('marker-status').classList.remove('on');$('hud').classList.remove('on');$('end').classList.add('on');
+  anchor.setEnabled(false);clearTimeout(captionTimer);clearTimeout(markerStatusTimer);
+  setPhase('idle');showRec(false);cue.hidden=true;
+  audio.ctx.suspend().catch(()=>{});
 }
+addEventListener('pagehide',endSession);
+// A restored browser history page must open a fresh session and request a new camera.
+addEventListener('pageshow',event=>{if(event.persisted)location.reload();});
 let started=false;
 async function spawnFogChild() {
   if(mode==='camera') {
-    say('qrAim');markerTracker.start();
+    say('qrAim');$('scan-guide').hidden=false;markerTracker.start();
     if(!await markerTracker.waitForFirst()||session.ended)return;
   }else{anchor.position.set(0,0,0);anchor.setEnabled(true);}
   const token=whisper.token;
@@ -537,8 +516,32 @@ async function spawnFogChild() {
 }
 document.addEventListener('visibilitychange',()=>{
   if(!started||session.ended)return;
-  if(document.hidden){finishHold(true);stopTouchSounds(0);audio.ctx.suspend().catch(()=>{});ambient.element.pause();}
-  else {audio.ctx.resume().catch(()=>{});ambient.element.play().catch(()=>{});}
+  if(document.hidden){
+    finishHold(true);stopTouchSounds(0);audio.ctx.suspend().catch(()=>{});ambient.element.pause();
+    markerTracker.pause();anchor.setEnabled(false);session.interrupted=true;
+  } else showResume();
+});
+
+function showResume(cameraLost=false) {
+  session.interrupted=true;
+  $('resume').hidden=false;$('resume-text').textContent=t(cameraLost?'cameraInterrupted':'resumeNote');
+  $('resume-button').textContent=t('resume');
+}
+$('resume-button').addEventListener('click',async()=>{
+  const button=$('resume-button');button.disabled=true;
+  try {
+    await audio.ctx.resume();
+    if(mode==='camera'){
+      if(!video.srcObject?.getVideoTracks().some(track=>track.readyState==='live'))await startCamera();
+      else await video.play();
+      markerTracker.start();
+    }else anchor.setEnabled(true);
+    if(session.ended)return;
+    session.interrupted=false;$('resume').hidden=true;startAmbient();
+    if(mode==='3d'||markerTracker.state.locked)anchor.setEnabled(true);
+    if(whisper.phase!=='rendering')say(mode==='camera'&&!markerTracker.state.locked?'qrAim':music.on?'repeat':'hold',music.on);
+  }catch(error){$('resume-text').textContent=t('cameraError');}
+  finally{button.disabled=false;}
 });
 
 // =====================================================================
@@ -562,8 +565,13 @@ function applyView() {
 
 async function startCamera() {
   const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: { ideal: 'environment' }, width: { ideal: 1280 }, height: { ideal: 720 } }, audio: false });
-  video.srcObject = stream;
-  await video.play().catch(() => {});
+  if(session.ended){stream.getTracks().forEach(t=>t.stop());throw new Error('Session ended');}
+  video.srcObject?.getTracks().forEach(t=>t.stop());video.srcObject = stream;
+  try{await video.play();}catch(error){stream.getTracks().forEach(t=>t.stop());video.srcObject=null;throw error;}
+  for(const track of stream.getVideoTracks())track.addEventListener('ended',()=>{
+    if(session.ended||video.srcObject!==stream)return;
+    finishHold(true);markerTracker.pause();anchor.setEnabled(false);showResume(true);
+  });
   mode = 'camera';
   document.body.className = 'mode-camera';
 }
@@ -574,44 +582,40 @@ function start3D() {
 }
 
 const camSupported = !!navigator.mediaDevices?.getUserMedia && window.isSecureContext;
-const startBtn = $('start');
+// Opening the QR URL requests the camera; only denied permission needs a retry button.
+const intro = $('intro'), startLine = $('start'), loadStatus = $('load-status');
+const ready = { models: false, failed: false };
 
 async function boot() {
-  startBtn.dataset.mode=params.get('mode')==='3d'?'3d':'camera';
-  const ready=()=>{startBtn.disabled=false;startBtn.dataset.i18n='start';startBtn.textContent=t('start');$('load-status').textContent='';};
-  const timeout=setTimeout(ready,12000);
-  try{await loadModels(p=>{$('load-status').textContent=`${Math.round(p*100)}%`;});buildIce();}
+  const done=()=>{buildIce();ready.models=true;if(!ready.failed){startLine.dataset.i18n='cameraOpening';startLine.textContent=t('cameraOpening');loadStatus.textContent='';}if(!started&&!beginning&&!ready.failed)begin();};
+  const timeout=setTimeout(done,4000);
+  try{await loadModels(p=>{if(!ready.models)loadStatus.textContent=`${Math.round(p*100)}%`;});}
   catch(error){console.warn('model unavailable',error);buildIce();}
-  clearTimeout(timeout);ready();
+  clearTimeout(timeout);done();
 }
-async function begin(kind) {
-  if(started)return;
-  startBtn.disabled=true;audio.ctx.resume().catch(()=>{});startAmbient();
+let beginning=false;
+async function begin() {
+  if(started||beginning||!ready.models)return;
+  beginning=true;ready.failed=false;startLine.disabled=true;
   try {
-    if(kind==='3d')start3D();
+    if(params.get('mode')==='3d')start3D();
     else {
       if(!camSupported)throw new Error('Camera needs a supported HTTPS browser');
       await startCamera();
     }
-    started=true;$('intro').classList.add('hidden');$('hud').classList.add('on');spawnFogChild();
+    if(session.ended)return;
+    started=true;intro.classList.add('hidden');intro.inert=true;$('hud').classList.add('on');spawnFogChild();
   }catch(error) {
     video.srcObject?.getTracks().forEach(t=>t.stop());video.srcObject=null;
-    ambient.element.pause();console.warn('camera unavailable',error);startBtn.disabled=false;startBtn.dataset.i18n='cameraRetry';startBtn.textContent=t('cameraRetry');
-    $('load-status').dataset.i18n='cameraError';$('load-status').textContent=t('cameraError');
+    ambient.element.pause();console.warn('camera unavailable',error);ready.failed=true;
+    startLine.disabled=false;startLine.dataset.i18n='cameraRetry';startLine.textContent=t('cameraRetry');
+    loadStatus.dataset.i18n='cameraError';loadStatus.textContent=t('cameraError');
   }
+  beginning=false;
 }
-startBtn.addEventListener('click', () => begin(startBtn.dataset.mode));
-
-$('btn-sound').addEventListener('click', () => {
-  audio.ctx.resume().catch(()=>{});
-  audio.muted = !audio.muted;
-  audio.master.gain.setTargetAtTime(audio.muted ? 0 : 1, audio.ctx.currentTime, 0.05);
-  $('snd-wave').style.opacity = audio.muted ? 0.15 : 1;
-  $('btn-sound').setAttribute('aria-label',t(audio.muted?'unmute':'mute'));
-});
-if (audio.muted) $('snd-wave').style.opacity = 0.15;
-$('btn-exit').addEventListener('click', () => endSession());
-$('again').addEventListener('click', () => location.reload());
+startLine.addEventListener('click',()=>begin());
+// Camera access can open on entry. Sound is unlocked by the first actual touch.
+addEventListener('pointerdown',()=>{if(!session.ended){audio.ctx.resume().catch(()=>{});if(started&&!session.interrupted)startAmbient();}},{passive:true});
 
 addEventListener('resize', () => {
   engine.resize();
@@ -635,7 +639,6 @@ engine.runRenderLoop(() => {
   scene.render();
 });
 
-for(const select of document.querySelectorAll('.language-picker'))select.addEventListener('change',()=>applyLanguage(select.value,true));
 applyLanguage(language);boot();
 
-if (params.has('debug')) window.__tt = { markerTracker, BABYLON:B, engine, scene, camera, anchor, fog, fogState, fogUniforms, music, mic, whisper, fogScreen, session, ambient, spatial, audio, touchSound };
+if (params.has('debug')) window.__tt = { markerTracker, BABYLON:B, engine, scene, camera, anchor, fog, fogState, fogUniforms, music, mic, whisper, fogScreen, session, ambient, spatial, audio, touchSound, story, composeStory, cancelStory, endSession, begin };

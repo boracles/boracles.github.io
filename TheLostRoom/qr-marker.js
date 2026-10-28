@@ -114,8 +114,9 @@ export function createQRMarkerTracker({ video, onPose, onVisibility }) {
     state,
     start() {
       if (running) return;
-      running=true;state.active=true;onVisibility(false,false);scan();
+      running=true;state.active=true;lastSeen=0;consecutive=0;onVisibility(false,state.locked);scan();
     },
+    pause() { running=false;clearTimeout(timer);state.active=false;visibility(false); },
     waitForFirst() { return state.locked ? Promise.resolve(true) : new Promise(resolve=>{resolveFirst=resolve;}); },
     stop() { running=false;clearTimeout(timer);state.active=false;visibility(false);resolveFirst?.(false);resolveFirst=null; }
   };

@@ -10,6 +10,7 @@
   --sans: "Noto Sans KR", system-ui, sans-serif;
 }
 * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+[hidden] { display: none !important; }
 html, body { margin: 0; height: 100%; overflow: hidden; user-select: none; -webkit-user-select: none; background: var(--ink); color: var(--paper); font-family: var(--sans); }
 body.mode-3d { background: radial-gradient(80% 50% at 50% 45%, #121a3a 0%, #070912 70%); }
 body.mode-camera { background: #000; }
@@ -30,6 +31,10 @@ body.mode-xr, body.mode-xr #ui { background: transparent; }
   pointer-events: auto; transition: opacity .9s ease;
 }
 #intro.hidden { opacity: 0; pointer-events: none; visibility: hidden; }
+.tap { width:100%; border:0; font: 500 16px/1.4 var(--sans); margin: 0; padding: 15px 20px; border-radius: 999px; background: var(--paper); color: var(--ink); cursor:pointer; transition: opacity .3s ease; }
+.tap:disabled { opacity:.55;cursor:wait; }
+.tap:focus-visible { outline:2px solid var(--paper);outline-offset:5px; }
+#intro:not(.hidden) .tap[data-i18n="start"], #intro:not(.hidden) .tap[data-i18n="cameraRetry"] { opacity: 1; }
 .intro-inner { width: min(420px, 100%); text-align: center; }
 .eyebrow { font-size: 12px; letter-spacing: .28em; text-transform: uppercase; color: var(--paper-dim); }
 h1 { font-family: var(--serif); font-weight: 700; font-size: clamp(44px, 13vw, 64px); margin: 14px 0 4px; }
@@ -95,4 +100,21 @@ body:has(#rec.on) #marker-status { top: calc(max(12px, env(safe-area-inset-top))
 .end-main { font-family: var(--serif); font-size: 22px; margin: 16px 0 6px; }
 .end-inner .btn { margin-top: 26px; }
 
-@media (prefers-reduced-motion: reduce) { #rec .dot { animation: none !important; } }
+/* One QR scan creates the child; the quiet outline shows what can be held. */
+#child-cue { position:absolute;left:0;top:0;border:1px solid rgba(207,220,255,.3);border-radius:50%;pointer-events:none;opacity:.55; }
+body[data-phase="recording"] #child-cue { border-color:rgba(239,230,210,.9);box-shadow:0 0 24px rgba(155,180,255,.15),inset 0 0 18px rgba(155,180,255,.1);opacity:calc(.4 + var(--level,0)*.6); }
+body[data-phase="arming"] #child-cue, body[data-phase="rendering"] #child-cue { border-style:dashed;opacity:.8; }
+#scan-guide { position:absolute;inset:0;display:grid;place-items:center;pointer-events:none; }
+#scan-guide span { width:min(54vw,230px);aspect-ratio:1;border:1px solid rgba(239,230,210,.65);border-radius:24px;box-shadow:0 0 0 999px rgba(0,0,0,.08); }
+#caption .ko { font-size:16px;line-height:1.8; }
+#caption.creating .ko::before { content:'';display:inline-block;width:12px;height:12px;margin-right:9px;border:1.5px solid rgba(239,230,210,.25);border-top-color:var(--paper);border-radius:50%;animation:turn 1.2s linear infinite;vertical-align:middle; }
+#music-progress { appearance:none;-webkit-appearance:none;display:block;width:120px;height:2px;border:0;border-radius:2px;margin:12px auto 2px;background:rgba(239,230,210,.15);overflow:hidden; }
+#music-progress::-webkit-progress-bar { background:rgba(239,230,210,.15); }
+#music-progress::-webkit-progress-value { background:var(--paper);transition:width .4s ease; }
+#music-progress::-moz-progress-bar { background:var(--paper); }
+#resume { position:absolute;inset:0;display:grid;place-items:center;padding:24px;background:rgba(5,7,15,.8);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);pointer-events:auto; }
+.resume-inner { width:min(330px,100%);text-align:center; }
+#resume-text { font-family:var(--serif);font-size:18px;line-height:1.9;margin:0 0 28px;word-break:keep-all; }
+@keyframes turn { to { transform:rotate(360deg); } }
+@media (max-height:500px) { .intro-inner{max-width:560px;}h1{font-size:36px;margin:8px 0}.lede{margin:12px 0;font-size:15px}.fine{margin-top:10px;}#caption{padding:8px 14px;} }
+@media (prefers-reduced-motion: reduce) { *,*::before { animation: none !important;transition:none !important; } }
