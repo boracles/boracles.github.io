@@ -1,6 +1,7 @@
 import { createFogView, Vec3 } from './fog-view.js?v=20261028-finish-1';
 import { createQRMarkerTracker, markerPose } from './qr-marker.js?v=20261028-finish-1';
 import { messages, chooseLanguage } from './strings.js?v=20261028-finish-1';
+import { exhibitionOpen } from './exhibition.js?v=20261028-exhibition-1';
 
 // The Lost Room 2: QR → Fog Child → hold the child while speaking → release for music.
 // Camera and voice processing stay in this browser; nothing is uploaded.
@@ -399,7 +400,7 @@ function fogScreen() {
   const e=worldToScreen(edgeWorld,{});
   return {x:c.x,y:c.y,r:Math.max(48,Math.min(150,Math.hypot(e.x-c.x,e.y-c.y)*1.2))};
 }
-function canHold() { return started&&!session.ended&&!session.interrupted&&fogUniforms.uAlpha.value>.85&&anchor.isEnabled()&&(!markerTracker.state.active||markerTracker.state.locked); }
+function canHold() { return exhibitionOpen()&&started&&!session.ended&&!session.interrupted&&fogUniforms.uAlpha.value>.85&&anchor.isEnabled()&&(!markerTracker.state.active||markerTracker.state.locked); }
 async function beginHold(pointerId) {
   if(!canHold()||['arming','recording'].includes(whisper.phase))return;
   playTouchSound();
@@ -528,6 +529,7 @@ function showResume(cameraLost=false) {
   $('resume-button').textContent=t('resume');
 }
 $('resume-button').addEventListener('click',async()=>{
+  if(!exhibitionOpen())return;
   const button=$('resume-button');button.disabled=true;
   try {
     await audio.ctx.resume();
@@ -564,8 +566,9 @@ function applyView() {
 }
 
 async function startCamera() {
+  if(!exhibitionOpen())throw new Error('Exhibition ended');
   const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: { ideal: 'environment' }, width: { ideal: 1280 }, height: { ideal: 720 } }, audio: false });
-  if(session.ended){stream.getTracks().forEach(t=>t.stop());throw new Error('Session ended');}
+  if(!exhibitionOpen()||session.ended){stream.getTracks().forEach(t=>t.stop());throw new Error('Session ended');}
   video.srcObject?.getTracks().forEach(t=>t.stop());video.srcObject = stream;
   try{await video.play();}catch(error){stream.getTracks().forEach(t=>t.stop());video.srcObject=null;throw error;}
   for(const track of stream.getVideoTracks())track.addEventListener('ended',()=>{
@@ -595,7 +598,7 @@ async function boot() {
 }
 let beginning=false;
 async function begin() {
-  if(started||beginning||!ready.models)return;
+  if(!exhibitionOpen()||started||beginning||!ready.models)return;
   beginning=true;ready.failed=false;startLine.disabled=true;
   try {
     if(params.get('mode')==='3d')start3D();
@@ -639,6 +642,9 @@ engine.runRenderLoop(() => {
   scene.render();
 });
 
-applyLanguage(language);boot();
+window.addEventListener('exhibition-ended',()=>{
+  endSession();engine.stopRenderLoop();audio.ctx.close().catch(()=>{});
+});
+applyLanguage(language);if(exhibitionOpen())boot();
 
 if (params.has('debug')) window.__tt = { markerTracker, BABYLON:B, engine, scene, camera, anchor, fog, fogState, fogUniforms, music, mic, whisper, fogScreen, session, ambient, spatial, audio, touchSound, story, composeStory, cancelStory, endSession, begin };

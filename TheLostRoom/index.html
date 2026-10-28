@@ -10,7 +10,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=20261028-finish-1">
+<link rel="stylesheet" href="style.css?v=20261028-exhibition-1">
 </head>
 <body>
 <video id="camera-feed" playsinline muted autoplay></video>
@@ -43,12 +43,12 @@
     <div class="resume-inner"><p id="resume-text"></p><button id="resume-button" class="tap" type="button"></button></div>
   </section>
 </div>
+<section id="exhibition-ended" role="status" hidden>
+  <div class="intro-inner"><div class="eyebrow">The Lost Room 2</div><h1 id="exhibition-title">전시가 종료되었습니다.</h1><p id="exhibition-note" class="lede"></p></div>
+</section>
 
-<!-- Pin the renderer and glTF loader to the same version. -->
-<script src="https://cdn.jsdelivr.net/npm/babylonjs@9.31.0/babylon.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/babylonjs-loaders@9.31.0/babylonjs.loaders.min.js"></script>
-<script src="assets/vendor/jsQR.js"></script>
-<script type="module" src="app.js?v=20261028-finish-1"></script>
+<!-- Check exhibition access before loading the AR runtime or requesting media. -->
+<script type="module" src="entry.js?v=20261028-exhibition-1"></script>
 <script>
 // Keep an actionable screen when the renderer or module cannot load.
 window.addEventListener('error',function(event){
