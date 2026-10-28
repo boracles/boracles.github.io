@@ -80,7 +80,7 @@ export function createQRMarkerTracker({ video, onPose, onVisibility }) {
     if(!workerFailed&&typeof Worker==='function'){
       if(!decoder){
         try{
-          decoder=new Worker('qr-scan-worker.js?v=20261029-typecast-7');state.worker=true;
+          decoder=new Worker('qr-scan-worker.js?v=20261029-ar-alpha-8');state.worker=true;
           decoder.onmessage=({data})=>{
             clearTimeout(decodeTimer);const resolve=pending;pending=null;
             if(data.error){workerFailed=true;releaseDecoder();}

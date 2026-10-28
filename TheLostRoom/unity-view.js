@@ -1,6 +1,6 @@
-import {loadUnityCompanion} from './unity-companion.js?v=20261029-typecast-7';
-import {loadUnityRadio} from './unity-radio.js?v=20261029-typecast-7';
-import {createUnityVoiceMist} from './unity-voice-mist.js?v=20261029-typecast-7';
+import {loadUnityCompanion} from './unity-companion.js?v=20261029-ar-alpha-8';
+import {loadUnityRadio} from './unity-radio.js?v=20261029-ar-alpha-8';
+import {createUnityVoiceMist} from './unity-voice-mist.js?v=20261029-ar-alpha-8';
 const B=globalThis.BABYLON;
 if(!B)throw new Error('Babylon.js did not load.');
 export class Vec3 extends B.Vector3 {
@@ -30,7 +30,11 @@ export function createFogView(canvas,{updaters,time}) {
   const fogUniforms={uLevel:{value:0},uScale:{value:.0001},uAlpha:{value:0},uSize:{value:.0026},uSpread:{value:1},uTouch:{value:0},uTouchDir:{value:new Vec3(0,1,0)}};
   const inflowUniforms={uAlpha:{value:0},uSpeed:{value:.3},uSize:{value:.0018}};
   const fogState={level:0,target:0,bass:0,mid:0,home:new Vec3(0,.08,0),spread:1,spreadTarget:1,touch:0,form:'radio'};
-  const glow=new B.GlowLayer('companion-bloom',scene,{mainTextureFixedSize:256,blurKernelSize:16});glow.intensity=.32;
+  // Bloom is a full-screen pass: its default additive blend erases canvas alpha
+  // even after a body material has written valid coverage over the camera video.
+  const glow=new B.GlowLayer('companion-bloom',scene,{mainTextureFixedSize:256,blurKernelSize:16,
+    alphaBlendingMode:B.Engine.ALPHA_LAYER_ACCUMULATE,ldrMerge:true});
+  glow.neutralColor=new B.Color4(0,0,0,0);glow.intensity=.32;
   let companion=null,receiver=null;
   async function loadModels(onProgress){
     [companion,receiver]=await Promise.all([loadUnityCompanion(B,scene,fog),loadUnityRadio(B,scene,radio)]);

@@ -1,9 +1,9 @@
-import {loadUnityInnerParticles} from './unity-inner-particles.js?v=20261029-typecast-7';
+import {loadUnityInnerParticles} from './unity-inner-particles.js?v=20261029-ar-alpha-8';
 // Native FogChild.prefab geometry, FogBase texture and PerlinPDM deformation.
 // Unity's material is URP/Lit with additive transparency and blue emission.
 export async function loadUnityCompanion(B,scene,parent) {
   const folder='assets/models/companion/';
-  const read=async name=>{const response=await fetch(folder+name+'?v=20261029-typecast-7');if(!response.ok)throw new Error(`Unity companion ${name}: ${response.status}`);return response.json();};
+  const read=async name=>{const response=await fetch(folder+name+'?v=20261029-ar-alpha-8');if(!response.ok)throw new Error(`Unity companion ${name}: ${response.status}`);return response.json();};
   const [geometry,profile,noise]=await Promise.all(['mesh.json','profile.json','noise.json'].map(read));
   const mesh=new B.Mesh('unity-fog-child-body',scene);mesh.parent=parent;mesh.isPickable=false;
   const data=new B.VertexData();
@@ -14,7 +14,7 @@ export async function loadUnityCompanion(B,scene,parent) {
   data.indices=geometry.indices.slice();for(let i=0;i<data.indices.length;i+=3)[data.indices[i+1],data.indices[i+2]]=[data.indices[i+2],data.indices[i+1]];
   data.applyToMesh(mesh,true);
   const texture=await new Promise((resolve,reject)=>{
-    const loaded=new B.Texture(folder+'fog-base.png?v=20261029-typecast-7',scene,false,false,B.Texture.TRILINEAR_SAMPLINGMODE,()=>resolve(loaded),(message,error)=>reject(error||new Error(message)));
+    const loaded=new B.Texture(folder+'fog-base.png?v=20261029-ar-alpha-8',scene,false,false,B.Texture.TRILINEAR_SAMPLINGMODE,()=>resolve(loaded),(message,error)=>reject(error||new Error(message)));
   });texture.hasAlpha=true;
   const material=new B.PBRMaterial('unity-fog-child-body-material',scene);
   material.albedoTexture=texture;material.emissiveTexture=texture;material.useAlphaFromAlbedoTexture=true;
@@ -22,7 +22,9 @@ export async function loadUnityCompanion(B,scene,parent) {
   material.emissiveColor=new B.Color3(profile.emission.r,profile.emission.g,profile.emission.b);
   material.metallic=0;material.roughness=.5;material.alpha=0;
   material.transparencyMode=B.PBRMaterial.PBRMATERIAL_ALPHABLEND;
-  material.alphaMode=B.Engine.ALPHA_ADD;material.disableDepthWrite=true;material.backFaceCulling=true;
+  // Keep real coverage in the transparent canvas; additive-only alpha stays zero
+  // and mobile video compositors can discard the entire glowing silhouette.
+  material.alphaMode=B.Engine.ALPHA_LAYER_ACCUMULATE;material.disableDepthWrite=true;material.backFaceCulling=true;
   mesh.material=material;mesh.renderingGroupId=1;
   mesh.overrideMaterialSideOrientation=B.Material.CounterClockWiseSideOrientation;
   const inner=await loadUnityInnerParticles(B,scene,parent,geometry,texture);

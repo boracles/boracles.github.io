@@ -1,5 +1,5 @@
-import { initializeExhibition, exhibitionOpen } from './exhibition.js?v=20261029-typecast-7';
-import { messages, chooseLanguage } from './strings.js?v=20261029-typecast-7';
+import { initializeExhibition, exhibitionOpen } from './exhibition.js?v=20261029-ar-alpha-8';
+import { messages, chooseLanguage } from './strings.js?v=20261029-ar-alpha-8';
 
 const language=chooseLanguage({requested:new URLSearchParams(location.search).get('lang'),languages:navigator.languages?.length?navigator.languages:[navigator.language]});
 const copy=messages[language];
@@ -18,7 +18,7 @@ function loadScript(src) {
 try {
   if(await initializeExhibition()) {
     await Promise.all([loadScript('https://cdn.jsdelivr.net/npm/babylonjs@9.31.0/babylon.js'),loadScript('assets/vendor/jsQR.js')]);
-    if(exhibitionOpen())await import('./app.js?v=20261029-typecast-7');
+    if(exhibitionOpen())await import('./app.js?v=20261029-ar-alpha-8');
   }
 } catch(error) {
   const button=document.getElementById('start');

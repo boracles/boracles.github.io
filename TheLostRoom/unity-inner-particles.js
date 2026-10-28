@@ -2,8 +2,8 @@
 // Keep the native meshes/counts while giving each inner particle a visible,
 // music-driven path instead of overlapping all crystals at the centre.
 export async function loadUnityInnerParticles(B,scene,parent,bodyGeometry,texture) {
-  const nativeFogTexture=new B.Texture('assets/models/companion/inner-fog.png?v=20261029-typecast-7',scene,false,true);
-  const response=await fetch('assets/models/companion/ice-mesh.json?v=20261029-typecast-7');
+  const nativeFogTexture=new B.Texture('assets/models/companion/inner-fog.png?v=20261029-ar-alpha-8',scene,false,true);
+  const response=await fetch('assets/models/companion/ice-mesh.json?v=20261029-ar-alpha-8');
   if(!response.ok)throw new Error('The native inner particles could not be loaded');
   const geometry=await response.json(),root=new B.TransformNode('unity-inner-particles',scene);root.parent=parent;
   const crystal=new B.Mesh('unity-fog-ice-particles',scene);crystal.parent=root;crystal.isPickable=false;crystal.alwaysSelectAsActiveMesh=true;
@@ -51,7 +51,7 @@ export async function loadUnityInnerParticles(B,scene,parent,bodyGeometry,textur
       void main(){vec4 tex=texture2D(fogTexture,gl_PointCoord);vec2 p=gl_PointCoord*2.-1.;float edge=max(0.,1.-dot(p,p));
       gl_FragColor=vec4(tex.rgb*vec3(.45,.72,1.),tex.a*vAlpha*edge*edge);}`
   },{attributes:['position','aSeed'],uniforms:['worldView','projection','uTime','uViewH','uAlpha','uLevel'],samplers:['fogTexture'],needAlphaBlending:true});
-  fogMaterial.setTexture('fogTexture',nativeFogTexture);fogMaterial.pointsCloud=true;fogMaterial.alphaMode=B.Engine.ALPHA_ADD;fogMaterial.disableDepthWrite=true;cloud.material=fogMaterial;cloud.renderingGroupId=2;
+  fogMaterial.setTexture('fogTexture',nativeFogTexture);fogMaterial.pointsCloud=true;fogMaterial.alphaMode=B.Engine.ALPHA_LAYER_ACCUMULATE;fogMaterial.disableDepthWrite=true;cloud.material=fogMaterial;cloud.renderingGroupId=2;
   let previousTime=null,motion=0,energy=0;
   function update(time,scale,alpha,level){
     const dt=previousTime===null?0:Math.min(.05,Math.max(0,time-previousTime));previousTime=time;

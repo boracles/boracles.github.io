@@ -13,7 +13,7 @@ export function createUnityVoiceMist(B,scene,camera) {
       void main(){vec2 p=gl_PointCoord*2.-1.;float mist=clamp(1.-dot(p,p),0.,1.);mist*=mist;
       gl_FragColor=vec4(vec3(0.,.255,1.)*1.6,vAlpha*mist);}`
   },{attributes:['position','aSize','aAlpha'],uniforms:['view','projection','uViewH'],needAlphaBlending:true});
-  material.pointsCloud=true;material.alphaMode=B.Engine.ALPHA_ADD;material.disableDepthWrite=true;material.backFaceCulling=false;mesh.material=material;
+  material.pointsCloud=true;material.alphaMode=B.Engine.ALPHA_LAYER_ACCUMULATE;material.disableDepthWrite=true;material.backFaceCulling=false;mesh.material=material;
   const forward=new B.Vector3(),mouth=new B.Vector3(),inside=new B.Vector3(),origin=new B.Vector3();
   const up=new B.Vector3(),outward=new B.Vector3(),tmp=new B.Vector3();let cursor=0,emission=0;
   function update(dt,time,{receiver,state,level,visible}){

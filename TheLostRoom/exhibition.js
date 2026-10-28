@@ -1,4 +1,4 @@
-import { chooseLanguage } from './strings.js?v=20261029-typecast-7';
+import { chooseLanguage } from './strings.js?v=20261029-ar-alpha-8';
 // The final exhibition day is inclusive in Korea: close at Nov 9, 00:00 KST.
 export const CLOSES_AT = Date.parse('2026-11-09T00:00:00+09:00');
 let serverStart=0,wallStart=0,monotonicStart=0,initialized=false,closed=false,timer=0;

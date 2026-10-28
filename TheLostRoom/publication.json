@@ -7,7 +7,7 @@
   "deployed_on": "2026-10-29",
   "qrSizeMM": 34,
   "qrRole": "entry URL and Fog Child placement marker",
-  "version": "20261029-typecast-7",
+  "version": "20261029-ar-alpha-8",
   "availableThrough": "2026-11-08T23:59:59+09:00",
   "closesAt": "2026-11-09T00:00:00+09:00",
   "tracking": "QR corners / local camera / 34mm / retain last camera-relative pose when QR leaves view",
@@ -40,5 +40,6 @@
       "ja"
     ],
     "delivery": "24 pre-recorded local WAV files; no speech API during visits"
-  }
+  },
+  "arCompositing": "Body, voice mist, inner fog and bloom retain canvas alpha / transparent bloom clear / WebGL 1 and 2 shader and pixel-coverage regression"
 }

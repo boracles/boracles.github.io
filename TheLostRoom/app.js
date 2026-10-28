@@ -1,8 +1,8 @@
-import { createFogView, Vec3 } from './unity-view.js?v=20261029-typecast-7';
-import { createQRMarkerTracker, markerPose } from './qr-marker.js?v=20261029-typecast-7';
-import { messages, chooseLanguage } from './strings.js?v=20261029-typecast-7';
-import { createGuidance } from './guidance.js?v=20261029-typecast-7';
-import { exhibitionOpen } from './exhibition.js?v=20261029-typecast-7';
+import { createFogView, Vec3 } from './unity-view.js?v=20261029-ar-alpha-8';
+import { createQRMarkerTracker, markerPose } from './qr-marker.js?v=20261029-ar-alpha-8';
+import { messages, chooseLanguage } from './strings.js?v=20261029-ar-alpha-8';
+import { createGuidance } from './guidance.js?v=20261029-ar-alpha-8';
+import { exhibitionOpen } from './exhibition.js?v=20261029-ar-alpha-8';
 
 // The Lost Room 2: QR → Fog Child → hold the child while speaking → release for music.
 // Camera and voice processing stay in this browser; nothing is uploaded.
@@ -175,7 +175,7 @@ function playTouchSound() {
 
 // The story's piece: the same StoryMusic as the headset, rendered in a worker from the 16 kHz voice.
 // Its loop is seamless (the tail is folded onto the start), so one looping source is enough.
-const STORY_WORKER='story-music.js?v=20261029-typecast-7';
+const STORY_WORKER='story-music.js?v=20261029-ar-alpha-8';
 const story={worker:null,cancel:null,version:0};
 async function voiceAt16k(buffer) {
   const rate=16000,length=Math.max(1,Math.ceil(buffer.duration*rate));
