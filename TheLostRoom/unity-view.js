@@ -1,6 +1,6 @@
-import {loadUnityCompanion} from './unity-companion.js?v=20261029-languages-6';
-import {loadUnityRadio} from './unity-radio.js?v=20261029-languages-6';
-import {createUnityVoiceMist} from './unity-voice-mist.js?v=20261029-languages-6';
+import {loadUnityCompanion} from './unity-companion.js?v=20261029-typecast-7';
+import {loadUnityRadio} from './unity-radio.js?v=20261029-typecast-7';
+import {createUnityVoiceMist} from './unity-voice-mist.js?v=20261029-typecast-7';
 const B=globalThis.BABYLON;
 if(!B)throw new Error('Babylon.js did not load.');
 export class Vec3 extends B.Vector3 {

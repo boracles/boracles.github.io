@@ -1,7 +1,7 @@
 // The same authored vintage radio used as the Unity recorder.
 export async function loadUnityRadio(B,scene,root) {
   const folder='assets/models/radio/';
-  const response=await fetch(folder+'radio.json?v=20261029-languages-6');
+  const response=await fetch(folder+'radio.json?v=20261029-typecast-7');
   if(!response.ok)throw new Error('The radio model could not be loaded');
   const data=await response.json(),materials=[];
   for(const entry of data.materials){
