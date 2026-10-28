@@ -1,8 +1,8 @@
-import { createFogView, Vec3 } from './unity-view.js?v=20261029-ar-alpha-8';
-import { createQRMarkerTracker, markerPose } from './qr-marker.js?v=20261029-ar-alpha-8';
-import { messages, chooseLanguage } from './strings.js?v=20261029-ar-alpha-8';
-import { createGuidance } from './guidance.js?v=20261029-ar-alpha-8';
-import { exhibitionOpen } from './exhibition.js?v=20261029-ar-alpha-8';
+import { createFogView, Vec3 } from './unity-view.js?v=20261029-radio-cue-9';
+import { createQRMarkerTracker, markerPose } from './qr-marker.js?v=20261029-radio-cue-9';
+import { messages, chooseLanguage } from './strings.js?v=20261029-radio-cue-9';
+import { createGuidance } from './guidance.js?v=20261029-radio-cue-9';
+import { exhibitionOpen } from './exhibition.js?v=20261029-radio-cue-9';
 
 // The Lost Room 2: QR → Fog Child → hold the child while speaking → release for music.
 // Camera and voice processing stay in this browser; nothing is uploaded.
@@ -69,7 +69,12 @@ spatial.childMeter=audio.ctx.createAnalyser();spatial.childMeter.fftSize=1024;
 audio.child.connect(spatial.panner).connect(spatial.presence).connect(spatial.childMeter).connect(audio.master);
 audio.master.connect(spatial.meter).connect(audio.ctx.destination);
 const soundPosition=new B.Vector3(),soundForward=new B.Vector3(),soundUp=new B.Vector3(),soundForwardAxis=new B.Vector3(0,0,-1);
+const audioVectors=new WeakMap();
 function setAudioVector(node,prefix,v) {
+  let vectors=audioVectors.get(node);if(!vectors){vectors={};audioVectors.set(node,vectors);}
+  let previous=vectors[prefix];
+  if(previous&&B.Vector3.DistanceSquared(previous,v)<1e-8)return;
+  if(!previous)previous=vectors[prefix]=new B.Vector3();previous.copyFrom(v);
   const now=audio.ctx.currentTime;
   if(node[prefix+'X'])for(const [axis,value] of [['X',v.x],['Y',v.y],['Z',v.z]])node[prefix+axis].setTargetAtTime(value,now,.08);
   else if(prefix==='position')node.setPosition(v.x,v.y,v.z);
@@ -175,7 +180,7 @@ function playTouchSound() {
 
 // The story's piece: the same StoryMusic as the headset, rendered in a worker from the 16 kHz voice.
 // Its loop is seamless (the tail is folded onto the start), so one looping source is enough.
-const STORY_WORKER='story-music.js?v=20261029-ar-alpha-8';
+const STORY_WORKER='story-music.js?v=20261029-radio-cue-9';
 const story={worker:null,cancel:null,version:0};
 async function voiceAt16k(buffer) {
   const rate=16000,length=Math.max(1,Math.ceil(buffer.duration*rate));
@@ -366,11 +371,13 @@ function demoVoice() {
 // =====================================================================
 // In WebXR the XR camera is active; everywhere else the page's own camera.
 const viewCam = () => scene.activeCamera || camera;
+const uiProjection=B.Matrix.Identity(),uiViewport=new B.Viewport(0,0,innerWidth,innerHeight),uiProjected=new Vec3();
 function worldToScreen(v, out = { x: 0, y: 0 }) {
   const c = viewCam();
-  const p = B.Vector3.Project(v, B.Matrix.IdentityReadOnly,
-    c.getViewMatrix().multiply(c.getProjectionMatrix()), new B.Viewport(0, 0, innerWidth, innerHeight));
-  out.x = p.x; out.y = p.y;
+  c.getViewMatrix().multiplyToRef(c.getProjectionMatrix(),uiProjection);
+  uiViewport.width=innerWidth;uiViewport.height=innerHeight;
+  B.Vector3.ProjectToRef(v,B.Matrix.IdentityReadOnly,uiProjection,uiViewport,uiProjected);
+  out.x = uiProjected.x; out.y = uiProjected.y;
   return out;
 }
 let markerStatusTimer = 0;
@@ -406,6 +413,9 @@ const markerTracker = createQRMarkerTracker({ video,
 // Hold the Fog Child to speak. Releasing the same pointer makes its music.
 // =====================================================================
 const touchLayer=$('touch');
+const radioTouchCue=$('radio-touch-cue');
+const radioCueWorld=new Vec3(),radioCueView=new Vec3(),radioCueScreen={x:0,y:0};
+let radioCueX=Infinity,radioCueY=Infinity;
 const session={ended:false,recording:false,interrupted:false};
 const whisper={phase:'idle',pointerId:null,token:0,voiced:0,elapsed:0,generation:0};
 const captionEl=$('caption');
@@ -431,6 +441,7 @@ function say(key,fade=false) {
 function setPhase(phase) {
   whisper.phase=phase;document.body.dataset.phase=phase;
   radioState.recording=phase==='recording';radioState.preparing=phase==='rendering';
+  if(phase!=='idle')radioTouchCue.hidden=true;
   if(phase==='arming'||phase==='recording')guidance.stop();
   touchLayer.setAttribute('aria-busy',String(phase==='rendering'));
   if(phase!=='idle')hideMusicActions();
@@ -450,6 +461,20 @@ function fogScreen() {
   return {x:c.x,y:c.y,r:Math.max(48,Math.min(150,Math.hypot(e.x-c.x,e.y-c.y)*1.2))};
 }
 function canHold() { return exhibitionOpen()&&started&&!session.ended&&!session.interrupted&&(fogState.form==='radio'?radioState.ready&&radioState.alpha>.85:fogUniforms.uAlpha.value>.85)&&anchor.isEnabled()&&(!markerTracker.state.active||markerTracker.state.locked); }
+updaters.add(()=>{
+  let visible=fogState.form==='radio'&&whisper.phase==='idle'&&!document.hidden&&canHold()&&!!radioState.hole;
+  if(visible){
+    radioState.hole.computeWorldMatrix();radioCueWorld.copyFrom(radioState.hole.getAbsolutePosition());
+    B.Vector3.TransformCoordinatesToRef(radioCueWorld,viewCam().getViewMatrix(),radioCueView);
+    worldToScreen(radioCueWorld,radioCueScreen);
+    visible=radioCueView.z<-camera.minZ&&radioCueScreen.x>24&&radioCueScreen.x<innerWidth-24&&radioCueScreen.y>40&&radioCueScreen.y<innerHeight-100;
+    if(visible&&(Math.abs(radioCueScreen.x-radioCueX)>.25||Math.abs(radioCueScreen.y-radioCueY)>.25)){
+      radioCueX=radioCueScreen.x;radioCueY=radioCueScreen.y;
+      radioTouchCue.style.transform=`translate3d(${radioCueX}px,${radioCueY}px,0) translate(-50%,-50%)`;
+    }
+  }
+  if(radioTouchCue.hidden===visible)radioTouchCue.hidden=!visible;
+});
 async function beginHold(pointerId) {
   if(!canHold()||['arming','recording'].includes(whisper.phase))return;
   playTouchSound();
@@ -541,10 +566,14 @@ for(const type of ['pointercancel','lostpointercapture'])touchLayer.addEventList
 touchLayer.addEventListener('keydown',e=>{if([' ','Enter'].includes(e.key)&&!e.repeat){e.preventDefault();beginHold('keyboard');}});
 touchLayer.addEventListener('keyup',e=>{if([' ','Enter'].includes(e.key)&&whisper.pointerId==='keyboard'){e.preventDefault();finishHold();}});
 addEventListener('blur',()=>finishHold(true));
+let previousHoldEnabled=null;
 updaters.add(()=>{
   const enabled=canHold();
-  touchLayer.tabIndex=enabled?0:-1;
-  touchLayer.setAttribute('aria-disabled',String(!enabled||whisper.phase==='rendering'));
+  const blocked=!enabled||whisper.phase==='rendering';
+  if(blocked!==previousHoldEnabled){
+    previousHoldEnabled=blocked;touchLayer.tabIndex=enabled?0:-1;
+    touchLayer.setAttribute('aria-disabled',String(blocked));
+  }
 });
 updaters.add(dt=>{
   if(whisper.phase!=='recording')return;
@@ -561,6 +590,7 @@ updaters.add(dt=>{
 // Closing or navigating away releases every media resource, including on bfcache entry.
 function endSession() {
   session.ended=true;session.recording=false;whisper.pointerId=null;whisper.token++;
+  radioTouchCue.hidden=true;
   hideMusicActions();
   engine.stopRenderLoop();
   cancelStory();closeMic(true);stopMusic();stopTouchSounds(0);markerTracker.stop();guidance.dispose();
@@ -611,6 +641,7 @@ document.addEventListener('visibilitychange',()=>{
 
 function showResume(cameraLost=false) {
   session.interrupted=true;
+  radioTouchCue.hidden=true;
   guidance.stop();ambient.element.pause();updateSoundPrompt();
   $('resume').hidden=false;$('resume-text').textContent=t(cameraLost?'cameraInterrupted':'resumeNote');
   $('resume-button').textContent=t('resume');
@@ -724,6 +755,10 @@ const T0 = performance.now();
 let last = T0;
 function renderFrame() {
   const now = performance.now();
+  // Camera video and the CSS finger cue animate independently. Render the idle
+  // radio at 30 fps, with up to 60 fps for touch, birth and musical movement.
+  const frameMs=1000/(fogState.form==='radio'&&whisper.phase==='idle'&&!tweens.size?30:60);
+  if(now-last<frameMs-.75)return;
   const dt = Math.min(0.05, (now - last) / 1000);
   last = now;
   time.value = (now - T0) / 1000; // small values keep shader sin() precise on phones

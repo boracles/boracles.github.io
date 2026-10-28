@@ -8,7 +8,7 @@
 <meta name="description" content="Discover a small radio on your tea wrapper’s QR. Share your lost story and hear it become music with the Fog Child.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='26' fill='%232b4fe0'/%3E%3C/svg%3E">
 <link rel="preload" href="assets/room.woff" as="font" type="font/woff" crossorigin>
-<link rel="stylesheet" href="style.css?v=20261029-ar-alpha-8">
+<link rel="stylesheet" href="style.css?v=20261029-radio-cue-9">
 </head>
 <body>
 <video id="camera-feed" playsinline muted autoplay></video>
@@ -16,7 +16,7 @@
 
 <div id="ui">
   <!-- Takes touches for holding the child -->
-  <div id="touch" role="button" tabindex="0" aria-label="Share your lost story"></div>
+  <div id="touch" role="button" tabindex="0" aria-label="Share your lost story" aria-describedby="radio-touch-label"></div>
   <div id="scan-guide" aria-hidden="true" hidden><span></span></div>
 
   <!-- Permission/loading screen; the camera opens automatically on entry. -->
@@ -30,6 +30,7 @@
   </section>
 
   <section id="hud">
+    <div id="radio-touch-cue" role="note" hidden><span class="touch-point" aria-hidden="true"></span><svg class="touch-finger" viewBox="0 0 32 40" fill="none" aria-hidden="true"><path d="M11 22V7a3 3 0 0 1 6 0v11-3a2.5 2.5 0 0 1 5 0v4-2a2.5 2.5 0 0 1 5 0v4a2 2 0 0 1 4 0v8c0 5-3 8-8 8h-4c-3 0-5-2-7-5L5 22c-2-3 1-6 4-4l2 2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span id="radio-touch-label" class="sr-only" data-i18n="radioTouch">Touch and hold here to speak</span></div>
     <button id="sound-start" type="button" data-i18n="enableSound" hidden>Tap to hear the music and guide</button>
     <div id="marker-status" role="status" aria-live="polite"></div>
     <div id="rec" role="status" aria-live="polite"><i class="dot"></i><span class="label" data-i18n="listening">Listening</span><span class="time" aria-hidden="true">0:00</span></div>
@@ -49,7 +50,7 @@
 </section>
 
 <!-- Check exhibition access before loading the AR runtime or requesting media. -->
-<script type="module" src="entry.js?v=20261029-ar-alpha-8"></script>
+<script type="module" src="entry.js?v=20261029-radio-cue-9"></script>
 <script>
 // Keep an actionable screen when the renderer or module cannot load.
 window.addEventListener('error',function(event){

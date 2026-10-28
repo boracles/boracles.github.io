@@ -15,14 +15,15 @@ export function createUnityVoiceMist(B,scene,camera) {
   },{attributes:['position','aSize','aAlpha'],uniforms:['view','projection','uViewH'],needAlphaBlending:true});
   material.pointsCloud=true;material.alphaMode=B.Engine.ALPHA_LAYER_ACCUMULATE;material.disableDepthWrite=true;material.backFaceCulling=false;mesh.material=material;
   const forward=new B.Vector3(),mouth=new B.Vector3(),inside=new B.Vector3(),origin=new B.Vector3();
-  const up=new B.Vector3(),outward=new B.Vector3(),tmp=new B.Vector3();let cursor=0,emission=0;
+  const up=new B.Vector3(),outward=new B.Vector3(),tmp=new B.Vector3();let cursor=0,emission=0,active=0;
   function update(dt,time,{receiver,state,level,visible}){
     if(!visible||!receiver){mesh.setEnabled(false);return;}
+    const emitting=state.recording&&level>.01;
+    if(!emitting&&active===0){mesh.setEnabled(false);return;}
     receiver.hole.computeWorldMatrix(true);mouth.copyFrom(receiver.hole.getAbsolutePosition());
     forward.copyFrom(receiver.hole.getDirection(new B.Vector3(0,0,-1))).normalize();
     if(B.Vector3.Dot(camera.globalPosition.subtract(mouth),forward)<0)forward.scaleInPlace(-1);
     inside.copyFrom(mouth).subtractInPlace(forward.scale(.05*receiver.scale));
-    const emitting=state.recording&&level>.01;
     if(emitting){
       outward.copyFrom(camera.getDirection(new B.Vector3(0,0,-1))).normalize();up.copyFrom(camera.getDirection(B.Axis.Y));
       origin.copyFrom(camera.globalPosition).addInPlace(outward.scale(.17)).subtractInPlace(up.scale(.065));
@@ -46,9 +47,9 @@ export function createUnityVoiceMist(B,scene,camera) {
       positions[j]+=(tx-positions[j])*step;positions[j+1]+=(ty-positions[j+1])*step;positions[j+2]+=(tz-positions[j+2])*step;
       alpha[i]=Math.min(.8,life[i]*2);live++;
     }
-    mesh.setEnabled(live>0);
+    active=live;mesh.setEnabled(live>0);
     if(live){mesh.updateVerticesData('position',positions);mesh.updateVerticesData('aSize',sizes);mesh.updateVerticesData('aAlpha',alpha);material.setFloat('uViewH',scene.getEngine().getRenderHeight());}
   }
-  function clear(){life.fill(0);alpha.fill(0);mesh.setEnabled(false);}
+  function clear(){life.fill(0);alpha.fill(0);active=0;mesh.setEnabled(false);}
   return{mesh,update,clear,stats};
 }

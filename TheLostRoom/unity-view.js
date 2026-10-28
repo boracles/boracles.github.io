@@ -1,6 +1,6 @@
-import {loadUnityCompanion} from './unity-companion.js?v=20261029-ar-alpha-8';
-import {loadUnityRadio} from './unity-radio.js?v=20261029-ar-alpha-8';
-import {createUnityVoiceMist} from './unity-voice-mist.js?v=20261029-ar-alpha-8';
+import {loadUnityCompanion} from './unity-companion.js?v=20261029-radio-cue-9';
+import {loadUnityRadio} from './unity-radio.js?v=20261029-radio-cue-9';
+import {createUnityVoiceMist} from './unity-voice-mist.js?v=20261029-radio-cue-9';
 const B=globalThis.BABYLON;
 if(!B)throw new Error('Babylon.js did not load.');
 export class Vec3 extends B.Vector3 {
@@ -24,7 +24,7 @@ export function createFogView(canvas,{updaters,time}) {
   const anchor=new B.TransformNode('qr-anchor',scene);anchor.setEnabled(false);
   const fog=new B.TransformNode('fog-child',scene);fog.parent=anchor;fog.position=new Vec3();
   const radio=new B.TransformNode('story-radio',scene);radio.parent=anchor;radio.setEnabled(false);
-  const radioState={alpha:0,ready:false,recording:false,preparing:false,grille:null,mist:null};
+  const radioState={alpha:0,ready:false,recording:false,preparing:false,hole:null,grille:null,mist:null};
   // Compatibility with the reveal timeline. No faceted stand-in is rendered.
   const iceCore={userData:{show:0}};
   const fogUniforms={uLevel:{value:0},uScale:{value:.0001},uAlpha:{value:0},uSize:{value:.0026},uSpread:{value:1},uTouch:{value:0},uTouchDir:{value:new Vec3(0,1,0)}};
@@ -38,7 +38,7 @@ export function createFogView(canvas,{updaters,time}) {
   let companion=null,receiver=null;
   async function loadModels(onProgress){
     [companion,receiver]=await Promise.all([loadUnityCompanion(B,scene,fog),loadUnityRadio(B,scene,radio)]);
-    glow.addIncludedOnlyMesh(companion.mesh);radioState.grille=receiver.grille;radioState.scale=receiver.scale;radioState.ready=true;onProgress(1);
+    glow.addIncludedOnlyMesh(companion.mesh);radioState.hole=receiver.hole;radioState.grille=receiver.grille;radioState.scale=receiver.scale;radioState.ready=true;onProgress(1);
   }
   function buildIce(){} // Native body replaces the old ice-core geometry.
 
