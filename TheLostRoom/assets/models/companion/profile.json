@@ -1,0 +1,28 @@
+{
+    "prefab": "Assets/03_Prefabs/Fog/FogChild.prefab",
+    "shader": "Universal Render Pipeline/Lit",
+    "texture": "Assets/04_Images/Textures/Fog/FogBase.tif",
+    "flowTexture": "",
+    "baseColor": {
+        "r": 0.319909006357193,
+        "g": 0.5793718695640564,
+        "b": 0.8584905862808228,
+        "a": 0.8509804010391235
+    },
+    "tintColor": {
+        "r": 0.0,
+        "g": 0.0,
+        "b": 0.0,
+        "a": 0.0
+    },
+    "emission": {
+        "r": 0.0,
+        "g": 0.8156862854957581,
+        "b": 3.200000047683716,
+        "a": 1.0
+    },
+    "scale": 0.20000000298023225,
+    "speed": 0.5,
+    "amplitude": 1.0,
+    "flowTime": 0.0
+}

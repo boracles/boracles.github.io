@@ -4,20 +4,28 @@
   "repository": "boracles/boracles.github.io",
   "branch": "main",
   "path": "TheLostRoom/",
-  "deployed_on": "2026-10-28",
+  "deployed_on": "2026-10-29",
   "qrSizeMM": 34,
   "qrRole": "entry URL and Fog Child placement marker",
-  "version": "20261028-exhibition-1",
+  "version": "20261029-languages-6",
   "availableThrough": "2026-11-08T23:59:59+09:00",
   "closesAt": "2026-11-09T00:00:00+09:00",
   "tracking": "QR corners / local camera / 34mm / retain last camera-relative pose when QR leaves view",
-  "interaction": "scan QR to open / automatic camera request / scan same QR again to spawn / hold child to speak / release for music",
+  "interaction": "QR creates the native Unity radio / touch while speaking / release / absorb into the original dial hole / child emerges from speaker grille with automatic music / choices after 6 seconds",
   "music": "On-device StoryMusic worker / voice-derived 48-80 second loop / no generation API or voice upload",
   "languages": [
     "ko",
     "en",
     "ja"
   ],
-  "audio": "HRTF positional / camera listener / inverse distance / ambient ducking",
-  "touchFeedback": "Short water-like tones from the music pitch palette / spatial / fades when recording opens"
+  "audio": "Automatic room bed and exhibition-voice guidance / HRTF story music / ref 35cm, rolloff 0.7 / guide stops before recording",
+  "touchFeedback": "Short water-like tones from the music pitch palette / spatial / fades when recording opens",
+  "prepared_on": "2026-10-29",
+  "visuals": "Native Unity meshes and PBR maps / original dial and grille anchors / DrawIntoHole and Story Voice Mist port / 61 inner ice instances and 43 inner fog particles",
+  "finish": "Close the browser window if allowed; otherwise a brief farewell",
+  "performance": "QR decode worker / no glTF loader / DPR cap 1.5 / 256px bloom / 44KB subset fonts / stop rendering on hide and finish",
+  "innerMotion": "61 dynamic native ice instances / independent rotation and position / music-driven speed, size and light / spread constrained within the body",
+  "surfaceMotion": "Local vertex bulges follow RMS, bass and midrange / smooth attack and release / bounded 0.16 model-space deformation",
+  "restart": "Hide the entire old child hierarchy and cancel pending birth before returning to the radio",
+  "defaultLanguage": "Device primary language: ko/en/ja; otherwise en"
 }

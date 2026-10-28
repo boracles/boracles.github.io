@@ -70,13 +70,40 @@ export function createQRMarkerTracker({ video, onPose, onVisibility }) {
   const ctx = canvas.getContext('2d', { willReadFrequently: true });
   let timer = 0, running = false, resolveFirst = null, lastSeen = 0, consecutive = 0;
   let announced = false, first = true;
-  const state = { active: false, visible: false, locked: false, detections: 0, url: null };
+  let decoder=null,workerFailed=false,pending=null,decodeTimer=0,runVersion=0;
+  const state = { active: false, visible: false, locked: false, detections: 0, url: null, worker:false,scanMs:0 };
+  function releaseDecoder(){
+    clearTimeout(decodeTimer);decoder?.terminate();decoder=null;state.worker=false;
+    pending?.(null);pending=null;
+  }
+  function decode(pixels,width,height){
+    if(!workerFailed&&typeof Worker==='function'){
+      if(!decoder){
+        try{
+          decoder=new Worker('qr-scan-worker.js?v=20261029-languages-6');state.worker=true;
+          decoder.onmessage=({data})=>{
+            clearTimeout(decodeTimer);const resolve=pending;pending=null;
+            if(data.error){workerFailed=true;releaseDecoder();}
+            resolve?.(data.code||null);
+          };
+          decoder.onerror=()=>{workerFailed=true;releaseDecoder();};
+        }catch{workerFailed=true;releaseDecoder();}
+      }
+      if(decoder)return new Promise(resolve=>{
+        pending=resolve;
+        decodeTimer=setTimeout(()=>{workerFailed=true;releaseDecoder();},2000);
+        decoder.postMessage({pixels:pixels.data.buffer,width,height},[pixels.data.buffer]);
+      });
+    }
+    return Promise.resolve(globalThis.jsQR?.(pixels.data,width,height,{inversionAttempts:'dontInvert'})||null);
+  }
   function visibility(visible) {
     state.visible = visible;
     if (announced !== visible) { announced = visible; onVisibility(visible, state.locked); }
   }
-  function scan() {
+  async function scan() {
     if (!running) return;
+    const version=runVersion;
     try {
       if (!document.hidden && video.readyState >= 2 && video.videoWidth && typeof globalThis.jsQR === 'function') {
         const s = Math.min(1,960/Math.max(video.videoWidth,video.videoHeight));
@@ -84,7 +111,10 @@ export function createQRMarkerTracker({ video, onPose, onVisibility }) {
         if (canvas.width !== w || canvas.height !== h) { canvas.width=w; canvas.height=h; }
         ctx.drawImage(video,0,0,w,h);
         const pixels = ctx.getImageData(0,0,w,h);
-        const code = globalThis.jsQR(pixels.data,w,h,{ inversionAttempts:'dontInvert' });
+        const began=performance.now();
+        const code = await decode(pixels,w,h);
+        if(!running||version!==runVersion)return;
+        state.scanMs=performance.now()-began;
         let accepted = false;
         if (code && isOurMarker(code.data)) {
           const corners = ['topLeftCorner','topRightCorner','bottomRightCorner','bottomLeftCorner']
@@ -108,16 +138,16 @@ export function createQRMarkerTracker({ video, onPose, onVisibility }) {
       console.warn('QR frame could not be read',error);
       visibility(false);
     }
-    if (running) timer=setTimeout(scan,110);
+    if (running&&version===runVersion) timer=setTimeout(scan,state.locked?160:110);
   }
   return {
     state,
     start() {
       if (running) return;
-      running=true;state.active=true;lastSeen=0;consecutive=0;onVisibility(false,state.locked);scan();
+      running=true;runVersion++;state.active=true;lastSeen=0;consecutive=0;onVisibility(false,state.locked);scan();
     },
-    pause() { running=false;clearTimeout(timer);state.active=false;visibility(false); },
+    pause() { running=false;runVersion++;clearTimeout(timer);releaseDecoder();state.active=false;visibility(false); },
     waitForFirst() { return state.locked ? Promise.resolve(true) : new Promise(resolve=>{resolveFirst=resolve;}); },
-    stop() { running=false;clearTimeout(timer);state.active=false;visibility(false);resolveFirst?.(false);resolveFirst=null; }
+    stop() { running=false;runVersion++;clearTimeout(timer);releaseDecoder();state.active=false;visibility(false);resolveFirst?.(false);resolveFirst=null; }
   };
 }

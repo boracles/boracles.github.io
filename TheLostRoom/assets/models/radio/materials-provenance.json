@@ -1,0 +1,44 @@
+[
+  {
+    "material": "vintage_radio_recorder",
+    "property": "_BaseMap",
+    "source": "Assets/Grandpas_Attic/models/props/vintage_radio/material/vintage_radio_AlbedoTransparency.png",
+    "output": "f809345eed.png"
+  },
+  {
+    "material": "vintage_radio_recorder",
+    "property": "_BumpMap",
+    "source": "Assets/Grandpas_Attic/models/props/vintage_radio/material/vintage_radio_Normal.png",
+    "output": "e6109d4d8f.png"
+  },
+  {
+    "material": "vintage_radio_recorder",
+    "property": "_OcclusionMap",
+    "source": "Assets/Grandpas_Attic/models/props/vintage_radio/material/vintage_radio_AmbientOcclusion.png",
+    "output": "80e95b0c31.png"
+  },
+  {
+    "material": "vintage_radio_recorder",
+    "property": "_EmissionMap",
+    "source": "Assets/Grandpas_Attic/models/props/vintage_radio/material/vintage_radio_KnobEmission.png",
+    "output": "dfc52b68f6.png"
+  },
+  {
+    "material": "vintage_radio_grille",
+    "property": "_BaseMap",
+    "source": "Assets/Grandpas_Attic/models/props/vintage_radio/material/vintage_radio_AlbedoTransparency.png",
+    "output": "f809345eed.png"
+  },
+  {
+    "material": "vintage_radio_grille",
+    "property": "_BumpMap",
+    "source": "Assets/Grandpas_Attic/models/props/vintage_radio/material/vintage_radio_Normal.png",
+    "output": "e6109d4d8f.png"
+  },
+  {
+    "material": "vintage_radio_grille",
+    "property": "_OcclusionMap",
+    "source": "Assets/Grandpas_Attic/models/props/vintage_radio/material/vintage_radio_AmbientOcclusion.png",
+    "output": "80e95b0c31.png"
+  }
+]

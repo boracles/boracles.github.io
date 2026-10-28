@@ -1,16 +1,14 @@
 <!doctype html>
-<html lang="ko">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#0b1020">
-<title>안개 아이 · The Lost Room 2</title>
-<meta name="description" content="QR 위에 나타난 안개 아이를 누른 채 잃어버린 이야기를 털어놓아 주세요. 손을 떼면 그 이야기가 음악이 됩니다.">
+<title>Fog Child · The Lost Room 2</title>
+<meta name="description" content="Discover a small radio on your tea wrapper’s QR. Share your lost story and hear it become music with the Fog Child.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='26' fill='%232b4fe0'/%3E%3C/svg%3E">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=20261028-exhibition-1">
+<link rel="preload" href="assets/room.woff" as="font" type="font/woff" crossorigin>
+<link rel="stylesheet" href="style.css?v=20261029-languages-6">
 </head>
 <body>
 <video id="camera-feed" playsinline muted autoplay></video>
@@ -18,46 +16,49 @@
 
 <div id="ui">
   <!-- Takes touches for holding the child -->
-  <div id="touch" role="button" tabindex="0" aria-label="안개 아이를 누른 채 이야기하기"></div>
-  <div id="child-cue" aria-hidden="true" hidden></div>
+  <div id="touch" role="button" tabindex="0" aria-label="Share your lost story"></div>
   <div id="scan-guide" aria-hidden="true" hidden><span></span></div>
 
   <!-- Permission/loading screen; the camera opens automatically on entry. -->
   <section id="intro">
     <div class="intro-inner">
-      <div class="eyebrow">The Lost Room 2</div>
-      <h1 data-i18n="title">안개 아이</h1>
-      <p class="lede" data-i18n="introduction"></p>
-      <button id="start" class="tap" type="button" data-i18n="loading" disabled>준비하는 중…</button>
+      <p class="entry-note" data-i18n="cameraOpening">Opening the camera…</p>
+      <button id="start" class="tap" type="button" data-i18n="cameraRetry" hidden>Try the camera again</button>
       <div id="load-status" aria-live="polite"></div>
       <p class="fine" data-i18n="privacy"></p>
     </div>
   </section>
 
   <section id="hud">
+    <button id="sound-start" type="button" data-i18n="enableSound" hidden>Tap to hear the music and guide</button>
     <div id="marker-status" role="status" aria-live="polite"></div>
-    <div id="rec" role="status" aria-live="polite"><i class="dot"></i><span class="label" data-i18n="listening">듣고 있어요</span><span class="time" aria-hidden="true">0:00</span></div>
-    <div id="caption" role="status" aria-live="polite"><div class="ko"></div><div class="hint"></div><progress id="music-progress" max="1" value="0" aria-label="음악 생성" hidden></progress></div>
+    <div id="rec" role="status" aria-live="polite"><i class="dot"></i><span class="label" data-i18n="listening">Listening</span><span class="time" aria-hidden="true">0:00</span></div>
+    <div id="caption" role="status" aria-live="polite"><div class="ko"></div><div class="hint"></div><progress id="music-progress" max="1" value="0" aria-label="Making music" hidden></progress>
+    </div>
+    <div id="music-actions" hidden><button id="tell-again" type="button" data-i18n="tellAgain">Tell another story</button><button id="finish" type="button" data-i18n="farewell">Say goodbye to the Fog Child</button></div>
   </section>
   <section id="resume" hidden>
     <div class="resume-inner"><p id="resume-text"></p><button id="resume-button" class="tap" type="button"></button></div>
   </section>
+  <section id="end" class="sheet on" tabindex="-1" hidden>
+    <div class="end-inner"><div class="end-brand">The Lost Room 2</div><p class="end-main" data-i18n="endTitle">Thank you for sharing your story.</p><p class="fine" data-i18n="endNote"></p></div>
+  </section>
 </div>
 <section id="exhibition-ended" role="status" hidden>
-  <div class="intro-inner"><div class="eyebrow">The Lost Room 2</div><h1 id="exhibition-title">전시가 종료되었습니다.</h1><p id="exhibition-note" class="lede"></p></div>
+  <div class="intro-inner"><h1 id="exhibition-title">The exhibition has ended.</h1><p id="exhibition-note" class="lede">Please join us for The Lost Room at our next exhibition.</p></div>
 </section>
 
 <!-- Check exhibition access before loading the AR runtime or requesting media. -->
-<script type="module" src="entry.js?v=20261028-exhibition-1"></script>
+<script type="module" src="entry.js?v=20261029-languages-6"></script>
 <script>
 // Keep an actionable screen when the renderer or module cannot load.
 window.addEventListener('error',function(event){
   if(!event.filename&&!event.target?.src)return;
   if(!document.body.classList.contains('mode-camera')&&!document.body.classList.contains('mode-3d')){
     var button=document.getElementById('start');
-    button.disabled=false;button.textContent='다시 열기 / Retry';
+    button.disabled=false;button.textContent='Retry';
     button.onclick=function(){location.reload();};
-    document.getElementById('load-status').textContent='연결을 확인하고 다시 열어 주세요. / Check your connection and retry.';
+    document.getElementById('load-status').textContent='Check your connection and retry.';
   }
 },true);
 </script>

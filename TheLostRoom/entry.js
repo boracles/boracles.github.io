@@ -1,4 +1,12 @@
-import { initializeExhibition, exhibitionOpen } from './exhibition.js?v=20261028-exhibition-1';
+import { initializeExhibition, exhibitionOpen } from './exhibition.js?v=20261029-languages-6';
+import { messages, chooseLanguage } from './strings.js?v=20261029-languages-6';
+
+const language=chooseLanguage({requested:new URLSearchParams(location.search).get('lang'),languages:navigator.languages?.length?navigator.languages:[navigator.language]});
+const copy=messages[language];
+document.documentElement.lang=language;document.title=copy.pageTitle;
+for(const node of document.querySelectorAll('[data-i18n]'))node.textContent=copy[node.dataset.i18n]||messages.en[node.dataset.i18n];
+document.getElementById('touch').setAttribute('aria-label',copy.holdLabel);
+document.getElementById('music-progress').setAttribute('aria-label',copy.musicProgress);
 
 function loadScript(src) {
   return new Promise((resolve,reject)=>{
@@ -9,14 +17,12 @@ function loadScript(src) {
 }
 try {
   if(await initializeExhibition()) {
-    await loadScript('https://cdn.jsdelivr.net/npm/babylonjs@9.31.0/babylon.js');
-    if(exhibitionOpen())await loadScript('https://cdn.jsdelivr.net/npm/babylonjs-loaders@9.31.0/babylonjs.loaders.min.js');
-    if(exhibitionOpen())await loadScript('assets/vendor/jsQR.js');
-    if(exhibitionOpen())await import('./app.js?v=20261028-exhibition-1');
+    await Promise.all([loadScript('https://cdn.jsdelivr.net/npm/babylonjs@9.31.0/babylon.js'),loadScript('assets/vendor/jsQR.js')]);
+    if(exhibitionOpen())await import('./app.js?v=20261029-languages-6');
   }
 } catch(error) {
   const button=document.getElementById('start');
-  button.disabled=false;button.textContent='다시 열기 / Retry';button.onclick=()=>location.reload();
-  document.getElementById('load-status').textContent='연결을 확인하고 다시 열어 주세요. / Check your connection and retry.';
+  button.hidden=false;button.disabled=false;button.textContent='Retry';button.onclick=()=>location.reload();
+  document.getElementById('load-status').textContent='Check your connection and retry.';
   console.warn('WebAR could not start',error);
 }

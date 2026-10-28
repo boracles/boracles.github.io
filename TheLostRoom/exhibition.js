@@ -1,10 +1,11 @@
+import { chooseLanguage } from './strings.js?v=20261029-languages-6';
 // The final exhibition day is inclusive in Korea: close at Nov 9, 00:00 KST.
 export const CLOSES_AT = Date.parse('2026-11-09T00:00:00+09:00');
 let serverStart=0,wallStart=0,monotonicStart=0,initialized=false,closed=false,timer=0;
 const copy={
-  ko:['전시가 종료되었습니다.','안개 아이 웹AR은 2026년 11월 8일까지 운영되었습니다.\n함께해 주셔서 감사합니다.'],
-  en:['The exhibition has ended.','The Fog Child WebAR was available through November 8, 2026 (Korea time).\nThank you for spending time with us.'],
-  ja:['展示は終了しました。','霧の子のWebARは2026年11月8日（韓国時間）まで公開されました。\nご参加いただきありがとうございました。']
+  ko:['전시 기간이 종료되었습니다.','다음 전시에서 《잃어버린 방》을 다시 만나 주세요.'],
+  en:['The exhibition has ended.','Please join us for The Lost Room at our next exhibition.'],
+  ja:['展示期間は終了しました。','次の展示で、また「失われた部屋」に会いに来てください。']
 };
 function now() {
   // Anchor to the host's HTTP clock. Changing the phone's date backward cannot
@@ -16,7 +17,8 @@ function closeExhibition() {
   closed=true;clearTimeout(timer);
   window.dispatchEvent(new Event('exhibition-ended'));
   for(const id of ['ui','stage','camera-feed'])document.getElementById(id).hidden=true;
-  const language=new URLSearchParams(location.search).get('lang')||navigator.language.split('-')[0];
+  const language=chooseLanguage({requested:new URLSearchParams(location.search).get('lang'),languages:navigator.languages?.length?navigator.languages:[navigator.language]});
+  document.documentElement.lang=language;
   const [title,note]=copy[language]||copy.en;
   document.getElementById('exhibition-title').textContent=title;
   document.getElementById('exhibition-note').textContent=note;
