@@ -2,8 +2,8 @@
 // Keep the native meshes/counts while giving each inner particle a visible,
 // music-driven path instead of overlapping all crystals at the centre.
 export async function loadUnityInnerParticles(B,scene,parent,bodyGeometry,texture) {
-  const nativeFogTexture=new B.Texture('assets/models/companion/inner-fog.png?v=20261029-radio-cue-9',scene,false,true);
-  const response=await fetch('assets/models/companion/ice-mesh.json?v=20261029-radio-cue-9');
+  const nativeFogTexture=new B.Texture('assets/models/companion/inner-fog.png?v=20261029-restart-audio-10',scene,false,true);
+  const response=await fetch('assets/models/companion/ice-mesh.json?v=20261029-restart-audio-10');
   if(!response.ok)throw new Error('The native inner particles could not be loaded');
   const geometry=await response.json(),root=new B.TransformNode('unity-inner-particles',scene);root.parent=parent;
   const crystal=new B.Mesh('unity-fog-ice-particles',scene);crystal.parent=root;crystal.isPickable=false;crystal.alwaysSelectAsActiveMesh=true;

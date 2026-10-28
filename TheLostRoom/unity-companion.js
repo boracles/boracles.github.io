@@ -1,9 +1,9 @@
-import {loadUnityInnerParticles} from './unity-inner-particles.js?v=20261029-radio-cue-9';
+import {loadUnityInnerParticles} from './unity-inner-particles.js?v=20261029-restart-audio-10';
 // Native FogChild.prefab geometry, FogBase texture and PerlinPDM deformation.
 // Unity's material is URP/Lit with additive transparency and blue emission.
 export async function loadUnityCompanion(B,scene,parent) {
   const folder='assets/models/companion/';
-  const read=async name=>{const response=await fetch(folder+name+'?v=20261029-radio-cue-9');if(!response.ok)throw new Error(`Unity companion ${name}: ${response.status}`);return response.json();};
+  const read=async name=>{const response=await fetch(folder+name+'?v=20261029-restart-audio-10');if(!response.ok)throw new Error(`Unity companion ${name}: ${response.status}`);return response.json();};
   const [geometry,profile,noise]=await Promise.all(['mesh.json','profile.json','noise.json'].map(read));
   const mesh=new B.Mesh('unity-fog-child-body',scene);mesh.parent=parent;mesh.isPickable=false;
   const data=new B.VertexData();
@@ -14,7 +14,7 @@ export async function loadUnityCompanion(B,scene,parent) {
   data.indices=geometry.indices.slice();for(let i=0;i<data.indices.length;i+=3)[data.indices[i+1],data.indices[i+2]]=[data.indices[i+2],data.indices[i+1]];
   data.applyToMesh(mesh,true);
   const texture=await new Promise((resolve,reject)=>{
-    const loaded=new B.Texture(folder+'fog-base.png?v=20261029-radio-cue-9',scene,false,false,B.Texture.TRILINEAR_SAMPLINGMODE,()=>resolve(loaded),(message,error)=>reject(error||new Error(message)));
+    const loaded=new B.Texture(folder+'fog-base.png?v=20261029-restart-audio-10',scene,false,false,B.Texture.TRILINEAR_SAMPLINGMODE,()=>resolve(loaded),(message,error)=>reject(error||new Error(message)));
   });texture.hasAlpha=true;
   const material=new B.PBRMaterial('unity-fog-child-body-material',scene);
   material.albedoTexture=texture;material.emissiveTexture=texture;material.useAlphaFromAlbedoTexture=true;

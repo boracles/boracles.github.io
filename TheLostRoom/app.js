@@ -1,8 +1,8 @@
-import { createFogView, Vec3 } from './unity-view.js?v=20261029-radio-cue-9';
-import { createQRMarkerTracker, markerPose } from './qr-marker.js?v=20261029-radio-cue-9';
-import { messages, chooseLanguage } from './strings.js?v=20261029-radio-cue-9';
-import { createGuidance } from './guidance.js?v=20261029-radio-cue-9';
-import { exhibitionOpen } from './exhibition.js?v=20261029-radio-cue-9';
+import { createFogView, Vec3 } from './unity-view.js?v=20261029-restart-audio-10';
+import { createQRMarkerTracker, markerPose } from './qr-marker.js?v=20261029-restart-audio-10';
+import { messages, chooseLanguage } from './strings.js?v=20261029-restart-audio-10';
+import { createGuidance } from './guidance.js?v=20261029-restart-audio-10';
+import { exhibitionOpen } from './exhibition.js?v=20261029-restart-audio-10';
 
 // The Lost Room 2: QR → Fog Child → hold the child while speaking → release for music.
 // Camera and voice processing stay in this browser; nothing is uploaded.
@@ -92,6 +92,7 @@ updaters.add(()=>{
   if(visible!==spatial.visible){spatial.visible=visible;spatial.presence.gain.setTargetAtTime(visible?1:0,audio.ctx.currentTime,.15);}
 });
 const ambient={element:new Audio('assets/audio/Ambient.mp3'),gain:null,target:0};
+const ambientLevels={idle:.5,narration:.10,music:.10,recording:.004};
 ambient.element.loop=true;ambient.element.preload='auto';
 const guidance=createGuidance({context:audio.ctx,output:audio.master,language,muted:audio.muted,
   canPlay:()=>!session.ended&&!session.interrupted&&!document.hidden&&!['arming','recording'].includes(whisper.phase)});
@@ -100,7 +101,7 @@ function updateSoundPrompt() {
     (audio.ctx.state==='running'&&!ambient.element.paused);
 }
 function startAmbient() {
-  if(!ambient.gain){ambient.gain=audio.ctx.createGain();ambient.gain.gain.value=.32;audio.ctx.createMediaElementSource(ambient.element).connect(ambient.gain).connect(audio.master);}
+  if(!ambient.gain){ambient.gain=audio.ctx.createGain();ambient.gain.gain.value=ambientLevels.idle;audio.ctx.createMediaElementSource(ambient.element).connect(ambient.gain).connect(audio.master);}
   if(!ambient.element.paused)return;
   ambient.element.play().then(updateSoundPrompt).catch(error=>{
     updateSoundPrompt();
@@ -117,8 +118,8 @@ audio.ctx.addEventListener('statechange',updateSoundPrompt);
 updaters.add(()=>{
   if(!ambient.gain)return;
   const speaking=['arming','recording'].includes(whisper.phase);
-  const target=session.ended?0:speaking ? .004 : guidance.state.playing ? .025 : music.on ? .06 : .32;
-  if(target!==ambient.target){ambient.target=target;ambient.gain.gain.setTargetAtTime(target,audio.ctx.currentTime,speaking ? .08 : .9);}
+  const target=session.ended?0:speaking?ambientLevels.recording:guidance.state.playing?ambientLevels.narration:music.on?ambientLevels.music:ambientLevels.idle;
+  if(target!==ambient.target){ambient.target=target;ambient.gain.gain.setTargetAtTime(target,audio.ctx.currentTime,speaking ? .08 : .35);}
 });
 function makeImpulse(seconds = 3.2) {
   const c = audio.ctx;
@@ -180,7 +181,7 @@ function playTouchSound() {
 
 // The story's piece: the same StoryMusic as the headset, rendered in a worker from the 16 kHz voice.
 // Its loop is seamless (the tail is folded onto the start), so one looping source is enough.
-const STORY_WORKER='story-music.js?v=20261029-radio-cue-9';
+const STORY_WORKER='story-music.js?v=20261029-restart-audio-10';
 const story={worker:null,cancel:null,version:0};
 async function voiceAt16k(buffer) {
   const rate=16000,length=Math.max(1,Math.ceil(buffer.duration*rate));
@@ -245,7 +246,7 @@ function startMusic(buffer) {
   music.source = source;
   n.out.gain.setTargetAtTime(1, now, 0.8);
   music.nodes = n;
-  music.on = true;
+  music.on = true;music.voiced=true;
   c.resume().then(updateSoundPrompt).catch(updateSoundPrompt);
 }
 
@@ -254,7 +255,7 @@ function stopMusic() {
   try { music.source?.disconnect(); } catch {}
   for(const node of Object.values(music.nodes||{}))try{node.disconnect();}catch{}
   music.analyser?.disconnect();
-  music.source = null; music.nodes = null; music.analyser = null; music.on = false;
+  music.source = null; music.nodes = null; music.analyser = null; music.on = false;music.voiced=false;
 }
 
 // A touch opens the tone for a moment; the piece falls silent while a new story is told.
@@ -530,7 +531,7 @@ async function finishHold(discard=false) {
     await tween(700,()=>{});
     await tween(150,()=>{});
     if(session.ended||token!==whisper.token)return;
-    music.voiced=true;startMusic(piece);whisper.generation++;
+    startMusic(piece);whisper.generation++;
     fogState.form='child';
     touchLayer.setAttribute('aria-label',t('childLabel'));
     radioState.grille.computeWorldMatrix(true);
@@ -612,10 +613,16 @@ $('finish').addEventListener('click',finishExperience);
 $('tell-again').addEventListener('click',()=>{
   if(session.ended||whisper.phase!=='idle')return;
   whisper.token++; // Invalidate a still-finishing birth before returning to the radio.
+  cancelStory();stopMusic();closeMic(true);stopTouchSounds(0);
+  whisper.pointerId=null;whisper.voiced=0;whisper.elapsed=0;whisper.generation=0;
+  mic.td=null;mic.paused=true;mic.full=false;session.recording=false;
+  fogState.level=0;fogState.target=0;fogState.bass=0;fogState.mid=0;fogState.touch=0;
+  fogUniforms.uLevel.value=0;fogUniforms.uTouch.value=0;fogUniforms.uScale.value=.0001;
+  inflowUniforms.uAlpha.value=0;$('music-progress').value=0;showRec(false);
   fog.setEnabled(false);
   fogState.form='radio';fogUniforms.uAlpha.value=0;radioState.alpha=1;
   touchLayer.setAttribute('aria-label',t('holdLabel'));
-  say('hold');touchLayer.focus();fogState.touch=.45;
+  say('hold');touchLayer.focus();activateAudio();
 });
 // A restored browser history page must open a fresh session and request a new camera.
 addEventListener('pageshow',event=>{if(event.persisted)location.reload();});

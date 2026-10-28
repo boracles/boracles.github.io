@@ -10,7 +10,7 @@ export function createGuidance({context,output,language,muted,canPlay}) {
   async function load(key) {
     if(buffers.has(key))return buffers.get(key);
     if(!requests.has(key))requests.set(key,(async()=>{
-      const response=await fetch(`assets/audio/guidance/${language}/${key}.wav?v=20261029-radio-cue-9`,{signal:controller.signal});
+      const response=await fetch(`assets/audio/guidance/${language}/${key}.wav?v=20261029-restart-audio-10`,{signal:controller.signal});
       if(!response.ok)throw new Error(`Guidance ${language}/${key}: ${response.status}`);
       const buffer=await context.decodeAudioData(await response.arrayBuffer());
       buffers.set(key,buffer);return buffer;
