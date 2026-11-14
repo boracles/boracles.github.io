@@ -1,6 +1,6 @@
 import { chooseLanguage } from './strings.js?v=20261029-restart-audio-10';
-// The final exhibition day is inclusive in Korea: close at Nov 9, 00:00 KST.
-export const CLOSES_AT = Date.parse('2026-11-09T00:00:00+09:00');
+// November 25 is inclusive in Korea.
+export const CLOSES_AT = Date.parse('2026-11-26T00:00:00+09:00');
 let serverStart=0,wallStart=0,monotonicStart=0,initialized=false,closed=false,timer=0;
 const copy={
   ko:['전시 기간이 종료되었습니다.','다음 전시에서 《잃어버린 방》을 다시 만나 주세요.'],

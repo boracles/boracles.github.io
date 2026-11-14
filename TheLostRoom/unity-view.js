@@ -1,4 +1,4 @@
-import {loadUnityCompanion} from './unity-companion.js?v=20261029-restart-audio-10';
+import {loadUnityCompanion} from './unity-companion.js?v=20261114-performance-1';
 import {loadUnityRadio} from './unity-radio.js?v=20261029-restart-audio-10';
 import {createUnityVoiceMist} from './unity-voice-mist.js?v=20261029-restart-audio-10';
 const B=globalThis.BABYLON;
@@ -13,7 +13,15 @@ export class Vec3 extends B.Vector3 {
 
 export function createFogView(canvas,{updaters,time}) {
   const engine=new B.Engine(canvas,true,{alpha:true,premultipliedAlpha:true,stencil:true},false);
-  engine.setHardwareScalingLevel(1/Math.min(devicePixelRatio||1,1.5));
+  function resizeView(){
+    const area=Math.max(1,canvas.clientWidth*canvas.clientHeight);
+    // Camera video and text are separate layers. Limit only the transparent WebGL buffer.
+    const pixelRatio=Math.min(devicePixelRatio||1,1.25,Math.sqrt(720000/area));
+    const scaling=1/pixelRatio;
+    if(engine.getHardwareScalingLevel()!==scaling)engine.setHardwareScalingLevel(scaling);
+    else engine.resize();
+  }
+  resizeView();
   const scene=new B.Scene(engine);scene.useRightHandedSystem=true;scene.clearColor=new B.Color4(0,0,0,0);
   const camera=new B.FreeCamera('tea-camera',B.Vector3.Zero(),scene);
   camera.fov=64*Math.PI/180;camera.minZ=.01;camera.maxZ=20;camera.inputs.clear();
@@ -60,5 +68,5 @@ export function createFogView(canvas,{updaters,time}) {
     receiver?.update(radioState.alpha,fogState.level);
     mist.update(dt,t,{receiver,state:radioState,level:fogState.level,visible:anchor.isEnabled()});
   });
-  return{B,engine,scene,camera,anchor,fog,radio,radioState,fogUniforms,inflowUniforms,fogState,iceCore,loadModels,buildIce};
+  return{B,engine,scene,camera,anchor,fog,radio,radioState,fogUniforms,inflowUniforms,fogState,iceCore,loadModels,buildIce,resizeView};
 }

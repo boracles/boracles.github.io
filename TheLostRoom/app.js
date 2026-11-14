@@ -1,8 +1,8 @@
-import { createFogView, Vec3 } from './unity-view.js?v=20261029-restart-audio-10';
-import { createQRMarkerTracker, markerPose } from './qr-marker.js?v=20261029-restart-audio-10';
+import { createFogView, Vec3 } from './unity-view.js?v=20261114-performance-1';
+import { createQRMarkerTracker, markerPose } from './qr-marker.js?v=20261114-performance-1';
 import { messages, chooseLanguage } from './strings.js?v=20261029-restart-audio-10';
 import { createGuidance } from './guidance.js?v=20261029-restart-audio-10';
-import { exhibitionOpen } from './exhibition.js?v=20261029-restart-audio-10';
+import { exhibitionOpen } from './exhibition.js?v=20261114-performance-1';
 
 // The Lost Room 2: QR → Fog Child → hold the child while speaking → release for music.
 // Camera and voice processing stay in this browser; nothing is uploaded.
@@ -46,7 +46,7 @@ const updaters = new Set();
 
 const time = { value: 0 };
 const { B, engine, scene, camera, anchor, fog, fogState, fogUniforms, inflowUniforms,
-  radio, radioState, iceCore, loadModels, buildIce } = createFogView(canvas, { updaters, time, lerp, clamp });
+  radio, radioState, iceCore, loadModels, buildIce, resizeView } = createFogView(canvas, { updaters, time, lerp, clamp });
 const interactionNode=()=>fogState.form==='radio'?radio:fog;
 
 // =====================================================================
@@ -665,7 +665,7 @@ $('resume-button').addEventListener('click',async()=>{
       markerTracker.start();
     }else anchor.setEnabled(true);
     if(session.ended)return;
-    session.interrupted=false;$('resume').hidden=true;startAmbient();last=performance.now();engine.runRenderLoop(renderFrame);
+    session.interrupted=false;$('resume').hidden=true;startAmbient();last=performance.now();nextFrame=last;engine.runRenderLoop(renderFrame);
     if(mode==='3d'||markerTracker.state.locked)anchor.setEnabled(true);
     if(whisper.phase!=='rendering')say(mode==='camera'&&!markerTracker.state.locked?'qrAim':music.on?'repeat':'hold',music.on);
   }catch(error){showResume(true);$('resume-text').textContent=t('cameraError');}
@@ -677,6 +677,7 @@ $('resume-button').addEventListener('click',async()=>{
 // =====================================================================
 let mode = null;
 const view = { yaw: 0.5, pitch: 0.55 };
+const previewTarget = new Vec3();
 
 function applyView() {
   if (mode === 'camera') {
@@ -685,9 +686,8 @@ function applyView() {
     camera.rotationQuaternion.set(0,0,0,1);
   } else if (mode === '3d') {
     const dist = Math.max(0.36, 0.15 / (Math.tan(camera.fov / 2) * (innerWidth / innerHeight)));
-    const target = new Vec3(0, 0.0, 0);
-    camera.position.set(Math.sin(view.yaw) * Math.cos(view.pitch) * dist, target.y + Math.sin(view.pitch) * dist, Math.cos(view.yaw) * Math.cos(view.pitch) * dist);
-    camera.setTarget(target);
+    camera.position.set(Math.sin(view.yaw) * Math.cos(view.pitch) * dist, Math.sin(view.pitch) * dist, Math.cos(view.yaw) * Math.cos(view.pitch) * dist);
+    camera.setTarget(previewTarget);
   }
 }
 
@@ -703,11 +703,13 @@ async function startCamera() {
   });
   mode = 'camera';
   document.body.className = 'mode-camera';
+  applyView();
 }
 
 function start3D() {
   mode = '3d';
   document.body.className = 'mode-3d';
+  applyView();
 }
 
 const camSupported = !!navigator.mediaDevices?.getUserMedia && window.isSecureContext;
@@ -755,17 +757,22 @@ for(const type of ['pointerdown','pointerup','touchend','keydown'])
 $('sound-start').addEventListener('click',activateAudio);
 
 addEventListener('resize', () => {
-  engine.resize();
+  resizeView();
+  if(mode==='3d')applyView();
 });
 
 const T0 = performance.now();
-let last = T0;
+let last=T0,nextFrame=T0,previousFrameMs=0;
 function renderFrame() {
   const now = performance.now();
   // Camera video and the CSS finger cue animate independently. Render the idle
   // radio at 30 fps, with up to 60 fps for touch, birth and musical movement.
   const frameMs=1000/(fogState.form==='radio'&&whisper.phase==='idle'&&!tweens.size?30:60);
-  if(now-last<frameMs-.75)return;
+  if(frameMs!==previousFrameMs){nextFrame=Math.min(nextFrame,last+frameMs);previousFrameMs=frameMs;}
+  if(now<nextFrame-1||now-last<frameMs/2)return;
+  // Carry fractional display intervals forward on 60, 90 and 120 Hz screens.
+  // After a stall draw once and resume on the next deadline.
+  nextFrame+=Math.max(1,Math.floor((now-nextFrame)/frameMs)+1)*frameMs;
   const dt = Math.min(0.05, (now - last) / 1000);
   last = now;
   time.value = (now - T0) / 1000; // small values keep shader sin() precise on phones
@@ -774,8 +781,7 @@ function renderFrame() {
     tw.fn(tw.e(k));
     if (k >= 1) { tweens.delete(tw); tw.resolve(); }
   }
-  if (mode) applyView();
-  camera.getViewMatrix(true);
+  camera.getViewMatrix();
   for (const u of updaters) u(dt, time.value);
   scene.render();
 }

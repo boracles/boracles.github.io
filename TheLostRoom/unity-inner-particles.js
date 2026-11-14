@@ -21,7 +21,7 @@ export async function loadUnityInnerParticles(B,scene,parent,bodyGeometry,textur
   material.diffuseColor=new B.Color3(.955,.976,1);material.emissiveColor=new B.Color3(.189,.428,.679);material.specularColor=new B.Color3(.9,.96,.98);
   material.alpha=0;material.disableDepthWrite=true;material.backFaceCulling=false;crystal.material=material;crystal.renderingGroupId=2;
   const matrices=new Float32Array(61*16),instanceScale=new B.Vector3(),position=new B.Vector3(),rotation=new B.Quaternion();
-  const particleMatrices=Array.from({length:61},()=>new B.Matrix());
+  const particleMatrix=new B.Matrix();
   const directions=new Float32Array(61*3),radii=new Float32Array(61),particleSizes=new Float32Array(61),seedsIce=new Float32Array(61);
   for(let i=0;i<61;i++){
     const index=Math.floor(i*3.41)%(bodyGeometry.positions.length/3),j=index*3;
@@ -30,7 +30,7 @@ export async function loadUnityInnerParticles(B,scene,parent,bodyGeometry,textur
     seedsIce[i]=(i*.61803398875)%1;radii[i]=.09+.17*seedsIce[i];particleSizes[i]=.014+.022*((i*.754877666)%1);
     instanceScale.setAll(particleSizes[i]);position.scaleInPlace(radii[i]);
     B.Quaternion.FromEulerAnglesToRef(i*.7,i*1.1,i*.4,rotation);
-    B.Matrix.ComposeToRef(instanceScale,rotation,position,particleMatrices[i]);particleMatrices[i].copyToArray(matrices,i*16);
+    B.Matrix.ComposeToRef(instanceScale,rotation,position,particleMatrix);particleMatrix.copyToArray(matrices,i*16);
   }
   crystal.thinInstanceSetBuffer('matrix',matrices,16,false);
   const cloud=new B.Mesh('unity-inner-fog-particles',scene);cloud.parent=root;cloud.isPickable=false;cloud.isUnIndexed=true;cloud.alwaysSelectAsActiveMesh=true;
@@ -63,8 +63,8 @@ export async function loadUnityInnerParticles(B,scene,parent,bodyGeometry,textur
       position.set((x*c-z*s)*radius,y*radius+Math.sin(motion*(.7+seed)+i)*.025,(x*s+z*c)*radius);
       instanceScale.setAll(particleSizes[i]*(1+energy*.18));
       B.Quaternion.FromEulerAnglesToRef(i*.7+motion*(.5+seed),i*1.1+motion*(.8+seed),i*.4+motion*.3,rotation);
-      B.Matrix.ComposeToRef(instanceScale,rotation,position,particleMatrices[i]);
-      crystal.thinInstanceSetMatrixAt(i,particleMatrices[i],false);
+      B.Matrix.ComposeToRef(instanceScale,rotation,position,particleMatrix);
+      particleMatrix.copyToArray(matrices,i*16);
     }
     crystal.thinInstanceBufferUpdated('matrix');
     root.setEnabled(alpha>.001);material.alpha=.4*alpha;material.emissiveColor.set(.189*(1+level),.428*(1+level),.679*(1+level));

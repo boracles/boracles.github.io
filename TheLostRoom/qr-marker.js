@@ -70,6 +70,7 @@ export function createQRMarkerTracker({ video, onPose, onVisibility }) {
   const ctx = canvas.getContext('2d', { willReadFrequently: true });
   let timer = 0, running = false, resolveFirst = null, lastSeen = 0, consecutive = 0;
   let announced = false, first = true;
+  let lastFrameTime=-1;
   let decoder=null,workerFailed=false,pending=null,decodeTimer=0,runVersion=0;
   const state = { active: false, visible: false, locked: false, detections: 0, url: null, worker:false,scanMs:0 };
   function releaseDecoder(){
@@ -105,7 +106,9 @@ export function createQRMarkerTracker({ video, onPose, onVisibility }) {
     if (!running) return;
     const version=runVersion;
     try {
-      if (!document.hidden && video.readyState >= 2 && video.videoWidth && typeof globalThis.jsQR === 'function') {
+      if (!document.hidden && video.readyState >= 2 && video.videoWidth &&
+          video.currentTime!==lastFrameTime && typeof globalThis.jsQR === 'function') {
+        lastFrameTime=video.currentTime;
         const s = Math.min(1,960/Math.max(video.videoWidth,video.videoHeight));
         const w = Math.round(video.videoWidth*s), h = Math.round(video.videoHeight*s);
         if (canvas.width !== w || canvas.height !== h) { canvas.width=w; canvas.height=h; }
@@ -144,7 +147,7 @@ export function createQRMarkerTracker({ video, onPose, onVisibility }) {
     state,
     start() {
       if (running) return;
-      running=true;runVersion++;state.active=true;lastSeen=0;consecutive=0;onVisibility(false,state.locked);scan();
+      running=true;runVersion++;state.active=true;lastSeen=0;lastFrameTime=-1;consecutive=0;onVisibility(false,state.locked);scan();
     },
     pause() { running=false;runVersion++;clearTimeout(timer);releaseDecoder();state.active=false;visibility(false); },
     waitForFirst() { return state.locked ? Promise.resolve(true) : new Promise(resolve=>{resolveFirst=resolve;}); },

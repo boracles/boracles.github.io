@@ -1,4 +1,4 @@
-import {loadUnityInnerParticles} from './unity-inner-particles.js?v=20261029-restart-audio-10';
+import {loadUnityInnerParticles} from './unity-inner-particles.js?v=20261114-performance-1';
 // Native FogChild.prefab geometry, FogBase texture and PerlinPDM deformation.
 // Unity's material is URP/Lit with additive transparency and blue emission.
 export async function loadUnityCompanion(B,scene,parent) {
@@ -13,6 +13,10 @@ export async function loadUnityCompanion(B,scene,parent) {
   data.positions=rest;data.normals=geometry.normals.map((v,i)=>i%3===2?-v:v);data.uvs=geometry.uvs;
   data.indices=geometry.indices.slice();for(let i=0;i<data.indices.length;i+=3)[data.indices[i+1],data.indices[i+2]]=[data.indices[i+2],data.indices[i+1]];
   data.applyToMesh(mesh,true);
+  // Surface deformation is bounded below. Pad once instead of rescanning
+  // every vertex for a new bounding box on each animation update.
+  const bounds=mesh.getBoundingInfo(),padding=new B.Vector3(.16,.16,.16);
+  mesh.setBoundingInfo(new B.BoundingInfo(bounds.minimum.subtract(padding),bounds.maximum.add(padding)));
   const texture=await new Promise((resolve,reject)=>{
     const loaded=new B.Texture(folder+'fog-base.png?v=20261029-restart-audio-10',scene,false,false,B.Texture.TRILINEAR_SAMPLINGMODE,()=>resolve(loaded),(message,error)=>reject(error||new Error(message)));
   });texture.hasAlpha=true;
@@ -62,7 +66,7 @@ export async function loadUnityCompanion(B,scene,parent) {
     if(time<next)return;next=time+1/(touch>.01||energy>.02?45:30);
     for(let i=0;i<source.length;i++){
       const j=i*3,k=source[i]*3;
-      if(k!==j){deformed.set(deformed.subarray(k,k+3),j);continue;}
+      if(k!==j){deformed[j]=deformed[k];deformed[j+1]=deformed[k+1];deformed[j+2]=deformed[k+2];continue;}
       const x=rest[j],y=rest[j+1],z=-rest[j+2],radius=Math.hypot(x,y,z);
       const displacement=perlin(phase+x,phase+y,phase+z)*Math.sqrt(.75)*.10;
       const contact=Math.max(0,Math.min(1,((x*direction.x+y*direction.y-z*direction.z)/radius-.1)/.9));
@@ -86,11 +90,11 @@ export async function loadUnityCompanion(B,scene,parent) {
       for(let corner=0;corner<3;corner++){const j=source[indices[i+corner]]*3;normals[j]+=nx;normals[j+1]+=ny;normals[j+2]+=nz;}
     }
     for(let i=0;i<source.length;i++){
-      const j=i*3,k=source[i]*3,length=Math.hypot(normals[k],normals[k+1],normals[k+2])||1;
-      if(k===j){normals[j]/=length;normals[j+1]/=length;normals[j+2]/=length;}
-      else normals.set(normals.subarray(k,k+3),j);
+      const j=i*3,k=source[i]*3;
+      if(k===j){const length=Math.hypot(normals[j],normals[j+1],normals[j+2])||1;normals[j]/=length;normals[j+1]/=length;normals[j+2]/=length;}
+      else{normals[j]=normals[k];normals[j+1]=normals[k+1];normals[j+2]=normals[k+2];}
     }
-    mesh.updateVerticesData(B.VertexBuffer.PositionKind,deformed,true);mesh.updateVerticesData(B.VertexBuffer.NormalKind,normals);
+    mesh.updateVerticesData(B.VertexBuffer.PositionKind,deformed);mesh.updateVerticesData(B.VertexBuffer.NormalKind,normals);
   }
   return{mesh,material,profile,inner,update};
 }
